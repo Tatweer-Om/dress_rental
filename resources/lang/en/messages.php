@@ -24,6 +24,9 @@ return [
     'more_images_lang' => 'Add More Images',
     'new_lang' => 'New',
     'used_lang' => 'Used',
+    'atrributes_lang' => 'Attributes',
+    'attribute_name_lang' => 'Attribute Name',
+    'add_attribute_lang' => 'Add Attributes',
 
     // general
     'data_safe_lang' => 'Data is safe' ,
@@ -57,6 +60,8 @@ return [
     'menu_brand_lang' => 'Brand',
     'menu_size_lang' => 'Size',
     'menu_color_lang' => 'Color',
+    'menu_dress_lang' => 'Dress',
+
 
 ];
 

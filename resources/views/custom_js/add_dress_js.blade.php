@@ -6,6 +6,7 @@
             var imagePath = '{{ asset('custom_images/dummy_image/cover-image-icon.png') }}';
             $('#ad_cover_preview').attr('src',imagePath);
             $('#attachment-holder').html('');
+            $('#all_attribute').html('');
         });
         $('#all_dress').DataTable({
             "sAjaxSource": "{{ url('show_dress') }}",
@@ -106,6 +107,34 @@
             });
         });
 
+        // add attribute
+        $('#add_attribute').on('click',function(e){
+            $('#all_attribute').append(`<div class="row attribute_div">
+                                    <div class="col-md-4">
+                                        <input type="hidden" class="attribute_id" name="attribute_id[]" value="">
+                                        <div class="mb-3">
+                                            <label for="attribute_name" class="form-label"><?php echo trans('messages.attribute_name_lang', [], session('locale')) ; ?></label>
+                                            <input class="form-control attribute_name" name="attribute_name[]" type="text">
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="attribute_notes" class="form-label"><?php echo trans('messages.notes_lang', [], session('locale')) ; ?></label>
+                                            <textarea class="form-control attribute_notes" rows="3" name="attribute_notes[]"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-3">
+                                            <button type="button" style="margin-top: 40px;" class="btn btn-primary del_attribute"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div> 
+                                </div>`);
+        });
+        // del div attribute
+        $(document).on('click', '.del_attribute', function () {
+            $(this).closest('.attribute_div').remove(); // Removes the closest parent div with class 'attribute_div'
+        });
+
 
         $('.add_dress').off().on('submit', function(e){
             e.preventDefault();
@@ -144,6 +173,17 @@
                 {
                     show_notification('error','<?php echo trans('messages.add_price_lang',[],session('locale')); ?>'); return false;
                 }
+                var error=0;
+                $('.attribute_name').each(function () {
+                    if ($(this).val().trim() == '') {
+                        error+=1;
+                    } 
+                });
+                if(error>0)
+                {
+                    show_notification('error','<?php echo trans('messages.add_attribute_name_lang',[],session('locale')); ?>'); return false;
+                }
+
 
                 $('#global-loader').show();
                 before_submit();
@@ -199,6 +239,16 @@
                 if(price=="" )
                 {
                     show_notification('error','<?php echo trans('messages.add_price_lang',[],session('locale')); ?>'); return false;
+                }
+                var error=0;
+                $('.attribute_name').each(function () {
+                    if ($(this).val().trim() == '') {
+                        error+=1;
+                    } 
+                });
+                if(error>0)
+                {
+                    show_notification('error','<?php echo trans('messages.add_attribute_name_lang',[],session('locale')); ?>'); return false;
                 }
     
                 $('#global-loader').show();
@@ -257,6 +307,7 @@
                     }
                     $('#ad_cover_preview').attr('src',imagePath);
                     $("#attachment-holder").html(fetch.all_images);
+                    $("#all_attribute").html(fetch.attributes);
                     $(".dress_name").val(fetch.dress_name);
                     $(".sku").val(fetch.sku);
                     $(".category_name").val(fetch.category_name);
