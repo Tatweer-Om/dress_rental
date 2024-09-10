@@ -7,6 +7,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\DressController;
+use App\Http\Controllers\BookingController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -53,3 +54,6 @@ Route::post('delete_dress', [DressController::class, 'delete_dress'])->name('del
 Route::post('remove_attachments', [DressController::class, 'remove_attachments'])->name('remove_attachments');
 Route::post('e_remove_attachments', [DressController::class, 'e_remove_attachments'])->name('e_remove_attachments');
 Route::post('upload_attachments', [DressController::class, 'upload_attachments'])->name('upload_attachments');
+
+// booking
+Route::get('booking', [BookingController::class, 'index'])->name('booking');

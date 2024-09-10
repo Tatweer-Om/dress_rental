@@ -8,6 +8,7 @@ use App\Models\Dress;
 use App\Models\DressImage;
 use App\Models\Category;
 use App\Models\Brand;
+use App\Models\DressAttribute;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -153,6 +154,35 @@ class DressController extends Controller
             }
         } 
 
+        // add attribute
+        $attribute_id = $request->input('attribute_id');
+        $attribute_name = $request->input('attribute_name');
+        $attribute_notes = $request->input('attribute_notes');
+
+        for ($i=0; $i < count($attribute_name) ; $i++) { 
+            if(!empty($attribute_id[$i]))
+            {
+                $dress_attribute = new DressAttribute();
+                $dress_attribute->id = $attribute_id[$i];
+                $dress_attribute->dress_id = $dress_id;
+                $dress_attribute->attribute = $attribute_name[$i];
+                $dress_attribute->notes = $attribute_notes[$i];
+                $dress_attribute->added_by = $user;
+                $dress_attribute->user_id = $user_id;
+                $dress_attribute->save();
+            }
+            else
+            {
+                $dress_attribute = new DressAttribute();
+                $dress_attribute->dress_id = $dress_id;
+                $dress_attribute->attribute = $attribute_name[$i];
+                $dress_attribute->notes = $attribute_notes[$i];
+                $dress_attribute->added_by = $user;
+                $dress_attribute->user_id = $user_id;
+                $dress_attribute->save();
+            }
+            
+        }
         return response()->json(['dress_id' => $dress_id]);
 
     }
@@ -183,6 +213,36 @@ class DressController extends Controller
                                 </div>';
             }
         }
+        // attributes
+        $attributes = null;
+        $dress_attribute = DressAttribute::where('dress_id', $dress_id)->get();
+        if(!empty($dress_attribute))
+        {
+            foreach($dress_attribute as $att)
+            {
+                
+                $attributes .= '<div class="row attribute_div">
+                                    <div class="col-md-4">
+                                        <input type="hidden" class="attribute_id" name="attribute_id[]" value="'.$att->id.'">
+                                        <div class="mb-3">
+                                            <label for="attribute_name" class="form-label">'.trans('messages.attribute_name_lang', [], session('locale')).'</label>
+                                            <input class="form-control attribute_name" name="attribute_name[]" value="'.$att->attribute.'" type="text">
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="attribute_notes" class="form-label">'.trans('messages.notes_lang', [], session('locale')).'</label>
+                                            <textarea class="form-control attribute_notes" rows="3" name="attribute_notes[]">'.$att->notes.'</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="mb-3">
+                                            <button type="button" style="margin-top: 40px;" class="btn btn-primary del_attribute"><i class="fas fa-trash"></i></button>
+                                        </div>
+                                    </div> 
+                                </div>';
+            }
+        }
         // Add more attributes as needed
         $data = [
             'dress_id' => $dress_data->id,
@@ -197,6 +257,7 @@ class DressController extends Controller
             'notes' => $dress_data->notes,
             'dress_image' => $dress_data->dress_image,
             'all_images' => $images,
+            'attributes' => $attributes
             // Add more attributes as needed
         ];
 
@@ -237,6 +298,37 @@ class DressController extends Controller
         $dress->added_by = $user;
         $dress->user_id = $user_id;
         $dress->save();
+
+        // add attribute
+        $attribute_id = $request->input('attribute_id');
+        $attribute_name = $request->input('attribute_name');
+        $attribute_notes = $request->input('attribute_notes');
+        // attribute delete
+        DressAttribute::where('dress_id', $dress_id)->delete();
+        for ($i=0; $i < count($attribute_name) ; $i++) { 
+            if(!empty($attribute_id[$i]))
+            {
+                $dress_attribute = new DressAttribute();
+                $dress_attribute->id = $attribute_id[$i];
+                $dress_attribute->dress_id = $dress_id;
+                $dress_attribute->attribute = $attribute_name[$i];
+                $dress_attribute->notes = $attribute_notes[$i];
+                $dress_attribute->added_by = $user;
+                $dress_attribute->user_id = $user_id;
+                $dress_attribute->save();
+            }
+            else
+            {
+                $dress_attribute = new DressAttribute();
+                $dress_attribute->dress_id = $dress_id;
+                $dress_attribute->attribute = $attribute_name[$i];
+                $dress_attribute->notes = $attribute_notes[$i];
+                $dress_attribute->added_by = $user;
+                $dress_attribute->user_id = $user_id;
+                $dress_attribute->save();
+            }
+            
+        }
          
     }
 

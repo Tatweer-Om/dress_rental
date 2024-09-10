@@ -370,6 +370,11 @@
                                         <span data-key="t-calendar">{{ trans('messages.menu_color_lang',[],session('locale')) }}</span>
                                     </a>
                                 </li>
+                                <li>
+                                    <a href="{{ url('dress') }}">
+                                        <span data-key="t-calendar">{{ trans('messages.menu_dress_lang',[],session('locale')) }}</span>
+                                    </a>
+                                </li>
                                
                             </ul>
                         </li>
