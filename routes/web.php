@@ -57,3 +57,4 @@ Route::post('upload_attachments', [DressController::class, 'upload_attachments']
 
 // booking
 Route::get('booking', [BookingController::class, 'index'])->name('booking');
+Route::post('get_dress_detail', [BookingController::class, 'get_dress_detail'])->name('get_dress_detail');
