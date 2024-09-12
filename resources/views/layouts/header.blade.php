@@ -38,6 +38,17 @@
     <!-- plugin css -->
     <link href="{{ asset('libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
 
+    <!-- choices css -->
+    <link href="{{ asset('libs/choices.js/public/assets/styles/choices.min.css')}}" rel="stylesheet" type="text/css" />
+
+    <!-- color picker css -->
+    <link rel="stylesheet" href="{{ asset('libs/%40simonwep/pickr/themes/classic.min.css')}}"/> <!-- 'classic' theme -->
+    <link rel="stylesheet" href="{{ asset('libs/%40simonwep/pickr/themes/monolith.min.css')}}"/> <!-- 'monolith' theme -->
+    <link rel="stylesheet" href="{{ asset('libs/%40simonwep/pickr/themes/nano.min.css')}}"/> <!-- 'nano' theme -->
+
+    <!-- datepicker css -->
+    <link rel="stylesheet" href="{{ asset('libs/flatpickr/flatpickr.min.css')}}">
+    
     <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('css/preloader.min.css') }}" type="text/css" />
 

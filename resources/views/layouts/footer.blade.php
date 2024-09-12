@@ -133,6 +133,19 @@
 <!-- pace js -->
 <script src="{{ asset('libs/pace-js/pace.min.js') }}"></script>
 
+<!-- choices js -->
+<script src="{{ asset('libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+
+<!-- color picker js -->
+<script src="{{ asset('libs/%40simonwep/pickr/pickr.min.js') }}"></script>
+<script src="{{ asset('libs/%40simonwep/pickr/pickr.es5.min.js') }}"></script>
+
+<!-- datepicker js -->
+<script src="{{ asset('libs/flatpickr/flatpickr.min.js') }}"></script>
+
+<!-- init js -->
+<script src="{{ asset('js/pages/form-advanced.init.js') }}"></script>
+
 {{-- toastr js --}}
 <script src="{{  asset('plugins/toastr/toastr.min.js')}}"></script>
 <script src="{{  asset('plugins/toastr/toastr.js')}}"></script>
@@ -202,6 +215,9 @@
 @elseif ($controllerName == 'dress')
     {{-- Include the JavaScript file for adding color --}}
     @include('custom_js.add_dress_js')
+@elseif ($controllerName == 'booking')
+    {{-- Include the JavaScript file for adding color --}}
+    @include('custom_js.add_booking_js')
 @endif
 
 </body>
