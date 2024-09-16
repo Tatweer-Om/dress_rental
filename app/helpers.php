@@ -70,5 +70,31 @@ function image_preview($path = null)
     return $images;
 }
 
+function get_booking_number()
+{
+    // order no
+    $booking_data = DB::table('bookings')->orderBy('id', 'desc')->first();
+     
+
+
+    if($booking_data)
+    {
+        $booking_no_old = ltrim($booking_data->booking_no, '0');
+    }
+    else
+    {
+        $booking_no_old=0;
+    }
+
+    $booking_no = $booking_no_old+1;
+    $booking_no = '0000000'.$booking_no;
+    if(strlen($booking_no)!=8)
+    {
+        $len = (strlen($booking_no)-8);
+        $booking_no = substr($booking_no,$len);
+    }
+    return $booking_no;
+}
+
 
 ?>
