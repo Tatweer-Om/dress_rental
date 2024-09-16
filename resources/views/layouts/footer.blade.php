@@ -133,6 +133,19 @@
 <!-- pace js -->
 <script src="{{ asset('libs/pace-js/pace.min.js') }}"></script>
 
+<!-- choices js -->
+<script src="{{ asset('libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+
+<!-- color picker js -->
+<script src="{{ asset('libs/%40simonwep/pickr/pickr.min.js') }}"></script>
+<script src="{{ asset('libs/%40simonwep/pickr/pickr.es5.min.js') }}"></script>
+
+<!-- datepicker js -->
+<script src="{{ asset('libs/flatpickr/flatpickr.min.js') }}"></script>
+
+<!-- init js -->
+<script src="{{ asset('js/pages/form-advanced.init.js') }}"></script>
+
 {{-- toastr js --}}
 <script src="{{  asset('plugins/toastr/toastr.min.js')}}"></script>
 <script src="{{  asset('plugins/toastr/toastr.js')}}"></script>
@@ -157,7 +170,7 @@
 <script src="{{ asset('libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
 
 <!-- Datatable init js -->
-<script src="{{ asset('js/pages/datatables.init.js') }}"></script>    
+<script src="{{ asset('js/pages/datatables.init.js') }}"></script>
 
 <!-- form validation -->
 <script src="{{ asset('js/pages/form-validation.init.js') }}"></script>
@@ -197,11 +210,17 @@
     {{-- Include the JavaScript file for adding size --}}
     @include('custom_js.add_size_js')
 @elseif ($controllerName == 'color')
-    {{-- Include the JavaScript file for adding color --}}
     @include('custom_js.add_color_js')
 @elseif ($controllerName == 'dress')
-    {{-- Include the JavaScript file for adding color --}}
     @include('custom_js.add_dress_js')
+@elseif ($controllerName == 'booking')
+    @include('custom_js.add_booking_js')
+    @elseif ($controllerName == 'account')
+    @include('custom_js.add_account_js')
+    @elseif ($controllerName == 'expense_category')
+    @include('custom_js.add_expensecat_js')
+    @elseif ($controllerName == 'expense')
+    @include('custom_js.add_expense_js')
 @endif
 
 </body>

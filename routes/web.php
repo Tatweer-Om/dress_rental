@@ -2,11 +2,16 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\BrandController;
 use App\Http\Controllers\SizeController;
+use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\DressController;
+use App\Http\Controllers\AccountController;
+
+use App\Http\Controllers\BookingController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ExpenseCategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -54,3 +59,34 @@ Route::post('delete_dress', [DressController::class, 'delete_dress'])->name('del
 Route::post('remove_attachments', [DressController::class, 'remove_attachments'])->name('remove_attachments');
 Route::post('e_remove_attachments', [DressController::class, 'e_remove_attachments'])->name('e_remove_attachments');
 Route::post('upload_attachments', [DressController::class, 'upload_attachments'])->name('upload_attachments');
+
+// booking
+Route::get('booking', [BookingController::class, 'index'])->name('booking');
+Route::post('get_dress_detail', [BookingController::class, 'get_dress_detail'])->name('get_dress_detail');
+
+
+
+Route::get('expense_category', [ExpenseCategoryController::class, 'index'])->name('expense_category');
+Route::post('add_expense_category', [ExpenseCategoryController::class, 'add_expense_category'])->name('add_expense_category');
+Route::get('show_expense_category', [ExpenseCategoryController::class, 'show_expense_category'])->name('show_expense_category');
+Route::post('edit_expense_category', [ExpenseCategoryController::class, 'edit_expense_category'])->name('edit_expense_category');
+Route::post('update_expense_category', [ExpenseCategoryController::class, 'update_expense_category'])->name('update_expense_category');
+Route::post('delete_expense_category', [ExpenseCategoryController::class, 'delete_expense_category'])->name('delete_expense_category');
+
+// expense_categoryController Routes
+
+Route::get('expense', [ExpenseController::class, 'index'])->name('expense');
+Route::post('add_expense', [ExpenseController::class, 'add_expense'])->name('add_expense');
+Route::get('show_expense', [ExpenseController::class, 'show_expense'])->name('show_expense');
+Route::post('edit_expense', [ExpenseController::class, 'edit_expense'])->name('edit_expense');
+Route::post('update_expense', [ExpenseController::class, 'update_expense'])->name('update_expense');
+Route::post('delete_expense', [ExpenseController::class, 'delete_expense'])->name('delete_expense_category');
+
+// AccountController Routes
+
+Route::get('account', [AccountController::class, 'index'])->name('account');
+Route::post('add_account', [AccountController::class, 'add_account'])->name('add_account');
+Route::get('show_account', [AccountController::class, 'show_account'])->name('show_account');
+Route::post('edit_account', [AccountController::class, 'edit_account'])->name('edit_account');
+Route::post('update_account', [AccountController::class, 'update_account'])->name('update_account');
+Route::post('delete_account', [AccountController::class, 'delete_account'])->name('delete_account');

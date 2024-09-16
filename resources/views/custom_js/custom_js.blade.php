@@ -10,6 +10,7 @@
         //         previous: 'fas fa-angle-left'
         //     }
         // });
+        flatpickr(".datepick",{defaultDate:new Date})
     });
     // img
     var imagePath = '{{ asset('images/dummy_image/no_image.png') }}';
