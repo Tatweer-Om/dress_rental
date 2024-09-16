@@ -58,3 +58,16 @@ Route::post('upload_attachments', [DressController::class, 'upload_attachments']
 // booking
 Route::get('booking', [BookingController::class, 'index'])->name('booking');
 Route::post('get_dress_detail', [BookingController::class, 'get_dress_detail'])->name('get_dress_detail');
+Route::post('add_booking', [BookingController::class, 'add_booking'])->name('add_booking');
+Route::post('search_customer', [BookingController::class, 'search_customer']);
+Route::post('add_booking_customer', [BookingController::class, 'add_booking_customer'])->name('add_booking_customer');
+
+
+
+// customer dress
+Route::get('customer', [CustomerController::class, 'index'])->name('customer');
+Route::post('add_customer', [CustomerController::class, 'add_customer'])->name('add_customer');
+Route::get('show_customer', [CustomerController::class, 'show_customer'])->name('show_customer');
+Route::post('edit_customer', [CustomerController::class, 'edit_customer'])->name('edit_customer');
+Route::post('update_customer', [CustomerController::class, 'update_customer'])->name('update_customer');
+Route::post('delete_customer', [CustomerController::class, 'delete_customer'])->name('delete_customer');

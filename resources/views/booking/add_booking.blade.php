@@ -37,11 +37,11 @@
                             <form action="{{ url('add_booking') }}" class="add_booking" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input type="hidden" class="booking_id" name="booking_id">
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-md-2">
                                         <div>
                                             <div class="form-check mb-3">
-                                                <input class="form-check-input" type="radio" name="booking_type" id="booking_t" checked="">
+                                                <input class="form-check-input" type="radio" name="booking_type" value="1" id="booking_t" checked="">
                                                 <label class="form-check-label" for="booking_t">
                                                     Booking
                                                 </label>
@@ -51,14 +51,14 @@
                                     <div class="col-md-2">
                                         <div>
                                             <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="booking_type" id="reservation_t">
+                                                <input class="form-check-input" type="radio" name="booking_type" value="2" id="reservation_t">
                                                 <label class="form-check-label" for="reservation_t">
                                                     Reservation
                                                 </label>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="row">
                                     <div class="col-md-4">
                                         <h2>{{ trans('messages.customer_detail_lang',[],session('locale')) }}</h2>
@@ -67,11 +67,13 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="mb-3">
-                                            <label for="customer_name" class="form-label">{{ trans('messages.customer_name_lang',[],session('locale')) }}</label>
+                                            <label for="customer_name" class="form-label">{{ trans('messages.customer_name_lang',[],session('locale')) }} </label>
+                                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#add_customer_modal"><i class="fas fa-plus"></i></button>
                                             <input class="form-control customer_name" name="customer_name" type="text" id="customer_name">
+                                            <input class="form-control customer_id" name="customer_id" type="hidden" id="customer_id">
                                         </div>
                                     </div> 
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <div class="mb-3">
                                             <label for="customer_contact" class="form-label">{{ trans('messages.customer_contact_lang',[],session('locale')) }}</label>
                                             <input class="form-control customer_contact" name="customer_contact" type="text" id="customer_contact">
@@ -82,7 +84,7 @@
                                             <label for="customer_email" class="form-label">{{ trans('messages.customer_email_lang',[],session('locale')) }}</label>
                                             <input class="form-control customer_email" name="customer_email" type="text" id="customer_email">
                                         </div>
-                                    </div> 
+                                    </div>  --}}
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4">
@@ -93,19 +95,19 @@
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="booking_date" class="form-label">{{ trans('messages.booking_date_lang',[],session('locale')) }}</label>
-                                            <input class="form-control booking_date datepick" name="booking_date" type="text" id="booking_date">
+                                            <input class="form-control booking_date datepick" readonly name="booking_date" type="text" id="booking_date">
                                         </div>
                                     </div> 
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="rent_date" class="form-label">{{ trans('messages.rent_date_lang',[],session('locale')) }}</label>
-                                            <input class="form-control rent_date" name="rent_date" type="text" id="rent_date">
+                                            <input class="form-control rent_date" name="rent_date" readonly type="text" id="rent_date">
                                         </div>
                                     </div> 
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="return_date" class="form-label">{{ trans('messages.return_date_lang',[],session('locale')) }}</label>
-                                            <input class="form-control return_date" name="return_date" type="text" id="return_date">
+                                            <input class="form-control return_date" name="return_date" readonly type="text" id="return_date">
                                         </div>
                                     </div> 
                                     <div class="col-md-3">
@@ -125,7 +127,7 @@
                                         <div class="mb-3">
                                             <label for="dress_name" class="form-label">{{ trans('messages.dress_name_lang',[],session('locale')) }}</label>
                                             <select class="form-control dress_name" data-trigger name="dress_name"
-                                            id="dress_name">
+                                            id="dress_name" onchange="get_dress_detail()">
                                                 <option value="">{{ trans('messages.choose_lang',[],session('locale')) }}</option>
                                                 @foreach ($view_dress as $dress) {
                                                     <option value="{{$dress->id}}">{{$dress->dress_name.' - '.$dress->sku}}</option>';
@@ -163,6 +165,9 @@
                                         </div>
                                     </div> 
                                 </div>
+                                <div class="row">
+                                    <button type="submit" class="btn btn-primary submit_form">{{ trans('messages.submit_lang',[],session('locale')) }}</button>
+                                </div>
                             </form>        
                         </div>
                     </div>
@@ -172,6 +177,134 @@
     </div>
     <!-- End Page-content -->
 
+    <!-- Static Backdrop Modal -->
+    <div class="modal fade" id="add_payment_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">{{ trans('messages.add_data_lang',[],session('locale')) }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url('add_payment') }}" class="add_payment" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" class="bill_id" name="bill_id">
+                        <input type="hidden" class="bill_booking_id" name="booking_id">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="total_bill_amount" class="form-label">{{ trans('messages.total_price_lang',[],session('locale')) }}</label>
+                                    <input class="form-control total_bill_amount" name="total_bill_amount" type="text" id="total_bill_amount">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="bill_remaining_amount" class="form-label">{{ trans('messages.remaining_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control bill_remaining_amount" name="bill_remaining_amount" type="text" id="bill_remaining_amount">
+                                </div>
+                            </div> 
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="bill_paid_amount" class="form-label">{{ trans('messages.paid_amount_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control bill_paid_amount" name="bill_paid_amount" type="text" id="bill_paid_amount">
+                                </div>
+                            </div> 
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="bill_paid_amount" class="form-label">{{ trans('messages.paid_amount_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control bill_paid_amount" name="bill_paid_amount" type="text" id="bill_paid_amount">
+                                </div>
+                            </div> 
+                        </div> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ trans('messages.close_lang',[],session('locale')) }}</button>
+                    <button type="submit" class="btn btn-primary submit_form">{{ trans('messages.submit_lang',[],session('locale')) }}</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Static Backdrop Modal -->
+    <div class="modal fade" id="add_customer_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">{{ trans('messages.add_data_lang',[],session('locale')) }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url('add_customer') }}" class="add_customer" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" class="customers_id" name="customer_id">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="customer_names" class="form-label">{{ trans('messages.customer_name_lang',[],session('locale')) }}</label>
+                                    <input class="form-control customer_names" name="customer_names" type="text" id="customer_names">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="customer_number" class="form-label">{{ trans('messages.customer_number_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control customer_number isnumber" name="customer_number" type="text" id="customer_number">
+                                </div>
+                            </div> 
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="customer_email" class="form-label">{{ trans('messages.customer_email_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control customer_email" name="customer_email" type="text" id="customer_email">
+                                </div>
+                            </div> 
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="dob" class="form-label">{{ trans('messages.dob_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control dob datepick" name="dob" type="text" id="dob">
+                                </div>
+                            </div> 
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div>
+                                     <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" value="1" name="gender" id="male" checked="">
+                                        <label class="form-check-label" for="male">
+                                            {{ trans('messages.male_lang ',[],session('locale')) }}
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="2" name="gender" id="female">
+                                        <label class="form-check-label" for="female">
+                                            {{ trans('messages.female_lang ',[],session('locale')) }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="customer_discount" class="form-label">{{ trans('messages.discount_lang',[],session('locale')) }}</label>
+                                    <input class="form-control customer_discount isnumber" name="customer_discount" type="text" id="customer_discount">
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="address" class="form-label">{{ trans('messages.address_lang',[],session('locale')) }}</label>
+                                    <textarea class="form-control address" name="address" id="address" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ trans('messages.close_lang',[],session('locale')) }}</button>
+                    <button type="submit" class="btn btn-primary submit_form">{{ trans('messages.submit_lang',[],session('locale')) }}</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
    
     
 

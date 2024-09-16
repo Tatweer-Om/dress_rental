@@ -32,6 +32,9 @@
     <link href="{{ asset('libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 
+    <!-- jQuery UI CSS (for autocomplete styling) -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+
     <!-- Responsive datatable examples -->
     <link href="{{ asset('libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" /> 
 
@@ -59,6 +62,8 @@
     <?php }?>
     <!-- Bootstrap Css -->
     
+    <!-- glightbox css -->
+    <link rel="stylesheet" href="{{ asset('libs/glightbox/css/glightbox.min.css') }}">
 
     <!-- Icons Css -->
     <link href="{{ asset('css/icons.min.css') }}" rel="stylesheet" type="text/css" />
