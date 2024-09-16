@@ -1,16 +1,16 @@
 <?php
 return [
-    
-    //Brand 
+
+    //Brand
     'add_brand_name_lang' => 'Please provide brand name',
     'brand_name_lang' => 'Brand Name',
-    //category 
+    //category
     'add_category_name_lang' => 'Please provide category name',
     'category_name_lang' => 'category Name',
-    //color 
+    //color
     'add_color_name_lang' => 'Please provide color name',
     'color_name_lang' => 'color Name',
-    //size 
+    //size
     'add_size_name_lang' => 'Please provide size name',
     'size_name_lang' => 'size Name',
 
@@ -44,6 +44,40 @@ return [
     'menu_brand_lang' => 'Brand',
     'menu_size_lang' => 'Size',
     'menu_color_lang' => 'Color',
+
+    //account
+    'add_account_name_lang'=>'يرجى ادخال اسم الحساب',
+    'data_is_safe_lang'=> 'البيانات في أمان',
+    'account_name_lang'=> 'اسم الحساب',
+    'account_branch_lang'=> 'الفرع',
+    'opening_balance_lang'=>'رصيد الحساب',
+    'commission_lang'=> 'نسبة الدفع',
+    'account_detail_lang'=>'Account Detail',
+    'account_type_lang'=>'نوع الحساب',
+    'account_no_lang'=> 'رقم الحساب',
+    'cash_lang'=>'نقداً',
+    'accounts_lang'=>'الحسابات',
+    'account_list_lang'=>'قائمة الحسابات',
+    'search_account_lang'=>'جميع الحسابات البنكية',
+    'account_lang'=> 'إضافة حساب',
+    'menu_account_lang'=>'Accounts',
+    'created_by_lang'=>'Created By',
+    'created_at_lang'=>'Created At',
+    'action_lang'=>'Action',
+
+      //expensecat
+      'expense_category_name_lang'=>'Expense Category',
+      'expensecat_lang'=>'Expense Category',
+
+      //expense
+
+      'expense_category_name_lang' => 'اسم فئة المصروف',
+'expense_name_lang' => 'اسم المصروف',
+'amount_lang' => 'المبلغ',
+'payment_method_lang' => 'طريقة الدفع',
+'expense_date_lang' => 'تاريخ المصروف',
+
+
 
 ];
 
