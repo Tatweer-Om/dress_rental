@@ -33,7 +33,7 @@
     <link href="{{ asset('libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- Responsive datatable examples -->
-    <link href="{{ asset('libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" /> 
+    <link href="{{ asset('libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- plugin css -->
     <link href="{{ asset('libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
@@ -48,7 +48,7 @@
 
     <!-- datepicker css -->
     <link rel="stylesheet" href="{{ asset('libs/flatpickr/flatpickr.min.css')}}">
-    
+
     <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('css/preloader.min.css') }}" type="text/css" />
 
@@ -58,7 +58,7 @@
         <link href="{{asset('css/bootstrap.min.css') }}"  id="bootstrap-style" rel="stylesheet" type="text/css" />
     <?php }?>
     <!-- Bootstrap Css -->
-    
+
 
     <!-- Icons Css -->
     <link href="{{ asset('css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -69,7 +69,7 @@
     <?php } else {?>
         <link href="{{ asset('css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <?php }?>
-    
+
     {{-- toastr css --}}
     <link rel="stylesheet" href="{{asset('plugins/toastr/toastr.css')}}">
 </head>
@@ -163,7 +163,7 @@
 									<img src="{{ asset('flags/us.png') }}" class="me-1" height="12"> English
 								</a>
 							<?php }?>
-                           
+
                         </div>
                     </div>
 
@@ -386,14 +386,40 @@
                                         <span data-key="t-calendar">{{ trans('messages.menu_dress_lang',[],session('locale')) }}</span>
                                     </a>
                                 </li>
-                               
+
                             </ul>
                         </li>
 
-                        
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="grid"></i>
+                                <span data-key="t-apps">{{ trans('messages.menu_expense_lang',[],session('locale')) }}</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li>
+                                    <a href="{{ url('expense_category') }}">
+                                        <span data-key="t-calendar">{{ trans('messages.expensecat_lang',[],session('locale')) }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ url('account') }}">
+                                        <span data-key="t-calendar">{{ trans('messages.account_lang',[],session('locale')) }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ url('expense') }}">
+                                        <span data-key="t-calendar">{{ trans('messages.add_expense_lang',[],session('locale')) }}</span>
+                                    </a>
+                                </li>
+
+
+                            </ul>
+                        </li>
+
+
 
                     </ul>
- 
+
                 </div>
                 <!-- Sidebar -->
             </div>

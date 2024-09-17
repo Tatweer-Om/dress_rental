@@ -96,7 +96,8 @@ return [
     'amount_lang' => 'Amount',
     'payment_method_lang' => 'Payment Method',
     'expense_date_lang' => 'Expense Date',
-
+    'menu_expense_lang'=>'Expense',
+'add_expense_lang'=>'Expense'
 
 
 ];

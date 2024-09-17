@@ -81,6 +81,8 @@ Route::get('show_expense', [ExpenseController::class, 'show_expense'])->name('sh
 Route::post('edit_expense', [ExpenseController::class, 'edit_expense'])->name('edit_expense');
 Route::post('update_expense', [ExpenseController::class, 'update_expense'])->name('update_expense');
 Route::post('delete_expense', [ExpenseController::class, 'delete_expense'])->name('delete_expense_category');
+Route::get('download_expense_image/{id}', [ExpenseController::class, 'download_expense_image'])->name('download_expense_image');
+
 
 // AccountController Routes
 

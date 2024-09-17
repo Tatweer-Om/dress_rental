@@ -76,6 +76,7 @@ return [
 'amount_lang' => 'المبلغ',
 'payment_method_lang' => 'طريقة الدفع',
 'expense_date_lang' => 'تاريخ المصروف',
+'menu_expense_lang'=>'Expense'
 
 
 
