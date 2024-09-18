@@ -90,149 +90,52 @@ class ExpenseController extends Controller
         }
     }
 
-    // public function add_expense(Request $request){
+    public function add_expense(Request $request){
 
-    //     // $user_id = Auth::id();
-    //     // $data= User::find( $user_id)->first();
-    //     // $user= $data->username;
+        // $user_id = Auth::id();
+        // $data= User::find( $user_id)->first();
+        // $user= $data->username;
 
-    //     $expense = new Expense();
-    //     $expense_image="";
-    //     if ($request->hasFile('expense_image')) {
-    //         $folderPath = public_path('images/expense_images');
+        $expense = new Expense();
+        $expense_image="";
+        if ($request->hasFile('expense_image')) {
+            $folderPath = public_path('images/expense_images');
 
-    //         // Check if the folder doesn't exist, then create it
-    //         if (!File::isDirectory($folderPath)) {
-    //             File::makeDirectory($folderPath, 0777, true, true);
-    //         }
-    //         $expense_image = time() . '.' . $request->file('expense_image')->extension();
-    //         $request->file('expense_image')->move(public_path('images/expense_images'), $expense_image);
-    //     }
-
-    //     $expense->category_id = $request['category_name'];
-    //     $expense->expense_name = $request['expense_name'];
-    //     $expense->payment_method = $request['payment_method'];
-    //     $expense->amount = $request['amount'];
-    //     $expense->expense_date = $request['expense_date'];
-    //     $expense->notes = $request['notes'];
-    //     $expense->expense_image = $expense_image;
-    //     $expense->added_by = 'admin';
-    //     $expense->user_id = 1;
-    //     $expense->save();
-
-    //     // minus from account
-    //     $account_data = Account::where('id', $request['payment_method'])->first();
-    //     $new_amount = $account_data->opening_balance - $request['amount'];
-    //     $account_data->opening_balance = $new_amount;
-    //     $account_data->updated_by = 'admin';
-    //     $account_data->save();
-
-    //     return response()->json(['expense_id' => $expense->id]);
-
-    // }
-
-//     public function add_expense(Request $request)
-// {
-//     $expense = new Expense();
-//     $expense_file = ""; // This will store the file name (image or PDF)
-
-//     if ($request->hasFile('expense_image')) {
-//         $folderPath = public_path('files/expense_files'); // More generic folder name since it's not just images
-
-//         // Check if the folder doesn't exist, then create it
-//         if (!File::isDirectory($folderPath)) {
-//             File::makeDirectory($folderPath, 0777, true, true);
-//         }
-
-//         // Get the file extension
-//         $file_extension = $request->file('expense_image')->extension();
-
-//         // Check if the file is an image or PDF
-//         if (in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'pdf'])) {
-//             $expense_file = time() . '.' . $file_extension; // Generate a unique name
-
-//             $request->file('expense_image')->move($folderPath, $expense_file); // Move file to folder
-//         } else {
-//             return response()->json(['error' => 'Invalid file type. Only images and PDFs are allowed.'], 400);
-//         }
-//     }
-
-
-//     // Save the expense details to the database
-//     $expense->category_id = $request['category_name'];
-//     $expense->expense_name = $request['expense_name'];
-//     $expense->payment_method = $request['payment_method'];
-//     $expense->amount = $request['amount'];
-//     $expense->expense_date = $request['expense_date'];
-//     $expense->notes = $request['notes'];
-//     $expense->expense_image = $expense_file; // Save the file name (image or PDF)
-//     $expense->added_by = 'admin';
-//     $expense->user_id = 1;
-//     $expense->save();
-
-//     // Subtract the amount from the account
-//     $account_data = Account::where('id', $request['payment_method'])->first();
-//     $new_amount = $account_data->opening_balance - $request['amount'];
-//     $account_data->opening_balance = $new_amount;
-//     $account_data->updated_by = 'admin';
-//     $account_data->save();
-
-//     return response()->json(['expense_id' => $expense->id]);
-// }
-
-public function add_expense(Request $request)
-{
-    // Validate that the uploaded file is either an image or PDF
-    $validator = Validator::make($request->all(), [
-        'expense_image' => 'file|mimes:jpeg,png,jpg,gif,pdf|max:2048', // Restrict file types and size
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(['error' => $validator->errors()->first()], 400);
-    }
-
-    $expense = new Expense();
-    $expense_file = ""; // This will store the file name (image or PDF)
-
-    if ($request->hasFile('expense_image')) {
-        $folderPath = public_path('files/expense_files'); // More generic folder name since it's not just images
-
-        // Ensure folder exists or create it
-        if (!File::exists($folderPath)) {
-            File::makeDirectory($folderPath, 0777, true);
+            // Check if the folder doesn't exist, then create it
+            if (!File::isDirectory($folderPath)) {
+                File::makeDirectory($folderPath, 0777, true, true);
+            }
+            $expense_image = time() . '.' . $request->file('expense_image')->extension();
+            $request->file('expense_image')->move(public_path('images/expense_images'), $expense_image);
         }
 
-        // Get the original extension of the file
-        $file_extension = $request->file('expense_image')->getClientOriginalExtension();
 
-        // Create a unique file name using the current time and file extension
-        $expense_file = time() . '.' . $file_extension;
+        $expense->category_id = $request['category_name'];
+        $expense->expense_name = $request['expense_name'];
+        $expense->payment_method = $request['payment_method'];
+        $expense->amount = $request['amount'];
+        $expense->expense_date = $request['expense_date'];
+        $expense->notes = $request['notes'];
+        $expense->expense_image = $expense_image;
+        $expense->added_by = 'admin';
+        $expense->user_id = 1;
+        $expense->save();
 
-        // Move the file to the specified folder
-        $request->file('expense_image')->move($folderPath, $expense_file);
+        // minus from account
+        $account_data = Account::where('id', $request['payment_method'])->first();
+        $new_amount = $account_data->opening_balance - $request['amount'];
+        $account_data->opening_balance = $new_amount;
+        $account_data->updated_by = 'admin';
+        $account_data->save();
+
+        return response()->json(['expense_id' => $expense->id]);
+
     }
 
-    // Save expense details in the database
-    $expense->category_id = $request->input('category_name');
-    $expense->expense_name = $request->input('expense_name');
-    $expense->payment_method = $request->input('payment_method');
-    $expense->amount = $request->input('amount');
-    $expense->expense_date = $request->input('expense_date');
-    $expense->notes = $request->input('notes');
-    $expense->expense_image = $expense_file; // Store the file name
-    $expense->added_by = 'admin';
-    $expense->user_id = 1;
-    $expense->save();
 
-    // Update the account balance
-    $account_data = Account::where('id', $request->input('payment_method'))->first();
-    $new_amount = $account_data->opening_balance - $request->input('amount');
-    $account_data->opening_balance = $new_amount;
-    $account_data->updated_by = 'admin';
-    $account_data->save();
 
-    return response()->json(['expense_id' => $expense->id]);
-}
+
+
 
 
     public function edit_expense(Request $request){
