@@ -112,9 +112,9 @@ return [
     'checkbox_expense' => 'Expense',
     'checkbox_user' => 'User',
     'permissions_lang'=>'Permissions',
-    'all'=>'All'
-
-
+    'all'=>'All',
+    'user_contact_lang'=>'Contact',
+    'users_lang'=>'Users'
 
 
 ];

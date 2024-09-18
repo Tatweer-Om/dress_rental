@@ -85,10 +85,10 @@ Route::post('add_booking_customer', [BookingController::class, 'add_booking_cust
 Route::get('login', [UserController::class, 'login'])->name('login');
 Route::get('user', [UserController::class, 'index'])->name('user');
 Route::post('add_user', [UserController::class, 'add_user'])->name('add_user');
-Route::get('show_authuser', [UserController::class, 'show_authuser'])->name('show_authuser');
-Route::post('edit_authuser', [UserController::class, 'edit_authuser'])->name('edit_authuser');
-Route::post('update_authuser', [UserController::class, 'update_authuser'])->name('update_authuser');
-Route::post('delete_authuser', [UserController::class, 'delete_authuser'])->name('delete_authuser');
+Route::get('show_user', [UserController::class, 'show_user'])->name('show_user');
+Route::post('edit_user', [UserController::class, 'edit_user'])->name('edit_user');
+Route::post('update_user', [UserController::class, 'update_user'])->name('update_user');
+Route::post('delete_user', [UserController::class, 'delete_user'])->name('delete_user');
 
 
 Route::get('expense_category', [ExpenseCategoryController::class, 'index'])->name('expense_category');

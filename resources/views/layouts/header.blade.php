@@ -61,13 +61,11 @@
         <link href="{{asset('css/bootstrap.min.css') }}"  id="bootstrap-style" rel="stylesheet" type="text/css" />
     <?php }?>
     <!-- Bootstrap Css -->
-<<<<<<< HEAD
 
-=======
-    
+
     <!-- glightbox css -->
     <link rel="stylesheet" href="{{ asset('libs/glightbox/css/glightbox.min.css') }}">
->>>>>>> 192f8de6b0d0acd4b900f89a829e202bf0485316
+
 
     <!-- Icons Css -->
     <link href="{{ asset('css/icons.min.css') }}" rel="stylesheet" type="text/css" />
@@ -422,6 +420,19 @@
                                 </li>
 
 
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="grid"></i>
+                                <span data-key="t-apps">{{ trans('messages.menu_user_lang',[],session('locale')) }}</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li>
+                                    <a href="{{ url('user') }}">
+                                        <span data-key="t-calendar">{{ trans('messages.users_lang',[],session('locale')) }}</span>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 

@@ -6,12 +6,12 @@
 
         });
 
-        // $('#all_user').DataTable({
-        //     "sAjaxSource": "{{ url('show_user') }}",
-        //     "bFilter": true,
-        //     'pagingType': 'numbers',
-        //     "ordering": true,
-        // });
+        $('#all_user').DataTable({
+            "sAjaxSource": "{{ url('show_user') }}",
+            "bFilter": true,
+            'pagingType': 'numbers',
+            "ordering": true,
+        });
 
         $('#add_user_modal').off().on('submit', function(e){
             e.preventDefault();
@@ -121,7 +121,7 @@
                     $(".password").val(fetch.password);
                     $(".user_email").val(fetch.user_email);
                     $(".user_phone").val(fetch.user_phone);
-                    $(".user_detail").val(fetch.notes);
+                    $(".notes").val(fetch.user_detail);
                     $(".user_id").val(fetch.user_id);
                     $(".permit_type").val(fetch.permit_type);
                     $('#checked_html').html(fetch.checked_html);
@@ -180,25 +180,30 @@
         });
     }
 
+    $(document).ready(function() {
+    // Event delegation for 'Select All' checkbox
+    $(document).on('change', '#checkboxAll', function () {
+        // When 'Select All' checkbox is checked or unchecked
+        $('.permit_array').prop('checked', $(this).prop('checked'));
+    });
 
-        $(document).ready(function () {
-            $('#checkboxAll').change(function () {
-                $('.permit_array').prop('checked', $(this).prop('checked'));
-            });
+    // Event delegation for individual checkboxes
+    $(document).on('change', '.permit_array', function () {
+        // If any individual checkbox is unchecked, uncheck the 'Select All' checkbox
+        if (!$(this).prop('checked')) {
+            $('#checkboxAll').prop('checked', false);
+        }
 
-            $('.permit_array').change(function () {
-                if (!$(this).prop('checked')) {
-                    $('#checkboxAll').prop('checked', false);
-                }
-            });
-        });
+        // If all individual checkboxes are checked, check the 'Select All' checkbox
+        if ($('.permit_array:checked').length === $('.permit_array').length) {
+            $('#checkboxAll').prop('checked', true);
+        }
+    });
+});
 
-        // $(document).ready(function() {
-        //     $('#checkboxAll').change(function() {
-        //         // Check or uncheck all checkboxes based on the state of the "All" checkbox
-        //         $('input[name="permit_array[]"]').prop('checked', $(this).prop('checked'));
-        //     });
-        // });
+
+
+
 
 
 
