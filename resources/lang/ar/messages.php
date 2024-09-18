@@ -76,7 +76,14 @@ return [
 'amount_lang' => 'المبلغ',
 'payment_method_lang' => 'طريقة الدفع',
 'expense_date_lang' => 'تاريخ المصروف',
-'menu_expense_lang'=>'Expense'
+'menu_expense_lang'=>'Expense',
+
+//user
+
+'user_name_lang' => 'اسم المستخدم',
+'password_lang' => 'كلمة المرور',
+'user_phone_lang' => 'رقم الهاتف',
+'user_email_lang' => 'البريد الإلكتروني',
 
 
 

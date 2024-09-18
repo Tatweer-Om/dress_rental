@@ -130,6 +130,9 @@
 <script src="{{ asset('libs/node-waves/waves.min.js') }}"></script>
 <script src="{{ asset('libs/feather-icons/feather.min.js') }}"></script>
 
+{{-- jquery ui --}}
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+
 <!-- pace js -->
 <script src="{{ asset('libs/pace-js/pace.min.js') }}"></script>
 
@@ -174,6 +177,12 @@
 
 <!-- form validation -->
 <script src="{{ asset('js/pages/form-validation.init.js') }}"></script>
+
+<!-- glightbox js -->
+<script src="{{ asset('libs/glightbox/js/glightbox.min.js') }}"></script>
+
+<!-- lightbox init -->
+<script src="{{ asset('js/pages/lightbox.init.js') }}"></script>
 
 <!-- apexcharts -->
 <script src="{{ asset('libs/apexcharts/apexcharts.min.js') }}"></script>
@@ -221,6 +230,8 @@
     @include('custom_js.add_expensecat_js')
     @elseif ($controllerName == 'expense')
     @include('custom_js.add_expense_js')
+    @elseif ($controllerName == 'user')
+    @include('custom_js.user_js')
 @endif
 
 </body>

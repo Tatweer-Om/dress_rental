@@ -34,12 +34,13 @@
     // Get the price and discount values from the input fields
     const price = parseFloat(document.querySelector(".price").value) || 0;
     const discount = parseFloat(document.querySelector(".discount").value) || 0;
+    const duration = parseFloat(document.querySelector(".duration").value) || 0;
 
     // Calculate the discount amount
     const discountAmount = (price * discount) / 100;
 
     // Calculate the total price after discount
-    const totalPrice = price - discountAmount;
+    const totalPrice = (price - discountAmount)*duration;
 
     // Update the total_price input field
     document.querySelector(".total_price").value = totalPrice.toFixed(3); // Fix to 2 decimal places
@@ -48,21 +49,219 @@
   // Attach keyup event listeners to both price and discount inputs
   document.querySelector(".price").addEventListener("keyup", calculateTotalPrice);
   document.querySelector(".discount").addEventListener("keyup", calculateTotalPrice);
-    function get_dress_detail(){
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
-        $.ajax ({
-            url : "{{ url('get_dress_detail') }}",
-            method : "POST",
-            data :   {id:id,_token: csrfToken},
-            success: function(response) {
-                $('#dress_detail').html(response.dress_detail);
-            },
-            error: function(response)
-            {
-                show_notification('error','<?php echo trans('messages.data_get_failed_lang',[],session('locale')); ?>');
-                console.log(html);
-                return false;
-            }
-        });
+  function get_dress_detail(){
+      var dress_id = $('#dress_name').val();
+      var csrfToken = $('meta[name="csrf-token"]').attr('content');
+      $('#global-loader').show();
+      $.ajax ({
+          url : "{{ url('get_dress_detail') }}",
+          method : "POST",
+          data :   {dress_id:dress_id,_token: csrfToken},
+          success: function(response) {
+              $('#global-loader').hide();
+              $('#dress_detail').html(response.dress_detail);
+              $('#price').val(response.price);
+              calculateTotalPrice()
+              lightbox = GLightbox({
+                  selector: '.image-popup',
+                  title: false
+              });
+              
+          },
+          error: function(response)
+          {
+              show_notification('error','<?php echo trans('messages.data_get_failed_lang',[],session('locale')); ?>');
+              console.log(response);
+              return false;
+          }
+      });
+  }
+
+  // search customer
+  $(".customer_name").autocomplete({
+      source: function(request, response) {
+          $.ajax({
+              url: "{{ url('search_customer') }}",
+              method: "POST",
+              dataType: "json",
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              },
+              data: {
+                  term: request.term
+              },
+
+              success: function(data) {
+                response(data.slice(0, 10)); // Limit to 10 results 
+                  
+              },
+              error: function(xhr, status, error) {
+                  console.error(xhr.responseText);
+              }
+          });
+      },
+      select: function(event, ui) {
+        let selectedValue = ui.item.value; // This is in the format: "1-John Doe+1234567890"
+        let customerId = selectedValue.split('-')[0]; // Extract customer ID (before '-')
+        $('#customer_id').val(customerId);
     }
+
+  }).autocomplete("search", "");
+  // add booking
+  $('.add_booking').off().on('submit', function(e){
+      e.preventDefault();
+      var formdatas = new FormData($('.add_booking')[0]);
+      var customer_id=$('.customer_id').val();
+      var dress_name=$('.dress_name').val();
+      var price=$('.price').val();
+      var id=$('.booking_id').val();
+
+      if(id!='')
+      {
+          if(customer_id=="" )
+          {
+              show_notification('error','<?php echo trans('messages.add_customer_lang',[],session('locale')); ?>'); return false;
+          }
+          if(dress_name=="" )
+          {
+              show_notification('error','<?php echo trans('messages.add_dress_name_lang',[],session('locale')); ?>'); return false;
+          }
+          if(price=="" )
+          {
+              show_notification('error','<?php echo trans('messages.add_price_lang',[],session('locale')); ?>'); return false;
+          }
+
+
+          $('#global-loader').show();
+          before_submit();
+          var str = $(".add_booking").serialize();
+          $.ajax({
+              type: "POST",
+              url: "{{ url('update_booking') }}",
+              data: formdatas,
+              contentType: false,
+              processData: false,
+              success: function(data) {
+                  $('#global-loader').hide();
+                  after_submit();
+                  show_notification('success','<?php echo trans('messages.data_updated_successful_lang',[],session('locale')); ?>');
+                  location.reload();
+                  return false;
+              },
+              error: function(data)
+              {
+                  $('#global-loader').hide();
+                  after_submit();
+                  show_notification('error','<?php echo trans('messages.data_updated_failed_lang',[],session('locale')); ?>');
+                   console.log(data);
+                  return false;
+              }
+          });
+      }
+      else if(id==''){
+
+
+          if(customer_id=="" )
+          {
+              show_notification('error','<?php echo trans('messages.add_customer_lang',[],session('locale')); ?>'); return false;
+          }
+          if(dress_name=="" )
+          {
+              show_notification('error','<?php echo trans('messages.add_dress_name_lang',[],session('locale')); ?>'); return false;
+          }
+          if(price=="" )
+          {
+              show_notification('error','<?php echo trans('messages.add_price_lang',[],session('locale')); ?>'); return false;
+          }
+
+          $('#global-loader').show();
+          before_submit();
+          var str = $(".add_booking").serialize();
+          $.ajax({
+              type: "POST",
+              url: "{{ url('add_booking') }}",
+              data: formdatas,
+              contentType: false,
+              processData: false,
+              success: function(data) {
+                  $('#global-loader').hide();
+                  after_submit();
+                  show_notification('success','<?php echo trans('messages.data_added_successful_lang',[],session('locale')); ?>');
+                  // $('#add_payment_modal').modal('show');
+                  $(".add_booking")[0].reset();
+                  return false;
+              },
+              error: function(data)
+              {
+                  $('#global-loader').hide();
+                  after_submit();
+                  show_notification('error','<?php echo trans('messages.data_added_failed_lang',[],session('locale')); ?>');
+                   console.log(data);
+                  return false;
+              }
+          });
+
+      }
+
+    });
+
+    // add customer
+    $('.add_customer').off().on('submit', function(e){
+            e.preventDefault();
+            var formdatas = new FormData($('.add_customer')[0]);
+            var title=$('.customer_names').val();
+            var contact=$('.customer_number').val();
+            var email=$('.customer_email').val();
+            var id=$('.customers_id').val();
+    
+            
+            if(id==''){
+    
+    
+                if(title=="" )
+                {
+                    show_notification('error','<?php echo trans('messages.add_customer_name_lang',[],session('locale')); ?>'); return false;
+    
+                }
+                if(contact=="" )
+                {
+                    show_notification('error','<?php echo trans('messages.add_contact_lang',[],session('locale')); ?>'); return false;
+    
+                }
+                if(email=="" )
+                {
+                    show_notification('error','<?php echo trans('messages.add_email_lang',[],session('locale')); ?>'); return false;
+    
+                }
+    
+                $('#global-loader').show();
+                before_submit();
+                var str = $(".add_customer").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url('add_booking_customer') }}",
+                    data: formdatas,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        $('#global-loader').hide();
+                        after_submit();
+                         show_notification('success','<?php echo trans('messages.data_added_successful_lang',[],session('locale')); ?>');
+                        $('#add_customer_modal').modal('hide');
+                        $(".add_customer")[0].reset();
+                        return false;
+                        },
+                    error: function(data)
+                    {
+                        $('#global-loader').hide();
+                        after_submit();
+                        show_notification('error','<?php echo trans('messages.data_added_failed_lang',[],session('locale')); ?>');
+                         console.log(data);
+                        return false;
+                    }
+                });
+    
+            }
+    
+        });
 </script>
