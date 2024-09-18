@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
-            $table->string('customer_name'); // Customer name
+            $table->string('customer_name')->nullable(); // Customer name
             $table->string('customer_email')->nullable(); // Customer email (unique)
             $table->string('customer_number')->nullable(); // Phone number
             $table->tinyInteger('gender')->nullable()->comment('1 for male, 2 for female'); // Gender as integer

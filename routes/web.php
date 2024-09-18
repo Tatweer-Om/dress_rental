@@ -66,6 +66,9 @@ Route::post('get_dress_detail', [BookingController::class, 'get_dress_detail'])-
 Route::post('add_booking', [BookingController::class, 'add_booking'])->name('add_booking');
 Route::post('search_customer', [BookingController::class, 'search_customer']);
 Route::post('add_booking_customer', [BookingController::class, 'add_booking_customer'])->name('add_booking_customer');
+Route::post('get_payment', [BookingController::class, 'get_payment'])->name('get_payment');
+Route::post('add_payment', [BookingController::class, 'add_payment'])->name('add_payment');
+Route::post('add_dress_availability', [BookingController::class, 'add_dress_availability'])->name('add_dress_availability');
 
 
 

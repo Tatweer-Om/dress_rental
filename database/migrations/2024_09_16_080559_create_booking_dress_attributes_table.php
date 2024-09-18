@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('booking_dress_attributes', function (Blueprint $table) {
             $table->id();
-            $table->string('booking_no'); // Booking number
-            $table->integer('booking_id'); // Foreign key to bookings table
-            $table->integer('dress_id'); // Foreign key to dresses table
-            $table->integer('attribute_id'); // Attribute ID (reference to the attribute)
-            $table->string('attribute_name'); // Attribute name
+            $table->string('booking_no')->nullable(); // Booking number
+            $table->integer('booking_id')->nullable(); // Foreign key to bookings table
+            $table->integer('dress_id')->nullable(); // Foreign key to dresses table
+            $table->integer('attribute_id')->nullable(); // Attribute ID (reference to the attribute)
+            $table->string('attribute_name')->nullable(); // Attribute name
             $table->longText('attribute_notes')->nullable(); // Notes about the attribute (optional)
             $table->decimal('penalty_price', 8, 3)->nullable(); // Penalty price (optional), 3 digits after the decimal
             $table->tinyInteger('status')->default(1)->comment('1 for pending, 2 for clear'); // Status: 1 for pending, 2 for clear
