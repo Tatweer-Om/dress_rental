@@ -146,7 +146,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="fallback">
-                                        <input name="file" type="file" multiple="multiple">
+                                        <input name="expense_image" type="file" multiple="multiple">
                                     </div>
                                     <div class="dz-message needsclick">
                                         <div class="mb-3">

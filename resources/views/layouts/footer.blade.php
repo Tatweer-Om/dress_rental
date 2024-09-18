@@ -230,6 +230,8 @@
     @include('custom_js.add_expensecat_js')
     @elseif ($controllerName == 'expense')
     @include('custom_js.add_expense_js')
+    @elseif ($controllerName == 'user')
+    @include('custom_js.user_js')
 @endif
 
 </body>

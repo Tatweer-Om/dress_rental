@@ -3,11 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SizeController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ColorController;
 use App\Http\Controllers\DressController;
-use App\Http\Controllers\AccountController;
 
+use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\CategoryController;
@@ -70,14 +71,24 @@ Route::post('add_booking_customer', [BookingController::class, 'add_booking_cust
 
 
 // customer dress
-Route::get('customer', [CustomerController::class, 'index'])->name('customer');
-Route::post('add_customer', [CustomerController::class, 'add_customer'])->name('add_customer');
-Route::get('show_customer', [CustomerController::class, 'show_customer'])->name('show_customer');
-Route::post('edit_customer', [CustomerController::class, 'edit_customer'])->name('edit_customer');
-Route::post('update_customer', [CustomerController::class, 'update_customer'])->name('update_customer');
-Route::post('delete_customer', [CustomerController::class, 'delete_customer'])->name('delete_customer');
- 
+// Route::get('customer', [CustomerController::class, 'index'])->name('customer');
+// Route::post('add_customer', [CustomerController::class, 'add_customer'])->name('add_customer');
+// Route::get('show_customer', [CustomerController::class, 'show_customer'])->name('show_customer');
+// Route::post('edit_customer', [CustomerController::class, 'edit_customer'])->name('edit_customer');
+// Route::post('update_customer', [CustomerController::class, 'update_customer'])->name('update_customer');
+// Route::post('delete_customer', [CustomerController::class, 'delete_customer'])->name('delete_customer');
 
+
+//user
+
+
+Route::get('login', [UserController::class, 'login'])->name('login');
+Route::get('user', [UserController::class, 'index'])->name('user');
+Route::post('add_user', [UserController::class, 'add_user'])->name('add_user');
+Route::get('show_user', [UserController::class, 'show_user'])->name('show_user');
+Route::post('edit_user', [UserController::class, 'edit_user'])->name('edit_user');
+Route::post('update_user', [UserController::class, 'update_user'])->name('update_user');
+Route::post('delete_user', [UserController::class, 'delete_user'])->name('delete_user');
 
 
 Route::get('expense_category', [ExpenseCategoryController::class, 'index'])->name('expense_category');
@@ -95,6 +106,8 @@ Route::get('show_expense', [ExpenseController::class, 'show_expense'])->name('sh
 Route::post('edit_expense', [ExpenseController::class, 'edit_expense'])->name('edit_expense');
 Route::post('update_expense', [ExpenseController::class, 'update_expense'])->name('update_expense');
 Route::post('delete_expense', [ExpenseController::class, 'delete_expense'])->name('delete_expense_category');
+Route::get('download_expense_image/{id}', [ExpenseController::class, 'download_expense_image'])->name('download_expense_image');
+
 
 // AccountController Routes
 
@@ -104,4 +117,4 @@ Route::get('show_account', [AccountController::class, 'show_account'])->name('sh
 Route::post('edit_account', [AccountController::class, 'edit_account'])->name('edit_account');
 Route::post('update_account', [AccountController::class, 'update_account'])->name('update_account');
 Route::post('delete_account', [AccountController::class, 'delete_account'])->name('delete_account');
- 
+

@@ -96,7 +96,25 @@ return [
     'amount_lang' => 'Amount',
     'payment_method_lang' => 'Payment Method',
     'expense_date_lang' => 'Expense Date',
+    'menu_expense_lang'=>'Expense',
+'add_expense_lang'=>'Expense',
 
+//user
+    'user_name_lang' => 'Username',
+    'password_lang' => 'Password',
+    'user_phone_lang' => 'Phone Number',
+    'user_email_lang' => 'Email',
+    'menu_user_lang'=>'User',
+
+    'checkbox_dress' => 'Dress',
+    'checkbox_booking' => 'Booking',
+    'checkbox_reports' => 'Reports',
+    'checkbox_expense' => 'Expense',
+    'checkbox_user' => 'User',
+    'permissions_lang'=>'Permissions',
+    'all'=>'All',
+    'user_contact_lang'=>'Contact',
+    'users_lang'=>'Users'
 
 
 ];
