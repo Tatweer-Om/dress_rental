@@ -11,16 +11,37 @@ use App\Models\Customer;
 use App\Models\Booking;
 use App\Models\BookingBill;
 use App\Models\BookingDressAttribute;
+use App\Models\Account;
+use App\Models\BookingPayment;
+use App\Models\DressHistory;
+use App\Models\DressAvailability;
+use Carbon\Carbon;
+
 
 class BookingController extends Controller
 {
     public function index(){
         $view_dress= Dress::all();
-        return view ('booking.add_booking', compact('view_dress'));
+        $view_account = Account::where('account_type', 1)->get();
+        return view ('booking.add_booking', compact('view_dress','view_account'));
     }
     public function get_dress_detail(Request $request)
 	{
-        $dress_id = $request->input('dress_id');
+        $dress_id = $request['dress_id'];
+        $rent_date = $request['rent_date'];  // Correct Carbon usage
+        $return_date = $request['return_date']; // Correct Carbon usage
+
+        // Query to check if any booking exists with matching dress_id and date ranges overlap
+        $existingBooking = Booking::whereDate('rent_date', '>=', $rent_date)
+                            ->whereDate('rent_date', '<=', $return_date)
+                            ->where('dress_id', $dress_id)
+                            ->first();
+
+        if (!empty($existingBooking)) {
+            // Handle case where a booking exists
+            return response()->json(['status'=>2]);
+            exit;
+        }
         // dress data
         $dress_data = Dress::where('id', $dress_id)->first();
 		// dress attributes
@@ -92,8 +113,25 @@ class BookingController extends Controller
         $dress_image_div.='</div>
         </div>';
 
-        return response()->json(['dress_detail' => $dress_att_div.$dress_image_div,'price'=>$dress_data->price]);
+        return response()->json(['status'=>1,'dress_detail' => $dress_att_div.$dress_image_div,'price'=>$dress_data->price]);
 	}
+
+    // add dress availability
+    public function add_dress_availability(Request $request){
+
+        // $user_id = Auth::id();
+        // $data= User::find( $user_id)->first();
+        // $user= $data->username;
+        $user_id="1";
+        $user="admin";
+        $dress_avail = new DressAvailability();
+        
+        $dress_avail->contact = $request['number'];
+        $dress_avail->dress_id = $request['dress_id'];
+        $dress_avail->added_by = $user;
+        $dress_avail->user_id = $user_id;
+        $dress_avail->save();
+    }
 
 
     public function add_booking(Request $request){
@@ -124,6 +162,20 @@ class BookingController extends Controller
         $booking->save();
         $booking_id = $booking->id;
 
+        // add dress booking history
+        $dress_history = new DressHistory(); 
+        $dress_history->booking_no = $booking_no;
+        $dress_history->booking_id = $booking_id;
+        $dress_history->customer_id = $request['customer_id'];
+        $dress_history->dress_id = $request['dress_name'];
+        $dress_history->type = 1;
+        $dress_history->source = "booking";
+        $dress_history->history_date = $request['booking_date'];
+        $dress_history->notes = $request['notes'];
+        $dress_history->added_by = $user;
+        $dress_history->user_id = $user_id;
+        $dress_history->save();
+
 
         // add attribute
         $booking_attribute = DressAttribute::where('dress_id', $dress_id)->get();
@@ -150,7 +202,7 @@ class BookingController extends Controller
         $booking_bill = new BookingBill();
         $booking_bill->booking_id = $booking_id;
         $booking_bill->booking_no = $booking_no;
-        $booking_bill->total_price = $request['price'];
+        $booking_bill->total_price = $total_price;
         $booking_bill->total_discount = $total_price-$request['total_price'];
         $booking_bill->grand_total = $request['total_price'];
         $booking_bill->total_remaining = $request['total_price'];
@@ -186,6 +238,7 @@ class BookingController extends Controller
                     'label' => $customer['id'].'-'.$customer_name.'+'.$customer['customer_number'],
                     'value' => $customer['id'].'-'.$customer_name.'+'.$customer['customer_number'],
                     'customer_id' => $customer['id'],
+                    'discount' => $customer['discount'],
                 ];
  
             }
@@ -200,22 +253,97 @@ class BookingController extends Controller
         // $user_id = Auth::id();
         // $data= User::find( $user_id)->first();
         // $user= $data->username;
-        $user_id="";
-        $user="";
-
+        $user_id="1";
+        $user="admin";
         $customer = new Customer();
-        
+        $customer_data = Customer::where('customer_number', $request['customer_contact'])->first();
+        if(!empty($customer_data))
+        {
+            return response()->json(['status' => 2]);
+            exit;
+        }
         $customer->customer_name = $request['customer_names'];
-        $customer->customer_contact = $request['customer_contact'];
+        $customer->customer_number = $request['customer_number'];
         $customer->customer_email = $request['customer_email'];
         $customer->dob = $request['dob'];
         $customer->gender = $request['gender'];
-        $customer->discount = $request['discount'];
+        $customer->discount = $request['customer_discount'];
         $customer->address = $request['address'];
         $customer->added_by = $user;
         $customer->user_id = $user_id;
         $customer->save();
-        return response()->json(['customer_id' => $customer->id]);
+        $customer_id = $customer->id;    
+        $customer_full_name = $customer_id.'-'.$request['customer_names'].'+'.$request['customer_number'];
+        return response()->json(['status' => 1,'discount' => $request['customer_discount'],'customer_id' => $customer_id,'full_name' => $customer_full_name]);
 
+    }
+
+
+    public function get_payment(Request $request){
+
+        // $user_id = Auth::id();
+        // $data= User::find( $user_id)->first();
+        // $user= $data->username;
+        $user_id="1";
+        $user="admin";
+        $bill_id = $request['bill_id'];
+        $booking_id = $request['booking_id'];
+        $total_amount = 0;
+        $remaining_total = 0;
+        $bill_data = BookingBill::where('id', $bill_id)->first();
+        if(!empty($bill_data))
+        {
+            $total_amount = $bill_data['grand_total'];
+            $remaining_total = $bill_data['total_remaining'];
+        }
+        return response()->json(['total_amount' => $remaining_total,'remaining_total' => $remaining_total]);
+
+    }
+
+    public function add_payment(Request $request){
+
+        // $user_id = Auth::id();
+        // $data= User::find( $user_id)->first();
+        // $user= $data->username;
+        $user_id="1";
+        $user="admin";
+        $booking_payment = new BookingPayment();
+        $booking_data = Booking::where('id', $request['booking_id'])->first();
+
+        $booking_payment->booking_id = $request['booking_id'];
+        $booking_payment->booking_no = $booking_data->booking_no;
+        $booking_payment->bill_id = $request['bill_id'];
+        $booking_payment->customer_id = $booking_data->customer_id;
+        $booking_payment->total_amount = $request['bill_remaining_amount'];
+        $booking_payment->paid_amount = $request['bill_paid_amount'];
+        $booking_payment->remaining_amount = $request['bill_remaining_amount']-$request['bill_paid_amount'];
+        $booking_payment->payment_date = $request['bill_payment_date'];
+        $booking_payment->payment_method = $request['bill_payment_method'];
+        $booking_payment->notes = $request['bill_notes'];
+        $booking_payment->added_by = $user;
+        $booking_payment->user_id = $user_id;
+        $booking_payment->save();
+
+        // bill update
+         // amount addition
+         $bill_data = BookingBill::where('id', $request['bill_id'])->first();
+         if(!empty($bill_data))
+         {
+             $last_remaining = $bill_data->total_remaining;
+             $new_remaining = $last_remaining - $request['bill_paid_amount'];
+             $bill_data->total_remaining = $new_remaining;
+             $bill_data->save();
+         }
+        // amount addition
+        $account_data = Account::where('id', $request['bill_payment_method'])->first();
+        if(!empty($account_data))
+        {
+            $last_income = $account_data->opening_balance;
+            $new_income = $last_income + $request['bill_paid_amount'];
+            $account_data->opening_balance = $new_income;
+            $account_data->save();
+        }
+         
+ 
     }
 }

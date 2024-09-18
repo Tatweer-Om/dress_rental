@@ -5,6 +5,8 @@
       // When rent_date changes, update return_date to ensure it's always greater
       returnDatePicker.set('minDate', dateStr);
       calculateDays();
+      calculateTotalPrice();
+      get_dress_detail();
     }
   });
 
@@ -12,6 +14,8 @@
     defaultDate: new Date(),
     onChange: function() {
       calculateDays();
+      calculateTotalPrice();
+      get_dress_detail();
     }
   });
   calculateDays();
@@ -49,16 +53,35 @@
   // Attach keyup event listeners to both price and discount inputs
   document.querySelector(".price").addEventListener("keyup", calculateTotalPrice);
   document.querySelector(".discount").addEventListener("keyup", calculateTotalPrice);
+  var err=0;
   function get_dress_detail(){
       var dress_id = $('#dress_name').val();
+      if(dress_id=="")
+      {
+        show_notification('error','<?php echo trans('messages.select_dress_lang',[],session('locale')); ?>');
+        return false;
+      }
+      var rent_date = $('#rent_date').val();
+      var return_date = $('#return_date').val();
       var csrfToken = $('meta[name="csrf-token"]').attr('content');
       $('#global-loader').show();
       $.ajax ({
           url : "{{ url('get_dress_detail') }}",
           method : "POST",
-          data :   {dress_id:dress_id,_token: csrfToken},
+          data :   {dress_id:dress_id,rent_date:rent_date,return_date:return_date,_token: csrfToken},
           success: function(response) {
               $('#global-loader').hide();
+              
+              if(response.status==2)
+              {
+                show_notification('error','<?php echo trans('messages.validation_dress_already_booked_lang',[],session('locale')); ?>');
+                $('#dress_detail').html("");
+                $('#price').val(0.000);
+                err=1;
+                add_waitlist(dress_id);
+                return false;
+              }
+              err=0;
               $('#dress_detail').html(response.dress_detail);
               $('#price').val(response.price);
               calculateTotalPrice()
@@ -76,6 +99,62 @@
           }
       });
   }
+
+  //waitlist
+  function add_waitlist(dress_id)
+  {
+     
+    Swal.fire({
+        title: '<?php echo trans('messages.add_phone_for_availability_lang',[],session('locale')); ?> ',
+        html: `
+            <input id="availability_number" class="swal2-input isnumber"  type="text">
+        `,
+        showCancelButton: true,
+        confirmButtonText: '<?php echo trans('messages.submit_lang',[],session('locale')); ?>',
+        showLoaderOnConfirm: true,
+        confirmButtonColor: "#5156be",
+        cancelButtonColor: "#fd625e",
+        preConfirm: function() {
+            const number = Swal.getPopup().querySelector('#availability_number').value;
+
+            // Validate inputs
+            if (!number) {
+                Swal.showValidationMessage('<?php echo trans('messages.add_contact_lang',[],session('locale')); ?>');
+                return false;
+            }
+
+            // Return a promise for the AJAX request
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '{{ url('add_dress_availability') }}', // Change this to your controller route
+                    method: 'POST',
+                    data: {
+                        number: number,
+                        dress_id: dress_id,
+                        _token: $('meta[name="csrf-token"]').attr('content') // CSRF token for Laravel
+                    },
+                    success: function(response) {
+                        resolve(response); // Resolve promise with the response data
+                    },
+                    error: function(xhr) {
+                        reject(xhr.responseText); // Reject promise with error message
+                    }
+                });
+            });
+        },
+        allowOutsideClick: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                icon: 'success',
+                title: '<?php echo trans('messages.data_added_successful_lang',[],session('locale')); ?>',
+                confirmButtonColor: "#5156be",
+                // html: `${result.value.number}`
+            });
+        }
+    });
+
+  }   
 
   // search customer
   $(".customer_name").autocomplete({
@@ -102,8 +181,10 @@
       },
       select: function(event, ui) {
         let selectedValue = ui.item.value; // This is in the format: "1-John Doe+1234567890"
+        let discount = ui.item.discount; // This is in the format: "1-John Doe+1234567890"
         let customerId = selectedValue.split('-')[0]; // Extract customer ID (before '-')
         $('#customer_id').val(customerId);
+        $('#discount').val(discount);
     }
 
   }).autocomplete("search", "");
@@ -130,7 +211,13 @@
           {
               show_notification('error','<?php echo trans('messages.add_price_lang',[],session('locale')); ?>'); return false;
           }
-
+          if(err==1)
+          {
+                show_notification('error','<?php echo trans('messages.validation_dress_already_booked_lang',[],session('locale')); ?>');
+                $('#dress_detail').html("");
+                $('#price').val(0.000);
+                return false;
+          }
 
           $('#global-loader').show();
           before_submit();
@@ -173,7 +260,13 @@
           {
               show_notification('error','<?php echo trans('messages.add_price_lang',[],session('locale')); ?>'); return false;
           }
-
+          if(err==1)
+          {
+                show_notification('error','<?php echo trans('messages.validation_dress_already_booked_lang',[],session('locale')); ?>');
+                $('#dress_detail').html("");
+                $('#price').val(0.000);
+                return false;
+          }
           $('#global-loader').show();
           before_submit();
           var str = $(".add_booking").serialize();
@@ -187,8 +280,9 @@
                   $('#global-loader').hide();
                   after_submit();
                   show_notification('success','<?php echo trans('messages.data_added_successful_lang',[],session('locale')); ?>');
-                  // $('#add_payment_modal').modal('show');
+                  $('#add_payment_modal').modal('show');
                   $(".add_booking")[0].reset();
+                  get_payment(data.bill_id,data.booking_id)
                   return false;
               },
               error: function(data)
@@ -205,63 +299,163 @@
 
     });
 
+    // add payment
     // add customer
     $('.add_customer').off().on('submit', function(e){
-            e.preventDefault();
-            var formdatas = new FormData($('.add_customer')[0]);
-            var title=$('.customer_names').val();
-            var contact=$('.customer_number').val();
-            var email=$('.customer_email').val();
-            var id=$('.customers_id').val();
-    
-            
-            if(id==''){
-    
-    
-                if(title=="" )
-                {
-                    show_notification('error','<?php echo trans('messages.add_customer_name_lang',[],session('locale')); ?>'); return false;
-    
-                }
-                if(contact=="" )
-                {
-                    show_notification('error','<?php echo trans('messages.add_contact_lang',[],session('locale')); ?>'); return false;
-    
-                }
-                if(email=="" )
-                {
-                    show_notification('error','<?php echo trans('messages.add_email_lang',[],session('locale')); ?>'); return false;
-    
-                }
-    
-                $('#global-loader').show();
-                before_submit();
-                var str = $(".add_customer").serialize();
-                $.ajax({
-                    type: "POST",
-                    url: "{{ url('add_booking_customer') }}",
-                    data: formdatas,
-                    contentType: false,
-                    processData: false,
-                    success: function(data) {
-                        $('#global-loader').hide();
-                        after_submit();
-                         show_notification('success','<?php echo trans('messages.data_added_successful_lang',[],session('locale')); ?>');
+        e.preventDefault();
+        var formdatas = new FormData($('.add_customer')[0]);
+        var title=$('.customer_names').val();
+        var contact=$('.customer_number').val();
+        var email=$('.customer_email').val();
+        var id=$('.customers_id').val();
+
+        
+        if(id==''){
+
+
+            if(title=="" )
+            {
+                show_notification('error','<?php echo trans('messages.add_customer_name_lang',[],session('locale')); ?>'); return false;
+
+            }
+            if(contact=="" )
+            {
+                show_notification('error','<?php echo trans('messages.add_contact_lang',[],session('locale')); ?>'); return false;
+
+            }
+            if(email=="" )
+            {
+                show_notification('error','<?php echo trans('messages.add_email_lang',[],session('locale')); ?>'); return false;
+
+            }
+
+            $('#global-loader').show();
+            before_submit();
+            var str = $(".add_customer").serialize();
+            $.ajax({
+                type: "POST",
+                url: "{{ url('add_booking_customer') }}",
+                data: formdatas,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    $('#global-loader').hide();
+                    after_submit();
+                    if(data.status==2)
+                    {
+                        show_notification('error','<?php echo trans('messages.customer_contact_exist_lang',[],session('locale')); ?>');
+                        return false;
+                    }
+                    else
+                    {
+                        let selectedValue = data.full_name; // This is in the format: "1-John Doe+1234567890"
+                        let customerId = selectedValue.split('-')[0]; // Extract customer ID (before '-')
+                        $('#customer_id').val(customerId);
+                        $('#customer_name').val(selectedValue);
+                        $('#discount').val(data.discount);
+                        show_notification('success','<?php echo trans('messages.data_added_successful_lang',[],session('locale')); ?>');
                         $('#add_customer_modal').modal('hide');
                         $(".add_customer")[0].reset();
                         return false;
-                        },
-                    error: function(data)
-                    {
-                        $('#global-loader').hide();
-                        after_submit();
-                        show_notification('error','<?php echo trans('messages.data_added_failed_lang',[],session('locale')); ?>');
-                         console.log(data);
-                        return false;
                     }
-                });
-    
+                    
+                    },
+                error: function(data)
+                {
+                    $('#global-loader').hide();
+                    after_submit();
+                    show_notification('error','<?php echo trans('messages.data_added_failed_lang',[],session('locale')); ?>');
+                        console.log(data);
+                    return false;
+                }
+            });
+
+        }
+
+    });
+
+    // get payment detail
+    function get_payment(bill_id,booking_id) {
+        $('.bill_id').val(bill_id);
+        $('.bill_booking_id').val(booking_id);
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        $('#global-loader').show();
+        $.ajax ({
+            url : "{{ url('get_payment') }}",
+            method : "POST",
+            data :   {bill_id:bill_id,booking_id:booking_id,_token: csrfToken},
+            success: function(response) {
+                $('#global-loader').hide();
+                $('#bill_total_amount').val(response.total_amount);
+                $('#bill_remaining_amount').val(response.remaining_total);
+            },
+            error: function(response)
+            {
+                show_notification('error','<?php echo trans('messages.data_get_failed_lang',[],session('locale')); ?>');
+                console.log(response);
+                return false;
             }
-    
         });
+    }
+
+    $('#bill_paid_amount').on('keyup change', function() {
+        // Get the values of both inputs
+        var remainingAmount = parseFloat($('#bill_remaining_amount').val());
+        var paidAmount = parseFloat($(this).val());
+
+        // Check if paidAmount is greater than remainingAmount
+        if (paidAmount > remainingAmount) {
+            // Show error message
+            show_notification('error','<?php echo trans('messages.validation_amount_cannot_greater_remaining_lang',[],session('locale')); ?>'); return false;
+
+            // Set bill_paid_amount to the remainingAmount
+            $(this).val(remainingAmount);
+        } 
+    });
+
+    $('.add_payment').off().on('submit', function(e){
+        e.preventDefault();
+        var formdatas = new FormData($('.add_payment')[0]);
+        var bill_paid_amount=$('.bill_paid_amount').val();
+        var bill_booking_id=$('.bill_booking_id').val();
+        var bill_id=$('.bill_id').val();
+        
+        if(bill_paid_amount=="" )
+        {
+            show_notification('error','<?php echo trans('messages.add_paid_amount_lang',[],session('locale')); ?>'); return false;
+
+        }
+        $('#global-loader').show();
+        before_submit();
+        var str = $(".add_payment").serialize();
+        $.ajax({
+            type: "POST",
+            url: "{{ url('add_payment') }}",
+            data: formdatas,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                $('#global-loader').hide();
+                after_submit();
+                $('.bill_paid_amount').val('');
+                $('.bill_notes').val('');
+                show_notification('success','<?php echo trans('messages.payment_add_successfully',[],session('locale')); ?>');
+                get_payment(bill_id,bill_booking_id)
+                return false;
+            },
+            error: function(data)
+            {
+                $('#global-loader').hide();
+                after_submit();
+                show_notification('error','<?php echo trans('messages.payment_add_failed',[],session('locale')); ?>');
+                console.log(data);
+                return false;
+            }
+        });
+
+    });
+    $('#add_payment_modal').on('hidden.bs.modal', function() {
+        location.reload();
+    });
+    
 </script>
