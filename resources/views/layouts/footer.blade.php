@@ -232,6 +232,12 @@
     @include('custom_js.add_expense_js')
     @elseif ($controllerName == 'user')
     @include('custom_js.user_js')
+    @elseif ($controllerName == 'sms')
+    @include('custom_js.sms_js')
+    @elseif ($controllerName == 'customer')
+    @include('custom_js.customer_js')
+    @elseif ($controllerName == 'customer_profile')
+    @include('custom_js.customer_js')
 @endif
 
 </body>
