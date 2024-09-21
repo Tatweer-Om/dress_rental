@@ -121,7 +121,7 @@ class DressController extends Controller
 
         if (is_dir($sourcePath)) {
             $files = File::files($sourcePath); // Fetch files using File facade
-            
+
             // Create the destination directory if it doesn't exist
             if (!File::isDirectory($destinationDir)) {
                 File::makeDirectory($destinationDir, 0777, true, true);
@@ -152,14 +152,14 @@ class DressController extends Controller
                     return response()->json(['success' => false, 'message' => 'Failed to move file: ' . $file->getFilename()]);
                 }
             }
-        } 
+        }
 
         // add attribute
-        $attribute_id = $request->input('attribute_id');
-        $attribute_name = $request->input('attribute_name');
-        $attribute_notes = $request->input('attribute_notes');
+        $attribute_id = $request->input('attribute_id', []);
+        $attribute_name = $request->input('attribute_name', []);
+        $attribute_notes = $request->input('attribute_notes', []);
 
-        for ($i=0; $i < count($attribute_name) ; $i++) { 
+        for ($i=0; $i < count($attribute_name) ; $i++) {
             if(!empty($attribute_id[$i]))
             {
                 $dress_attribute = new DressAttribute();
@@ -181,7 +181,7 @@ class DressController extends Controller
                 $dress_attribute->user_id = $user_id;
                 $dress_attribute->save();
             }
-            
+
         }
         return response()->json(['dress_id' => $dress_id]);
 
@@ -203,13 +203,13 @@ class DressController extends Controller
             {
                 // Generate the URL for the file
                 $url = asset('custom_images/dress_image/' . basename($rows->dress_image));
-                $images .= '<div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12"> 
-                                        <img class="img-thumbnail mb-1" src="'.$url.'" style="max-height:60px !important;min-height:60px !important;max-width:60px;min-width:60px;"> 
+                $images .= '<div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                        <img class="img-thumbnail mb-1" src="'.$url.'" style="max-height:60px !important;min-height:60px !important;max-width:60px;min-width:60px;">
                                         <p class="text-center">
                                         <a href="#" class="card-link e-rmv-attachment" id="'.$rows->id.'">
                                             <i class="fa fa-times"></i>
                                         </a>
-                                        </p> 
+                                        </p>
                                 </div>';
             }
         }
@@ -220,7 +220,7 @@ class DressController extends Controller
         {
             foreach($dress_attribute as $att)
             {
-                
+
                 $attributes .= '<div class="row attribute_div">
                                     <div class="col-md-4">
                                         <input type="hidden" class="attribute_id" name="attribute_id[]" value="'.$att->id.'">
@@ -228,7 +228,7 @@ class DressController extends Controller
                                             <label for="attribute_name" class="form-label">'.trans('messages.attribute_name_lang', [], session('locale')).'</label>
                                             <input class="form-control attribute_name" name="attribute_name[]" value="'.$att->attribute.'" type="text">
                                         </div>
-                                    </div> 
+                                    </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="attribute_notes" class="form-label">'.trans('messages.notes_lang', [], session('locale')).'</label>
@@ -239,7 +239,7 @@ class DressController extends Controller
                                         <div class="mb-3">
                                             <button type="button" style="margin-top: 40px;" class="btn btn-primary del_attribute"><i class="fas fa-trash"></i></button>
                                         </div>
-                                    </div> 
+                                    </div>
                                 </div>';
             }
         }
@@ -305,7 +305,7 @@ class DressController extends Controller
         $attribute_notes = $request->input('attribute_notes');
         // attribute delete
         DressAttribute::where('dress_id', $dress_id)->delete();
-        for ($i=0; $i < count($attribute_name) ; $i++) { 
+        for ($i=0; $i < count($attribute_name) ; $i++) {
             if(!empty($attribute_id[$i]))
             {
                 $dress_attribute = new DressAttribute();
@@ -327,12 +327,12 @@ class DressController extends Controller
                 $dress_attribute->user_id = $user_id;
                 $dress_attribute->save();
             }
-            
+
         }
-         
+
     }
 
-    
+
 
     public function delete_dress(Request $request)
     {
@@ -382,10 +382,10 @@ class DressController extends Controller
         // $data= User::find( $user_id)->first();
         // $user= $data->username;
         $user_id="";
-        $user=""; 
+        $user="";
         $dress_id      = $request->input('dress_id');
 		$msg=null;
-		
+
         if(!empty($dress_id))
         {
             // Check if the request contains files
@@ -404,8 +404,8 @@ class DressController extends Controller
                     $file->move($folderPath, $fileName);
                 }
                 $dress_image = new DressImage();
-                 
-        
+
+
                 $dress_image->dress_image = $fileName;
                 $dress_image->dress_id = $dress_id;
                 $dress_image->added_by = $user;
@@ -420,13 +420,13 @@ class DressController extends Controller
                         // Generate the URL for the file
                         $url = asset('custom_images/dress_image/' . basename($rows->dress_image));
                         $msg .= '
-                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12"> 
-                                            <img class="img-thumbnail mb-1" src="'.$url.'" style="max-height:60px !important;min-height:60px !important;max-width:60px;min-width:60px;"> 
+                                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                                            <img class="img-thumbnail mb-1" src="'.$url.'" style="max-height:60px !important;min-height:60px !important;max-width:60px;min-width:60px;">
                                             <p class="text-center">
                                                 <a href="#" class="card-link e-rmv-attachment" id="'.$rows->dress_id.'">
                                                 <i class="fa fa-times"></i>
                                                 </a>
-                                            </p> 
+                                            </p>
                                         </div>';
                     }
                 }
@@ -454,7 +454,7 @@ class DressController extends Controller
                 $msg = image_preview($folderPath);
             }
         }
-         
+
         return response()->json(['images' => $msg]);
     }
 
@@ -497,13 +497,13 @@ class DressController extends Controller
             {
                 // Generate the URL for the file
                 $url = asset('custom_images/dress_image/' . basename($rows->dress_image));
-                $msg .= '<div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12"> 
-                            <img class="img-thumbnail mb-1" src="'.$url.'" style="max-height:60px !important;min-height:60px !important;max-width:60px;min-width:60px;"> 
+                $msg .= '<div class="col-xl-4 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                            <img class="img-thumbnail mb-1" src="'.$url.'" style="max-height:60px !important;min-height:60px !important;max-width:60px;min-width:60px;">
                             <p class="text-center">
                                 <a href="#" class="card-link e-rmv-attachment" id="'.$rows->id.'">
                                 <i class="fa fa-times"></i>
                                 </a>
-                            </p> 
+                            </p>
                         </div>';
             }
         }

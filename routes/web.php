@@ -1,17 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SmsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ColorController;
-use App\Http\Controllers\DressController;
 
+use App\Http\Controllers\DressController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseCategoryController;
 
 Route::get('/', function () {
@@ -74,17 +76,15 @@ Route::post('add_dress_availability', [BookingController::class, 'add_dress_avai
 
 
 // customer dress
-// Route::get('customer', [CustomerController::class, 'index'])->name('customer');
-// Route::post('add_customer', [CustomerController::class, 'add_customer'])->name('add_customer');
-// Route::get('show_customer', [CustomerController::class, 'show_customer'])->name('show_customer');
-// Route::post('edit_customer', [CustomerController::class, 'edit_customer'])->name('edit_customer');
-// Route::post('update_customer', [CustomerController::class, 'update_customer'])->name('update_customer');
-// Route::post('delete_customer', [CustomerController::class, 'delete_customer'])->name('delete_customer');
-
-
+Route::get('customer', [CustomerController::class, 'index'])->name('customer');
+Route::post('add_customer', [CustomerController::class, 'add_customer'])->name('add_customer');
+Route::get('show_customer', [CustomerController::class, 'show_customer'])->name('show_customer');
+Route::post('edit_customer', [CustomerController::class, 'edit_customer'])->name('edit_customer');
+Route::post('update_customer', [CustomerController::class, 'update_customer'])->name('update_customer');
+Route::post('delete_customer', [CustomerController::class, 'delete_customer'])->name('delete_customer');
+Route::get('customer_profile/{id}', [CustomerController::class, 'customer_profile'])->name('customer_profile');
+Route::post('customer_profile_data', [CustomerController::class, 'customer_profile_data'])->name('customer_profile_data');
 //user
-
-
 Route::get('login', [UserController::class, 'login'])->name('login');
 Route::get('user', [UserController::class, 'index'])->name('user');
 Route::post('add_user', [UserController::class, 'add_user'])->name('add_user');
@@ -120,4 +120,10 @@ Route::get('show_account', [AccountController::class, 'show_account'])->name('sh
 Route::post('edit_account', [AccountController::class, 'edit_account'])->name('edit_account');
 Route::post('update_account', [AccountController::class, 'update_account'])->name('update_account');
 Route::post('delete_account', [AccountController::class, 'delete_account'])->name('delete_account');
+
+
+//sms
+Route::get('sms', [SmsController::class, 'index'])->name('sms');
+Route::post('get_sms_status', [SmsController::class, 'get_sms_status'])->name('get_sms_status');
+Route::match(['get', 'post'], 'add_status_sms', [SmsController::class, 'add_status_sms'])->name('add_status_sms');
 

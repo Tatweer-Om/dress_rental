@@ -435,6 +435,33 @@
                                 </li>
                             </ul>
                         </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="grid"></i>
+                                <span data-key="t-apps">{{ trans('messages.customer_lang',[],session('locale')) }}</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li>
+                                    <a href="{{ url('customer') }}">
+                                        <span data-key="t-calendar">{{ trans('messages.add_customer_lang',[],session('locale')) }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="grid"></i>
+                                <span data-key="t-apps">{{ trans('messages.sms_panel_lang',[],session('locale')) }}</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li>
+                                    <a href="{{ url('sms') }}">
+                                        <span data-key="t-calendar">{{ trans('messages.add_sms_lang',[],session('locale')) }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+
 
 
 

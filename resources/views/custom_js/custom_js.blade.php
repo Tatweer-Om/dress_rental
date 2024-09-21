@@ -15,7 +15,7 @@
     // img
     var imagePath = '{{ asset('images/dummy_image/no_image.png') }}';
     $('.custom-file-container__image-preview').css('background-image', 'url(' + imagePath + ')');
-     
+
 
     // notification messages
     function show_notification(type, msg) {
@@ -57,7 +57,7 @@
     }
 
     // phone mask
-    
+
 
 
 
@@ -156,5 +156,13 @@
     $(document).on('keypress', '.isnumber1', function(e) {
         return isNumber1(e, this);
     });
-     
+
+    function get_date_only(dateString) {
+    // Convert the date string to a Date object
+    const date = new Date(dateString);
+
+    // Format the date as needed, for example: "YYYY-MM-DD"
+    return date.toISOString().split('T')[0]; // Adjust the format as needed
+}
+
 </script>

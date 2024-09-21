@@ -21,8 +21,8 @@
         $('#ad_cover').on('change',function(e){
             $('#ad_cover_preview').attr('src', window.URL.createObjectURL(this.files[0]));
         });
-        
-        
+
+
         $('#btn-ad-images').on('click',function(e){
             $('#ad_images').trigger('click');
         });
@@ -51,11 +51,11 @@
                 },
                 success:function(response)
                 {
-                    $('#attachment-holder').html(response.images).fadeIn('slow'); 
+                    $('#attachment-holder').html(response.images).fadeIn('slow');
                 },
             });
         });
-         
+
         // remove attachments
         $(document).on('click','.rmv-attachment',function(e){
             e.preventDefault();
@@ -100,7 +100,7 @@
                 },
                 context:this,
                 success:function(response)
-                { 
+                {
                     $(this).parent().parent().remove();
                     $('#attachment-holder').html(response.images).fadeIn('slow');
                 }
@@ -116,7 +116,7 @@
                                             <label for="attribute_name" class="form-label"><?php echo trans('messages.attribute_name_lang', [], session('locale')) ; ?></label>
                                             <input class="form-control attribute_name" name="attribute_name[]" type="text">
                                         </div>
-                                    </div> 
+                                    </div>
                                     <div class="col-md-6">
                                         <div class="mb-3">
                                             <label for="attribute_notes" class="form-label"><?php echo trans('messages.notes_lang', [], session('locale')) ; ?></label>
@@ -127,7 +127,7 @@
                                         <div class="mb-3">
                                             <button type="button" style="margin-top: 40px;" class="btn btn-primary del_attribute"><i class="fas fa-trash"></i></button>
                                         </div>
-                                    </div> 
+                                    </div>
                                 </div>`);
         });
         // del div attribute
@@ -146,7 +146,7 @@
             var size_name=$('.size_name').val();
             var price=$('.price').val();
             var id=$('.dress_id').val();
-    
+
             if(id!='')
             {
                 if(title=="" )
@@ -177,7 +177,7 @@
                 $('.attribute_name').each(function () {
                     if ($(this).val().trim() == '') {
                         error+=1;
-                    } 
+                    }
                 });
                 if(error>0)
                 {
@@ -214,8 +214,8 @@
                 });
             }
             else if(id==''){
-    
-    
+
+
                 if(title=="" )
                 {
                     show_notification('error','<?php echo trans('messages.add_dress_name_lang',[],session('locale')); ?>'); return false;
@@ -244,15 +244,18 @@
                 $('.attribute_name').each(function () {
                     if ($(this).val().trim() == '') {
                         error+=1;
-                    } 
+                    }
                 });
                 if(error>0)
                 {
                     show_notification('error','<?php echo trans('messages.add_attribute_name_lang',[],session('locale')); ?>'); return false;
                 }
-    
+
                 $('#global-loader').show();
                 before_submit();
+                var csrfToken = $('meta[name="csrf-token"]').attr('content');
+                var formdatas = new FormData($(".add_dress")[0]); // Create FormData
+                formdatas.append('_token', csrfToken);
                 var str = $(".add_dress").serialize();
                 $.ajax({
                     type: "POST",
@@ -279,9 +282,9 @@
                         return false;
                     }
                 });
-    
+
             }
-    
+
         });
     });
     function edit(id){
@@ -297,7 +300,7 @@
                 $('#global-loader').hide();
                 after_submit();
                 if(fetch!=""){
-                    
+
                     // / Define a variable for the image path
                     var imagePath = '{{ asset('custom_images/dummy_image/cover-image-icon.png') }}';
 
@@ -331,7 +334,7 @@
             }
         });
     }
-    
+
     function del(id) {
         Swal.fire({
             title:  '<?php echo trans('messages.sure_lang',[],session('locale')); ?>',
@@ -370,6 +373,5 @@
             }
         });
     }
-    
+
 </script>
-    
