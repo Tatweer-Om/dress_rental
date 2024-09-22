@@ -67,11 +67,14 @@ Route::post('upload_attachments', [DressController::class, 'upload_attachments']
 Route::get('booking', [BookingController::class, 'index'])->name('booking');
 Route::post('get_dress_detail', [BookingController::class, 'get_dress_detail'])->name('get_dress_detail');
 Route::post('add_booking', [BookingController::class, 'add_booking'])->name('add_booking');
+Route::get('view_booking', [BookingController::class, 'view_booking'])->name('view_booking');
+Route::get('show_booking', [BookingController::class, 'show_booking'])->name('show_booking');
 Route::post('search_customer', [BookingController::class, 'search_customer']);
 Route::post('add_booking_customer', [BookingController::class, 'add_booking_customer'])->name('add_booking_customer');
 Route::post('get_payment', [BookingController::class, 'get_payment'])->name('get_payment');
 Route::post('add_payment', [BookingController::class, 'add_payment'])->name('add_payment');
 Route::post('add_dress_availability', [BookingController::class, 'add_dress_availability'])->name('add_dress_availability');
+Route::post('get_booking_detail', [BookingController::class, 'get_booking_detail'])->name('get_booking_detail');
 
 
 
