@@ -53,7 +53,7 @@
 
 
                                 <tbody>
-                                    
+
                                 </tbody>
                             </table>
 
@@ -83,10 +83,10 @@
                                     <label for="example-text-input" class="form-label">{{ trans('messages.brand_name_lang',[],session('locale')) }}</label>
                                     <input class="form-control brand_name" name="brand_name" type="text" id="example-text-input">
                                 </div>
-                            </div> 
-                        </div> 
-                         
-                    
+                            </div>
+                        </div>
+
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ trans('messages.close_lang',[],session('locale')) }}</button>
@@ -96,15 +96,13 @@
             </div>
         </div>
     </div>
-    
 
-    @include('layouts.footer_content')
-</div>
+
+
 <!-- end main content-->
 
 </div>
 <!-- END layout-wrapper -->
 @include('layouts.footer')
 @endsection
-        
-         
+

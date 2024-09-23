@@ -239,8 +239,11 @@
     @elseif ($controllerName == 'customer')
 @include('custom_js.customer_js')
     @elseif ($controllerName == 'customer_profile')
-@include('custom_js.customer_js')
-@endif
+    @include('custom_js.customer_js')
+
+@elseif ($controllerName == 'maint_dress_all')
+@include('custom_js.add_dress_js')
+
 
 </body>
 

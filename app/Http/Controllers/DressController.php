@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Brand;
 use App\Models\DressAttribute;
 use App\Http\Controllers\Controller;
+use App\Models\Maintgo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -33,12 +34,23 @@ class DressController extends Controller
             foreach($view_dress as $value)
             {
                 $category = getColumnValue('categories','id',$value->category_name,'category_name');
-                $modal='<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_dress_modal" onclick=edit("'.$value->id.'") title="Edit">
-                            <i class="fas fa-pencil-alt" title="Edit"></i>
-                        </a>
-                        <a class="btn btn-outline-secondary btn-sm edit" onclick=del("'.$value->id.'") title="Delete">
-                            <i class="fas fa-trash" title="Edit"></i>
-                        </a>';
+                $modal = '<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_dress_modal" onclick="edit(' . $value->id . ')" title="Edit">
+                <i class="fas fa-pencil-alt" title="Edit"></i>
+                </a>
+                <a class="btn btn-outline-secondary btn-sm delete" onclick="del(' . $value->id . ')" title="Delete">
+                        <i class="fas fa-trash" title="Delete"></i>
+                </a>';
+
+                // Conditional rendering based on dress status
+                if ($value->status == 1) {
+                    $modal .= '<a class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#return_maint_modal" onclick="maint(' . $value->id . ')" title="Maintenance">
+                                    <i class="fa-solid fa-gears"> Maintenance</i>
+                            </a>';
+                } else {
+                    $modal .= '<a class="btn btn-outline-secondary btn-sm" title="Under Maintenance">
+                                    <i class="fa-solid fa-gears"> Under Maint</i>
+                            </a>';
+                }
                 $add_data=get_date_only($value->created_at);
                 if($value->condition == 1)
                 {
@@ -509,5 +521,128 @@ class DressController extends Controller
         }
         return response()->json(['images' => $msg]);
 	}
+
+
+
+    public function maint_dress_all(){
+        return view('maintenance.all_dress_under_maint');
+    }
+
+
+
+    public function maint_dress(Request $request){
+
+        $dress_id= $request->input('maint_id');
+        $dress= Dress::where('id', $dress_id)->first();
+
+        if (!$dress) {
+            return response()->json(['error' => 'Dress not found'], 404);
+        }
+
+        $maint = new Maintgo();
+        $maint->dress_id = $dress_id;
+        $maint->maint_issue = $request->input('maint_name');
+        $maint->issue_notes = $request->input('notes');
+        $maint->status = 1;
+        $maint->added_by = 'admin';
+        $maint->user_id = 1;
+        $maint->save();
+
+        $maint_item = Maintgo::with('dress')->latest()->first();
+        $dress_status= Dress::where('id',   $maint_item->dress_id)->first();
+        $dress_status->status= 2;
+        $dress_status->save();
+
+        return response()->json([
+            'maint_item' => $maint_item,
+        ]);
+
+
+    }
+
+    public function show_maint_dress()
+    {
+        $sno=0;
+
+        $view_dress= Maintgo::all();
+        if(count($view_dress)>0)
+        {
+            foreach($view_dress as $value)
+            {
+               $dress= Dress::with('color', 'size', 'brand', 'category')->where('id', $value->dress_id)->first();
+               $dress_name= $dress->dress_name;
+               $cat= $dress->category->category_name;
+               $clr= $dress->color->color_name;
+               $size= $dress->size->size_name;
+               $brnd= $dress->brand->brand_name ?? 'null';
+               if ($value->status == 1) {
+                $modal = '<a class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#maint_complete_modal" onclick="comp_maint(' . $value->id . ')" title="Maintenance">
+                            <i class="fa-solid fa-gears"></i> Finish Maintenance
+                          </a>';
+            } else {
+                $modal = '<a class="btn btn-outline-secondary btn-sm" title="Maintenance Completed">
+                            <i class="fa-solid fa-gears"></i> Completed
+                          </a>';
+            }
+
+
+
+                // Conditional rendering based on dress status
+
+                $add_data=get_date_only($value->created_at);
+
+                $sno++;
+                $json[]= array(
+                            $sno,
+                            $dress_name .'<br>'.  $cat .'<br>'. $clr .'<br>'. $size .'<br>'. $brnd,
+                            $value->maint_issue,
+                            $value->issue_notes,
+                            $add_data .'<br>'. $value->added_by,
+
+                            $modal
+                        );
+            }
+            $response = array();
+            $response['success'] = true;
+            $response['aaData'] = $json;
+            echo json_encode($response);
+        }
+        else
+        {
+            $response = array();
+            $response['sEcho'] = 0;
+            $response['iTotalRecords'] = 0;
+            $response['iTotalDisplayRecords'] = 0;
+            $response['aaData'] = [];
+            echo json_encode($response);
+        }
+    }
+
+
+    public function maint_dress_comp(Request $request){
+
+        $maint_id= $request->input('maint_id');
+
+
+        $maint= Maintgo::where('id',  $maint_id)->first();
+
+        if (!$maint) {
+            return response()->json(['error' => 'Data not found'], 404);
+        }
+
+
+
+        $maint->maint_cost = $request->input('maint_cost');
+        $maint->maint_comp_notes = $request->input('notes');
+        $maint->status = 2;
+
+        $maint->save();
+
+        return response()->json([
+            'success' => 'Maintenance completed successfully',
+        ]);
+
+
+    }
 
 }
