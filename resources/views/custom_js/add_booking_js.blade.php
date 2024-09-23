@@ -56,13 +56,24 @@
   var err=0;
   function get_dress_detail(){
       var dress_id = $('#dress_name').val();
+      var rent_date = $('#rent_date').val();
+      var return_date = $('#return_date').val();
       if(dress_id=="")
       {
         show_notification('error','<?php echo trans('messages.select_dress_lang',[],session('locale')); ?>');
         return false;
       }
-      var rent_date = $('#rent_date').val();
-      var return_date = $('#return_date').val();
+      if(rent_date=="")
+      {
+        show_notification('error','<?php echo trans('messages.select_rent_date_lang',[],session('locale')); ?>');
+        return false;
+      }
+      if(return_date=="")
+      {
+        show_notification('error','<?php echo trans('messages.select_return_date_lang',[],session('locale')); ?>');
+        return false;
+      }
+      
       var csrfToken = $('meta[name="csrf-token"]').attr('content');
       $('#global-loader').show();
       $.ajax ({
@@ -80,6 +91,14 @@
                 err=1;
                 add_waitlist(dress_id);
                 return false;
+              }
+              else if(response.status==3)
+              {
+                show_notification('error','<?php echo trans('messages.validation_dress_under_maintenance_lang',[],session('locale')); ?>');
+                $('#dress_detail').html("");
+                $('#price').val(0.000);
+                err=1;
+                return false;   
               }
               err=0;
               $('#dress_detail').html(response.dress_detail);
@@ -195,10 +214,16 @@
       var customer_id=$('.customer_id').val();
       var dress_name=$('.dress_name').val();
       var price=$('.price').val();
+      var total_price=$('.total_price').val();
+      var total_paid_payment=$('.total_paid_payment').val();
       var id=$('.booking_id').val();
 
       if(id!='')
       {
+          if(total_paid_payment > total_price)
+          {
+                show_notification('error','<?php echo trans('messages.paid_greater_delete_amount_lang',[],session('locale')); ?>'); return false;
+          }
           if(customer_id=="" )
           {
               show_notification('error','<?php echo trans('messages.add_customer_lang',[],session('locale')); ?>'); return false;
@@ -406,7 +431,7 @@
         // Check if paidAmount is greater than remainingAmount
         if (paidAmount > remainingAmount) {
             // Show error message
-            show_notification('error','<?php echo trans('messages.validation_amount_cannot_greater_remaining_lang',[],session('locale')); ?>'); return false;
+            show_notification('error','<?php echo trans('messages.validation_amount_cannot_greater_remaining_lang',[],session('locale')); ?>');  
 
             // Set bill_paid_amount to the remainingAmount
             $(this).val(remainingAmount);
@@ -457,6 +482,9 @@
     $('#add_payment_modal').on('hidden.bs.modal', function() {
         location.reload();
     });
+
+     
+
     
     
 </script>

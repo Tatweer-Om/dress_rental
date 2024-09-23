@@ -79,6 +79,10 @@ Route::post('get_payment', [BookingController::class, 'get_payment'])->name('get
 Route::post('add_payment', [BookingController::class, 'add_payment'])->name('add_payment');
 Route::post('add_dress_availability', [BookingController::class, 'add_dress_availability'])->name('add_dress_availability');
 Route::post('get_booking_detail', [BookingController::class, 'get_booking_detail'])->name('get_booking_detail');
+Route::post('delete_payment', [BookingController::class, 'delete_payment'])->name('delete_payment');
+Route::post('delete_booking', [BookingController::class, 'delete_booking'])->name('delete_booking');
+Route::get('edit_booking/{id}', [BookingController::class, 'edit_booking'])->name('edit_booking');
+Route::post('update_booking', [BookingController::class, 'update_booking'])->name('update_booking');
 
 
 
@@ -134,3 +138,4 @@ Route::get('sms', [SmsController::class, 'index'])->name('sms');
 Route::post('get_sms_status', [SmsController::class, 'get_sms_status'])->name('get_sms_status');
 Route::match(['get', 'post'], 'add_status_sms', [SmsController::class, 'add_status_sms'])->name('add_status_sms');
 
+ 

@@ -226,6 +226,8 @@
     @include('custom_js.add_booking_js')
 @elseif ($controllerName == 'view_booking')
     @include('custom_js.view_booking_js')
+@elseif ($controllerName == 'edit_booking')
+    @include('custom_js.add_booking_js')
 @elseif ($controllerName == 'account')
     @include('custom_js.add_account_js')
 @elseif ($controllerName == 'expense_category')
@@ -235,15 +237,15 @@
 @elseif ($controllerName == 'user')
     @include('custom_js.user_js')
 @elseif ($controllerName == 'sms')
-@include('custom_js.sms_js')
-    @elseif ($controllerName == 'customer')
-@include('custom_js.customer_js')
-    @elseif ($controllerName == 'customer_profile')
+    @include('custom_js.sms_js')
+@elseif ($controllerName == 'customer')
     @include('custom_js.customer_js')
-
+@elseif ($controllerName == 'customer_profile')
+    @include('custom_js.customer_js') 
 @elseif ($controllerName == 'maint_dress_all')
-@include('custom_js.add_dress_js')
-
+    @include('custom_js.add_dress_js')
+@endif
+ 
 
 </body>
 

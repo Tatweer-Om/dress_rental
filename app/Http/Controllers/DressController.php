@@ -43,11 +43,11 @@ class DressController extends Controller
 
                 // Conditional rendering based on dress status
                 if ($value->status == 1) {
-                    $modal .= '<a class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#return_maint_modal" onclick="maint(' . $value->id . ')" title="Maintenance">
+                    $modal .= ' <a class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#return_maint_modal" onclick="maint(' . $value->id . ')" title="Maintenance">
                                     <i class="fa-solid fa-gears"> Maintenance</i>
                             </a>';
                 } else {
-                    $modal .= '<a class="btn btn-outline-secondary btn-sm" title="Under Maintenance">
+                    $modal .= ' <a class="btn btn-outline-secondary btn-sm" title="Under Maintenance">
                                     <i class="fa-solid fa-gears"> Under Maint</i>
                             </a>';
                 }
@@ -543,19 +543,23 @@ class DressController extends Controller
         $maint->dress_id = $dress_id;
         $maint->maint_issue = $request->input('maint_name');
         $maint->issue_notes = $request->input('notes');
+        $maint->start_date = $request->input('start_date');
+        $maint->end_date = $request->input('end_date');
         $maint->status = 1;
         $maint->added_by = 'admin';
         $maint->user_id = 1;
         $maint->save();
 
-        $maint_item = Maintgo::with('dress')->latest()->first();
-        $dress_status= Dress::where('id',   $maint_item->dress_id)->first();
+         
+        $dress_status= Dress::where('id',   $dress_id)->first();
         $dress_status->status= 2;
+        $dress_status->start_date = $request->input('start_date');
+        $dress_status->end_date = $request->input('end_date');
         $dress_status->save();
 
-        return response()->json([
-            'maint_item' => $maint_item,
-        ]);
+        // return response()->json([
+        //     'maint_item' => $maint_item,
+        // ]);
 
 
     }
@@ -630,13 +634,17 @@ class DressController extends Controller
             return response()->json(['error' => 'Data not found'], 404);
         }
 
-
-
         $maint->maint_cost = $request->input('maint_cost');
         $maint->maint_comp_notes = $request->input('notes');
         $maint->status = 2;
-
         $maint->save();
+
+        // update dress
+        $dress_status= Dress::where('id',   $maint->dress_id)->first();
+        $dress_status->status= 1;
+        $dress_status->start_date = NULL;
+        $dress_status->end_date = NULL;
+        $dress_status->save();
 
         return response()->json([
             'success' => 'Maintenance completed successfully',

@@ -235,9 +235,27 @@
                 <form action="#" method="POST" class="add_maint" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" class="maint_id" name="maint_id">
-                    <div class="mb-3">
-                        <label for="maint_name" class="form-label">{{ trans('messages.maint_name_lang',[],session('locale')) }}</label>
-                        <input class="form-control" name="maint_name" type="text" id="maint_name">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="maint_name" class="form-label">{{ trans('messages.maint_name_lang',[],session('locale')) }}</label>
+                                <input class="form-control" name="maint_name" type="text" id="maint_name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="start_date" class="form-label">{{ trans('messages.start_date_lang',[],session('locale')) }}</label>
+                                <input class="form-control" name="start_date" type="text" id="start_date">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="end_date" class="form-label">{{ trans('messages.end_date_lang',[],session('locale')) }}</label>
+                                <input class="form-control" name="end_date" type="text" id="end_date">
+                            </div>
+                        </div>
                     </div>
                     <div class="row">
                         <div class="col-md-12">
