@@ -57,7 +57,7 @@
 
 
                                 <tbody>
-                                    
+
                                 </tbody>
                             </table>
 
@@ -95,7 +95,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                    </div> 
+                                    </div>
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="brand_name" class="form-label">{{ trans('messages.brand_name_lang',[],session('locale')) }}</label>
@@ -139,19 +139,19 @@
                                             <label for="dress_name" class="form-label">{{ trans('messages.dress_name_lang',[],session('locale')) }}</label>
                                             <input class="form-control dress_name" name="dress_name" type="text" id="dress_name">
                                         </div>
-                                    </div> 
+                                    </div>
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="sku" class="form-label">{{ trans('messages.sku_lang',[],session('locale')) }}</label>
                                             <input class="form-control sku" name="sku" type="text" id="sku">
                                         </div>
-                                    </div> 
+                                    </div>
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="price" class="form-label">{{ trans('messages.price_lang',[],session('locale')) }}</label>
                                             <input class="form-control price isnumber" name="price" type="text" id="price">
                                         </div>
-                                    </div> 
+                                    </div>
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="condition" class="form-label">{{ trans('messages.condition_lang',[],session('locale')) }}</label>
@@ -160,7 +160,7 @@
                                                 <option value="2">{{ trans('messages.used_lang',[],session('locale')) }}</option>
                                             </select>
                                         </div>
-                                    </div> 
+                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
@@ -168,7 +168,7 @@
                                             <label for="notes" class="form-label">{{ trans('messages.notes_lang',[],session('locale')) }}</label>
                                             <textarea class="form-control notes" name="notes" rows="5"></textarea>
                                         </div>
-                                    </div> 
+                                    </div>
                                 </div>
                                 <hr>
                                 <div class="row">
@@ -194,7 +194,7 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
-                                        <button type="button" class="btn btn-danger btn-block" id="btn-ad-images"><i class="fas fa-folder-open"></i> {{ trans('messages.more_images_lang',[],session('locale')) }}</button>    
+                                        <button type="button" class="btn btn-danger btn-block" id="btn-ad-images"><i class="fas fa-folder-open"></i> {{ trans('messages.more_images_lang',[],session('locale')) }}</button>
                                         <input type="file" multiple name="ad_images" id="ad_images" class="d-none">
                                     </div>
                                     <div class="col-md-12">
@@ -202,11 +202,11 @@
                                     </div>
                                 </div>
                             </div>
-                            
-                        </div> 
-                        
-                         
-                    
+
+                        </div>
+
+
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ trans('messages.close_lang',[],session('locale')) }}</button>
@@ -216,15 +216,48 @@
             </div>
         </div>
     </div>
-    
+
 
     @include('layouts.footer_content')
 </div>
 <!-- end main content-->
 
 </div>
+
+<div class="modal fade" id="return_maint_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="returnMaintLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnMaintLabel">{{ trans('messages.add_data_lang',[],session('locale')) }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="POST" class="add_maint" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" class="maint_id" name="maint_id">
+                    <div class="mb-3">
+                        <label for="maint_name" class="form-label">{{ trans('messages.maint_name_lang',[],session('locale')) }}</label>
+                        <input class="form-control" name="maint_name" type="text" id="maint_name">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">{{ trans('messages.notes_lang',[],session('locale')) }}</label>
+                                <textarea class="form-control notes" name="notes" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ trans('messages.close_lang',[],session('locale')) }}</button>
+                        <button type="submit" class="btn btn-primary">{{ trans('messages.submit_lang',[],session('locale')) }}</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
 <!-- END layout-wrapper -->
 @include('layouts.footer')
 @endsection
-        
-         
+

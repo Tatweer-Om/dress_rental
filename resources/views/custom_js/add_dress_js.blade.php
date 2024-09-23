@@ -1,5 +1,84 @@
 <script type="text/javascript">
+
+function maint(id) {
+    $('#return_maint_modal .maint_id').val(id);
+
+    }
+    function comp_maint(id) {
+    $('#maint_complete_modal .maint_id').val(id);
+
+    }
     $(document).ready(function() {
+
+        $('.add_maint').on('submit', function(event) {
+        event.preventDefault();
+        $('#global-loader').show();
+        var formData = new FormData(this);
+        var title=$('#maint_name').val();
+        if(title=="" )
+        {
+            show_notification('error','<?php echo trans('messages.add_maint_name_lang',[],session('locale')); ?>'); return false;
+        }
+
+        $.ajax({
+            url: "{{ url('maint_dress') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            error: function() {
+                $('#global-loader').hide();
+                show_notification('error', 'Failed to submit maintenance data.');
+            },
+            success: function(data) {
+                $('#global-loader').hide();
+                show_notification('success', 'Maintenance data submitted successfully.');
+                $('#return_maint_modal').modal('hide'); // Close the modal
+            }
+        });
+    });
+
+    $('#all_maint').DataTable({
+            "sAjaxSource": "{{ url('show_maint_dress') }}",
+            "bFilter": true,
+            'pagingType': 'numbers',
+            "ordering": true,
+        });
+
+    $('.maint_comp').on('submit', function(event) {
+        event.preventDefault();
+        $('#global-loader').show();
+        var formData = new FormData(this);
+        var title=$('#maint_cost').val();
+        if(title=="" )
+        {
+            show_notification('error','<?php echo trans('messages.add_maint_cost_lang',[],session('locale')); ?>'); return false;
+        }
+
+        $.ajax({
+            url: "{{ url('maint_dress_comp') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            error: function() {
+                $('#global-loader').hide();
+                show_notification('error', 'Failed to submit  data.');
+                $('#all_maint').DataTable().ajax.reload();
+            },
+            success: function(data) {
+                $('#global-loader').hide();
+                show_notification('success', 'Maintenance completed successfully.');
+
+                $('#maint_comp').modal('hide'); // Close the modal
+                $('#all_maint').DataTable().ajax.reload();
+            }
+        });
+    });
+
+
+
+
         $('#add_dress_modal').on('hidden.bs.modal', function() {
             $(".add_dress")[0].reset();
             $('.dress_id').val('');
@@ -335,43 +414,9 @@
         });
     }
 
-    function del(id) {
-        Swal.fire({
-            title:  '<?php echo trans('messages.sure_lang',[],session('locale')); ?>',
-            text:  '<?php echo trans('messages.wanna_delete_lang',[],session('locale')); ?>',
-            type: "warning",
-            showCancelButton: !0,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText:  '<?php echo trans('messages.delete_lang',[],session('locale')); ?>',
-            confirmButtonClass: "btn btn-primary",
-            cancelButtonClass: "btn btn-danger ml-1",
-            buttonsStyling: !1
-        }).then(function (result) {
-            if (result.value) {
-                $('#global-loader').show();
-                before_submit();
-                var csrfToken = $('meta[name="csrf-token"]').attr('content');
-                $.ajax({
-                    url: "{{ url('delete_dress') }}",
-                    type: 'POST',
-                    data: {id: id,_token: csrfToken},
-                    error: function () {
-                        $('#global-loader').hide();
-                        after_submit();
-                        show_notification('error', '<?php echo trans('messages.data_delete_failed_lang',[],session('locale')); ?>');
-                    },
-                    success: function (data) {
-                        $('#global-loader').hide();
-                        after_submit();
-                        $('#all_dress').DataTable().ajax.reload();
-                        show_notification('success', '<?php echo trans('messages.data_deleted_successful_lang',[],session('locale')); ?>');
-                    }
-                });
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-                show_notification('success', '<?php echo trans('messages.data_safe_lang',[],session('locale')); ?>');
-            }
-        });
-    }
+
+
+
+
 
 </script>
