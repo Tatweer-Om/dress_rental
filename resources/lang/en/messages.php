@@ -164,7 +164,6 @@ return [
 'update_lang' => 'Update', // تحديث
 'edit_failed_lang' => 'Edit Failed', // فشل التعديل
 'sure_lang' => 'Are you sure?', // هل أنت متأكد؟
-'delete_lang' => 'You will not be able to recover this item!', // لن تتمكن من استرجاع هذا العنصر!
 'delete_it_lang' => 'Delete it!', // احذفه!
 'delete_failed_lang' => 'Delete Failed', // فشل الحذف
 'delete_success_lang' => 'Deleted successfully', // تم الحذف بنجاح

@@ -17,6 +17,7 @@ use App\Models\DressHistory;
 use App\Models\Category;
 use App\Models\Size;
 use App\Models\Color; 
+use App\Models\Setting; 
 use Carbon\Carbon;
 
 
@@ -25,10 +26,11 @@ class BookingController extends Controller
     public function index(){
         $view_dress= Dress::all();
         $view_account = Account::where('account_type', 1)->get();
-        return view ('booking.view_', compact('view_dress','view_account'));
+        return view ('booking.add_booking', compact('view_dress','view_account'));
     }
     public function view_booking(){
-       return view ('booking.view_booking');
+        $view_account = Account::where('account_type', 1)->get();
+        return view ('booking.view_booking', compact('view_account'));
     }
     public function show_booking()
     {
@@ -40,8 +42,11 @@ class BookingController extends Controller
             foreach($view_booking as $value)
             {
                 
-                $modal='<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_booking_info_modal" onclick=get_booking_detail("'.$value->id.'") title="info">
+                $modal='<a class="btn btn-warning btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_booking_info_modal" onclick=get_booking_detail("'.$value->id.'") title="info">
                             <i class="fas fa-info" title="info"></i>
+                        </a>
+                        <a onclick=delete_booking("'.$value->id.'") class="btn btn-primary btn-sm edit" title="delete booking">
+                            <i class="fas fa-trash" title="delete booking"></i>
                         </a>';
                 $add_data=get_date_only($value->created_at);
                 $status = $value->status; // Assuming `status` is the field name for the status in the database
@@ -94,12 +99,31 @@ class BookingController extends Controller
         $dress_id = $request['dress_id'];
         $rent_date = $request['rent_date'];  // Correct Carbon usage
         $return_date = $request['return_date']; // Correct Carbon usage
-
+        // setting data
+        $setting_data = Setting::first();
         // Query to check if any booking exists with matching dress_id and date ranges overlap
-        $existingBooking = Booking::whereDate('rent_date', '>=', $rent_date)
-                            ->whereDate('rent_date', '<=', $return_date)
-                            ->where('dress_id', $dress_id)
-                            ->first();
+        if($setting_data->dress_available <= 0 || empty($setting_data->dress_available)) 
+        {
+            $days = 1;
+        }
+        else
+        {
+            $days = intval($setting_data->dress_available);
+        }
+        $rent_date_adjusted = Carbon::parse($rent_date)->subDays($days); // 2 days before rent date
+        $return_date_adjusted = Carbon::parse($return_date)->addDays($days); // 2 days after return date
+
+        $existingBooking = Booking::where(function ($query) use ($rent_date_adjusted, $return_date_adjusted, $dress_id) {
+            $query->whereDate('rent_date', '>=', $rent_date_adjusted)
+                ->whereDate('rent_date', '<=', $return_date_adjusted)
+                ->where('dress_id', $dress_id);
+        })
+        ->orWhere(function ($query) use ($rent_date_adjusted, $return_date_adjusted, $dress_id) {
+            $query->whereDate('return_date', '>=', $rent_date_adjusted)
+                ->whereDate('return_date', '<=', $return_date_adjusted)
+                ->where('dress_id', $dress_id);
+        })
+        ->first();
 
         if (!empty($existingBooking)) {
             // Handle case where a booking exists
@@ -389,15 +413,15 @@ class BookingController extends Controller
         $booking_payment->save();
 
         // bill update
-         // amount addition
-         $bill_data = BookingBill::where('id', $request['bill_id'])->first();
-         if(!empty($bill_data))
-         {
-             $last_remaining = $bill_data->total_remaining;
-             $new_remaining = $last_remaining - $request['bill_paid_amount'];
-             $bill_data->total_remaining = $new_remaining;
-             $bill_data->save();
-         }
+        // amount addition
+        $bill_data = BookingBill::where('id', $request['bill_id'])->first();
+        if(!empty($bill_data))
+        {
+            $last_remaining = $bill_data->total_remaining;
+            $new_remaining = $last_remaining - $request['bill_paid_amount'];
+            $bill_data->total_remaining = $new_remaining;
+            $bill_data->save();
+        }
         // amount addition
         $account_data = Account::where('id', $request['bill_payment_method'])->first();
         if(!empty($account_data))
@@ -448,7 +472,7 @@ class BookingController extends Controller
                     {
                         $total_amount = $value->total_amount;
                     } 
-                    $payment_detail.='<tr>
+                    $payment_detail.='<tr id="ptr'.$value->id.'">
                         <th>'.$sno.'</th>
                         <th>'.$total_amount.'</th>
                         <th>'.$value->paid_amount.'</th>
@@ -466,7 +490,43 @@ class BookingController extends Controller
                 $payment_detail.=' </tbody>
                 </table>';
         }
-        
+        // dress attributes
+        $dress_att_div='<div class="col-md-12">
+                                <div class="row">
+                                    <h2>'.trans('messages.attribute_lang',[],session('locale')).'</h2>
+                                </div>
+                                <div class="row accordion" id="accordionExample">';
+        $dress_attribute = DressAttribute::where('dress_id', $dress_data->id)->get();
+        if(!empty($dress_attribute))
+        {
+            foreach ($dress_attribute as $key => $value) {
+                $dress_att_div.='<div class="col-md-6">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading'.$value->id.'">
+                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse'.$value->id.'" aria-expanded="false" aria-controls="collapse'.$value->id.'">
+                                                '.$value->attribute.'
+                                            </button>
+                                        </h2>
+                                        <div id="collapse'.$value->id.'" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                                            <div class="accordion-body">
+                                                <div class="text-muted">
+                                                    <strong class="text-dark">'.$value->notes.'
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><br>
+                                </div>';
+            }
+        }
+        else
+        {
+            $dress_att_div.='<div class="col-md-12">
+                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                            </div>';
+        }
+        $dress_att_div.='</div>
+                            </div>';
         $booking_detail='<div class="col-md-10">
                             <ul class="nav nav-pills nav-justified" role="tablist">
                                 <li class="nav-item waves-effect waves-light">
@@ -597,6 +657,11 @@ class BookingController extends Controller
                                                         <strong>'.trans('messages.color_name_lang', [], session('locale')).' :</strong> '.$color_data->color_name.'
                                                     </td>
                                                 </tr>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        '.$dress_att_div.'
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -612,25 +677,31 @@ class BookingController extends Controller
                             
         $booking_detail.= '<div class="col-md-2">
         <div class="row">
-            <a href="' . url('a4_bill/' . $value->booking_no) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
+            <a href="' . url('edit_booking/' . $booking_data->id) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
+                <i class=" fa-2x fas fa-edit"></i>
+            </a>
+        </div>
+        <br>  
+        <div class="row">
+            <a href="' . url('a4_bill/' . $booking_data->booking_no) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
                 <i class=" fa-2x fas fa-file-invoice-dollar"></i>
             </a>
         </div>
         <br>
         <div class="row">
-            <a href="' . url('receipt_bill/' . $value->booking_no) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
+            <a href="' . url('receipt_bill/' . $booking_data->booking_no) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
                 <i class=" fa-2x fas fa-receipt"></i>
             </a>
         </div>
         <br>
         <div class="row">
-            <a  class="btn btn-primary btn-sm edit" onclick=cancel_booking("'.$value->booking_no.'") title="cancel bill">
+            <a  class="btn btn-primary btn-sm edit" onclick=cancel_booking("'.$booking_data->booking_no.'") title="cancel bill">
                 <i class=" fa-2x fas fa-window-close"></i>
             </a>
         </div>
         <br>
         <div class="row">
-            <a class="btn btn-primary btn-sm edit" onclick=get_payment("'.$value->booking_no.'") title="payment">
+            <a class="btn btn-primary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_payment_modal" onclick=get_payment("'.$bill_data->id.'","'.$booking_data->booking_no.'") title="payment">
                 <i class=" fa-2x fas fa-money-bill"></i>
             </a>
         </div>
@@ -640,4 +711,280 @@ class BookingController extends Controller
 
         return response()->json(['booking_detail' => $booking_detail,'booking_no'=>$booking_data->booking_no]);
 	}
+    // delete paymen
+    public function delete_payment(Request $request){
+        $payment_id = $request->input('id');
+        // bill update
+        // amount addition
+        $bill_id="";
+        $paid_amount=0;
+        $payment_data = BookingPayment::where('id', $payment_id)->first();
+        if(!empty($payment_data))
+        {
+            $bill_id = $payment_data->bill_id;
+            $paid_amount = $payment_data->paid_amount;
+            $payment_method = $payment_data->payment_method;
+        }
+        $bill_data = BookingBill::where('id', $bill_id)->first();
+        if(!empty($bill_data))
+        {
+            $last_remaining = $bill_data->total_remaining;
+            $new_remaining = $last_remaining + $paid_amount;
+            $bill_data->total_remaining = $new_remaining;
+            $bill_data->save();
+        }
+        // amount addition
+        $account_data = Account::where('id', $payment_method)->first();
+        if(!empty($account_data))
+        {
+            $last_income = $account_data->opening_balance;
+            $new_income = $last_income - $paid_amount;
+            $account_data->opening_balance = $new_income;
+            $account_data->save();
+        }
+        // delete payment
+        $payment_data->delete();
+    }
+
+    // delete booking
+    // delete paymen
+    public function delete_booking(Request $request){
+        $booking_id = $request->input('id');
+        $booking_data = Booking::where('id', $booking_id)->first();
+        // bill update
+        // amount addition
+        $bill_id="";
+        $paid_amount=0;
+        $payment_data = BookingPayment::where('booking_id', $booking_id)->get();
+        if(!empty($payment_data))
+        {
+            foreach ($payment_data as $key => $value) {
+                if(!empty($value))
+                {
+                    $bill_id = $value->bill_id;
+                    $paid_amount = $value->paid_amount;
+                    $payment_method = $value->payment_method;
+                }
+                $bill_data = BookingBill::where('id', $bill_id)->first();
+                if(!empty($bill_data))
+                {
+                    $last_remaining = $bill_data->total_remaining;
+                    $new_remaining = $last_remaining + $paid_amount;
+                    $bill_data->total_remaining = $new_remaining;
+                    $bill_data->save();
+                }
+                // amount addition
+                $account_data = Account::where('id', $payment_method)->first();
+                if(!empty($account_data))
+                {
+                    $last_income = $account_data->opening_balance;
+                    $new_income = $last_income - $paid_amount;
+                    $account_data->opening_balance = $new_income;
+                    $account_data->save();
+                }
+                // delete payment
+                $value->delete();
+            }
+        }
+        // delete data
+        BookingBill::where('booking_id', $booking_id)->delete();
+        Booking::where('id', $booking_id)->delete();
+        BookingDressAttribute::where('booking_id', $booking_id)->delete();
+        DressHistory::where('booking_id', $booking_id)->delete();
+    }
+    // edit booking
+    public function edit_booking($id){
+        $view_dress= Dress::all();
+        $view_account = Account::where('account_type', 1)->get();
+        // get booking
+        $booking_data= Booking::where('id', $id)->first();
+        $customer_data= Customer::where('id', $booking_data->customer_id)->first();
+        $dress_data= Dress::where('id', $booking_data->dress_id)->first();
+        $dress_id =$dress_data->id;
+        // dress attributes
+        $dress_att_div='<div class="col-md-6">
+                                <div class="row">
+                                    <h2>'.trans('messages.attribute_lang',[],session('locale')).'</h2>
+                                </div>
+                                <div class="row accordion" id="accordionExample">';
+        $dress_attribute = DressAttribute::where('dress_id', $dress_id)->get();
+        if(!empty($dress_attribute))
+        {
+            foreach ($dress_attribute as $key => $value) {
+                $dress_att_div.='<div class="col-md-6">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading'.$value->id.'">
+                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse'.$value->id.'" aria-expanded="false" aria-controls="collapse'.$value->id.'">
+                                                '.$value->attribute.'
+                                            </button>
+                                        </h2>
+                                        <div id="collapse'.$value->id.'" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                                            <div class="accordion-body">
+                                                <div class="text-muted">
+                                                    <strong class="text-dark">'.$value->notes.'
+                                                    </strong>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><br>
+                                </div>';
+            }
+        }
+        else
+        {
+            $dress_att_div.='<div class="col-md-12">
+                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                            </div>';
+        }
+        $dress_att_div.='</div>
+                            </div>';
+        // dress images
+        $dress_image_div='<div class="col-md-6">
+                                <div class="row">
+                                    <h2>'.trans('messages.image_lang',[],session('locale')).'</h2>
+                                </div>
+                                <div class="row">';
+        $images = DressImage::where('dress_id', $dress_id)->get();
+        if(!empty($images))
+        {
+            foreach($images as $rows)
+            {
+                
+                // Generate the URL for the file
+                $url = asset('custom_images/dress_image/' . basename($rows->dress_image));
+                $dress_image_div .= '<div class="col-lg-3 col-sm-6">
+                            <div class="mt-4">
+                                <a href="'.$url.'" class="image-popup">
+                                    <img src="'.$url.'" class="img-fluid" alt="work-thumbnail">
+                                </a>
+                            </div>
+                        </div>';
+            }
+        }
+        else
+        {
+            $dress_image_div.='<div class="col-md-12">
+                    <h2>'.trans('messages.no_image_lang',[],session('locale')).'</h2>         
+                </div>';
+        }
+        $dress_image_div.='</div>
+        </div>';
+        $dress_attr= $dress_att_div.$dress_image_div;
+        // get sum of paid amount
+        $total_paid_payment = BookingPayment::where('booking_id', $booking_data->id)->sum('paid_amount');
+        return view ('booking.edit_booking', compact('view_dress','view_account','booking_data','customer_data','dress_data','total_paid_payment','dress_attr'));
+    }
+
+
+    // update_booking
+    public function update_booking(Request $request){
+
+        // $user_id = Auth::id();
+        // $data= User::find( $user_id)->first();
+        // $user= $data->username;
+        $user_id="1";
+        $user="admin";
+
+        $booking_id  = $request['booking_id'];
+        $dress_id  = $request['dress_name'];
+        $total_paid_payment  = $request['total_paid_payment'];
+        
+        $booking= Booking::where('id', $booking_id)->first();  
+        $booking->customer_id = $request['customer_id'];
+        $booking->booking_date = $request['booking_date'];
+        $booking->rent_date = $request['rent_date'];
+        $booking->return_date = $request['return_date'];
+        $booking->duration = $request['duration'];
+        $booking->dress_id = $request['dress_name'];
+        $booking->price = $request['price'];
+        $booking->discount = $request['discount'];
+        $booking->total_price = $request['total_price'];
+        $booking->notes = $request['notes'];
+        $booking->added_by = $user;
+        $booking->user_id = $user_id;
+        $booking->save(); 
+
+        DressHistory::where('booking_id', $booking_id)->delete();
+        // add dress booking history
+        $dress_history = new DressHistory(); 
+        $dress_history->booking_no = $booking->booking_no;
+        $dress_history->booking_id = $booking_id;
+        $dress_history->customer_id = $request['customer_id'];
+        $dress_history->dress_id = $request['dress_name'];
+        $dress_history->type = 1;
+        $dress_history->source = "booking";
+        $dress_history->history_date = $request['booking_date'];
+        $dress_history->notes = $request['notes'];
+        $dress_history->added_by = $user;
+        $dress_history->user_id = $user_id;
+        $dress_history->save();
+
+
+        // add attribute
+        BookingDressAttribute::where('booking_id', $booking_id)->delete();
+        $booking_attribute = DressAttribute::where('dress_id', $dress_id)->get();
+         
+        if(!empty($booking_attribute))
+        {
+            foreach ($booking_attribute as $key => $value) {
+                $booking_attribute = new BookingDressAttribute();
+                $booking_attribute->booking_id = $booking_id;
+                $booking_attribute->booking_no = $booking->booking_no;
+                $booking_attribute->dress_id = $request['dress_name'];
+                $booking_attribute->attribute_id = $value->id;
+                $booking_attribute->attribute_name = $value->attribute;
+                $booking_attribute->attribute_notes = $value->notes;
+                $booking_attribute->added_by = $user;
+                $booking_attribute->user_id = $user_id;
+                $booking_attribute->save();
+            }
+        }
+
+        // add booking bill
+        $total_price = $request['price'] * $request['duration'];
+        $remaining_total = $request['total_price'] - $total_paid_payment;
+        $booking_bill= BookingBill::where('booking_id', $booking_id)->first();  
+        $booking_bill->booking_id = $booking_id;
+        $booking_bill->booking_no = $booking->booking_no;
+        $booking_bill->total_price = $total_price;
+        $booking_bill->total_discount = $total_price-$request['total_price'];
+        $booking_bill->grand_total = $request['total_price'];
+        $booking_bill->total_remaining = $remaining_total;
+        $booking_bill->added_by = $user;
+        $booking_bill->user_id = $user_id;
+        $booking_bill->save();
+        $bill_id = $booking_bill->id;    
+
+        // add previous payments
+        $payment_data = BookingPayment::where('booking_id', $booking_id)->get();
+        $sno=1;
+        $total_amount=0;
+        foreach ($payment_data as $key => $value) {
+            $booking_payment = new BookingPayment();
+            if($sno==1)
+            {
+                $total_amount = $request['total_price'];
+            }
+            $booking_payment->booking_id = $booking_id;
+            $booking_payment->booking_no = $booking->booking_no;
+            $booking_payment->bill_id = $value->bill_id;
+            $booking_payment->customer_id = $booking->customer_id;
+            $booking_payment->total_amount = $total_amount;
+            $booking_payment->paid_amount = $value->paid_amount;
+            $booking_payment->remaining_amount = $total_amount-$value->paid_amount;
+            $booking_payment->payment_date = $value->payment_date;
+            $booking_payment->payment_method = $value->payment_method;
+            $booking_payment->notes = $value->notes;
+            $booking_payment->added_by = $user;
+            $booking_payment->user_id = $user_id;
+            $booking_payment->save();
+            $total_amount = $total_amount-$value->paid_amount; 
+            $sno++;
+            BookingPayment::where('id', $value->id)->delete();
+        }
+       
+        
+        return response()->json(['booking_id' => $booking_id,'bill_id' => $bill_id]);
+
+    }
 }

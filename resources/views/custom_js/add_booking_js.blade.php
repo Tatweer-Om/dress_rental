@@ -195,10 +195,16 @@
       var customer_id=$('.customer_id').val();
       var dress_name=$('.dress_name').val();
       var price=$('.price').val();
+      var total_price=$('.total_price').val();
+      var total_paid_payment=$('.total_paid_payment').val();
       var id=$('.booking_id').val();
 
       if(id!='')
       {
+          if(total_paid_payment > total_price)
+          {
+                show_notification('error','<?php echo trans('messages.paid_greater_delete_amount_lang',[],session('locale')); ?>'); return false;
+          }
           if(customer_id=="" )
           {
               show_notification('error','<?php echo trans('messages.add_customer_lang',[],session('locale')); ?>'); return false;
@@ -406,7 +412,7 @@
         // Check if paidAmount is greater than remainingAmount
         if (paidAmount > remainingAmount) {
             // Show error message
-            show_notification('error','<?php echo trans('messages.validation_amount_cannot_greater_remaining_lang',[],session('locale')); ?>'); return false;
+            show_notification('error','<?php echo trans('messages.validation_amount_cannot_greater_remaining_lang',[],session('locale')); ?>');  
 
             // Set bill_paid_amount to the remainingAmount
             $(this).val(remainingAmount);
@@ -457,6 +463,9 @@
     $('#add_payment_modal').on('hidden.bs.modal', function() {
         location.reload();
     });
+
+     
+
     
     
 </script>

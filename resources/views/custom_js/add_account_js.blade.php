@@ -147,13 +147,13 @@
     function del(id) {
         var csrfToken = $('meta[name="csrf-token"]').attr('content');
         Swal.fire({
-            title: "Are you sure?",
-            text: "You want to delete!",
+            title:  '<?php echo trans('messages.sure_lang',[],session('locale')); ?>',
+            text:  '<?php echo trans('messages.wanna_delete_lang',[],session('locale')); ?>',
             type: "warning",
             showCancelButton: !0,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
-            confirmButtonText: "Yes, delete it!",
+            confirmButtonText:  '<?php echo trans('messages.delete_lang',[],session('locale')); ?>',
             confirmButtonClass: "btn btn-primary",
             cancelButtonClass: "btn btn-danger ml-1",
             buttonsStyling: !1
