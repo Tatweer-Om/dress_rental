@@ -14,7 +14,9 @@ use App\Models\BookingDressAttribute;
 use App\Models\Account;
 use App\Models\BookingPayment;
 use App\Models\DressHistory;
-use App\Models\DressAvailability;
+use App\Models\Category;
+use App\Models\Size;
+use App\Models\Color; 
 use Carbon\Carbon;
 
 
@@ -23,7 +25,69 @@ class BookingController extends Controller
     public function index(){
         $view_dress= Dress::all();
         $view_account = Account::where('account_type', 1)->get();
-        return view ('booking.add_booking', compact('view_dress','view_account'));
+        return view ('booking.view_', compact('view_dress','view_account'));
+    }
+    public function view_booking(){
+       return view ('booking.view_booking');
+    }
+    public function show_booking()
+    {
+        $sno=0;
+
+        $view_booking= booking::all();
+        if(count($view_booking)>0)
+        {
+            foreach($view_booking as $value)
+            {
+                
+                $modal='<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_booking_info_modal" onclick=get_booking_detail("'.$value->id.'") title="info">
+                            <i class="fas fa-info" title="info"></i>
+                        </a>';
+                $add_data=get_date_only($value->created_at);
+                $status = $value->status; // Assuming `status` is the field name for the status in the database
+                $status_badge = '';
+
+                if ($status == 1) {
+                    // Status is "New"
+                    $status_badge = '<span class="badge bg-warning">'.trans('messages.new_lang',[],session('locale')).'</span>';
+                } elseif ($status == 2) {
+                    // Status is "Rented"
+                    $status_badge = '<span class="badge bg-primary">'.trans('messages.rent_lang',[],session('locale')).'</span>';
+                } elseif ($status == 3) {
+                    // Status is "Finished"
+                    $status_badge = '<span class="badge bg-success">'.trans('messages.finish_lang',[],session('locale')).'</span>';
+                }
+
+                $sno++;
+                $json[]= array(
+                            $sno,
+                            $value->booking_no,
+                            $status_badge,
+                            getColumnValue('customers','id',$value->customer_id,'customer_name'),
+                            getColumnValue('dresses','id',$value->dress_id,'dress_name'),
+                            $value->booking_date,
+                            $value->rent_date,
+                            $value->return_date,
+                            $value->total_price,
+                            $add_data,
+                            $value->added_by,
+                            $modal
+                        );
+            }
+            $response = array();
+            $response['success'] = true;
+            $response['aaData'] = $json;
+            echo json_encode($response);
+        }
+        else
+        {
+            $response = array();
+            $response['sEcho'] = 0;
+            $response['iTotalRecords'] = 0;
+            $response['iTotalDisplayRecords'] = 0;
+            $response['aaData'] = [];
+            echo json_encode($response);
+        }
     }
     public function get_dress_detail(Request $request)
 	{
@@ -343,7 +407,237 @@ class BookingController extends Controller
             $account_data->opening_balance = $new_income;
             $account_data->save();
         }
-         
- 
     }
+    // get boooking detail 
+    public function get_booking_detail(Request $request)
+	{
+        $booking_id = $request['booking_id'];
+         
+
+        // Query to check if any booking exists with matching dress_id and date ranges overlap
+        $booking_data = Booking::where('id', $booking_id)->first();
+        $customer_data = Customer::where('id', $booking_data->customer_id)->first();
+        $dress_data = Dress::where('id', $booking_data->dress_id)->first();
+        $category_data = Category::where('id', $dress_data->category_name)->first(); 
+        $size_data = Size::where('id', $dress_data->size_name)->first(); 
+        $color_data = Color::where('id', $dress_data->color_name)->first(); 
+        $bill_data = BookingBill::where('booking_id', $booking_id)->first(); 
+        $payment_data = BookingPayment::where('booking_id', $booking_id)->get(); 
+  
+		// dress attributes
+        $payment_detail="";
+        if(!empty($payment_data))
+        {
+            $payment_detail.='
+            <table class="table table-bordered dt-responsive  nowrap w-100" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>'.trans('messages.total_amount_lang',[],session('locale')).'</th>
+                        <th>'.trans('messages.paid_amount_lang',[],session('locale')).'</th>
+                        <th>'.trans('messages.remaining_amount_lang',[],session('locale')).'</th>
+                        <th>'.trans('messages.payment_date_lang',[],session('locale')).'</th>
+                        <th>'.trans('messages.added_by_lang',[],session('locale')).'</th>
+                        <th>'.trans('messages.action_lang',[],session('locale')).'</th>
+                    </tr>
+                </thead>
+                <tbody>';
+                $sno=1;                       
+                foreach ($payment_data as $key => $value) {
+                    if($sno==1)
+                    {
+                        $total_amount = $value->total_amount;
+                    } 
+                    $payment_detail.='<tr>
+                        <th>'.$sno.'</th>
+                        <th>'.$total_amount.'</th>
+                        <th>'.$value->paid_amount.'</th>
+                        <th>'.$value->remaining_amount.'</th>
+                        <th>'.$value->payment_date.'</th>
+                        <th>'.$value->added_by.'</th>
+                        <th><a class="btn btn-outline-secondary btn-sm edit" onclick=del_payment("'.$value->id.'") title="Delete">
+                                <i class="fas fa-trash" title="delete"></i>
+                            </a>
+                        </th>
+                    </tr>';
+                    $total_amount = $value->remaining_amount; 
+                    $sno++;         
+                }
+                $payment_detail.=' </tbody>
+                </table>';
+        }
+        
+        $booking_detail='<div class="col-md-10">
+                            <ul class="nav nav-pills nav-justified" role="tablist">
+                                <li class="nav-item waves-effect waves-light">
+                                    <a class="nav-link active" data-bs-toggle="tab" href="#booking_tab" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">'.trans('messages.booking_detail_lang',[],session('locale')).'</span> 
+                                    </a>
+                                </li>
+                                <li class="nav-item waves-effect waves-light">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#customer_tab" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">'.trans('messages.customer_detail_lang',[],session('locale')).'</span> 
+                                    </a>
+                                </li>
+                                <li class="nav-item waves-effect waves-light">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#dress_tab" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">'.trans('messages.dress_detail_lang',[],session('locale')).'</span> 
+                                    </a>
+                                </li>
+                                <li class="nav-item waves-effect waves-light">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#payment_tab" role="tab">
+                                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                        <span class="d-none d-sm-block">'.trans('messages.payment_detail_lang',[],session('locale')).'</span> 
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content p-3 text-muted">
+                                <div class="tab-pane active" id="booking_tab" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <strong>'.trans('messages.booking_no_lang', [], session('locale')).':</strong> 
+                                                        '.$booking_data->booking_no.'
+                                                    </td>
+                                                    <td>
+                                                        <strong>'.trans('messages.booking_date_lang', [], session('locale')).':</strong> 
+                                                        '.$booking_data->booking_date.'
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>'.trans('messages.rent_date_lang', [], session('locale')).':</strong> 
+                                                        '.$booking_data->rent_date.'
+                                                    </td>
+                                                    <td>
+                                                        <strong>'.trans('messages.return_date_lang', [], session('locale')).':</strong> 
+                                                        '.$booking_data->return_date.'
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>'.trans('messages.total_amount', [], session('locale')).':</strong> 
+                                                        '.$bill_data->total_price.'
+                                                    </td>
+                                                    <td>
+                                                        <strong>'.trans('messages.total_panelty_lang', [], session('locale')).':</strong> 
+                                                        '.$bill_data->total_penalty.'
+                                                    </td>
+                                                   
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>'.trans('messages.discount_lang', [], session('locale')).':</strong> 
+                                                        '.$bill_data->total_discount.'
+                                                    </td>
+                                                    <td>
+                                                        <strong>'.trans('messages.grand_total_lang', [], session('locale')).':</strong> 
+                                                        '.$bill_data->grand_total.'
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>'.trans('messages.remaining_lang', [], session('locale')).':</strong> 
+                                                        '.$bill_data->total_remaining.'
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane" id="customer_tab" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <strong>'.trans('messages.customer_name_lang', [], session('locale')).' :</strong> '.$customer_data->customer_name.'
+                                                    </td>
+                                                    <td>
+                                                        <strong>'.trans('messages.customer_contact_lang', [], session('locale')).' :</strong> '.$customer_data->customer_number.'
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>'.trans('messages.customer_email_lang', [], session('locale')).' :</strong> '.$customer_data->customer_email.'
+                                                    </td>
+                                                    <td>
+                                                        <strong>'.trans('messages.dob_lang', [], session('locale')).' :</strong> '.$customer_data->dob.'
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane" id="dress_tab" role="tabpanel">
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless">
+                                            <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <strong>'.trans('messages.dress_name_lang', [], session('locale')).' :</strong> '.$dress_data->dress_name.'
+                                                    </td>
+                                                    <td>
+                                                        <strong>'.trans('messages.category_name_lang', [], session('locale')).' :</strong> '.$category_data->category_name.'
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <strong>'.trans('messages.size_name_lang', [], session('locale')).' :</strong> '.$size_data->size_name.'
+                                                    </td>
+                                                    <td>
+                                                        <strong>'.trans('messages.color_name_lang', [], session('locale')).' :</strong> '.$color_data->color_name.'
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                <div class="tab-pane" id="payment_tab" role="tabpanel">
+                                    <div class="row table-responsive">
+                                        '.$payment_detail.'
+                                    </div>
+                                </div>
+                            </div>
+                        </div>';
+                            
+        $booking_detail.= '<div class="col-md-2">
+        <div class="row">
+            <a href="' . url('a4_bill/' . $value->booking_no) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
+                <i class=" fa-2x fas fa-file-invoice-dollar"></i>
+            </a>
+        </div>
+        <br>
+        <div class="row">
+            <a href="' . url('receipt_bill/' . $value->booking_no) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
+                <i class=" fa-2x fas fa-receipt"></i>
+            </a>
+        </div>
+        <br>
+        <div class="row">
+            <a  class="btn btn-primary btn-sm edit" onclick=cancel_booking("'.$value->booking_no.'") title="cancel bill">
+                <i class=" fa-2x fas fa-window-close"></i>
+            </a>
+        </div>
+        <br>
+        <div class="row">
+            <a class="btn btn-primary btn-sm edit" onclick=get_payment("'.$value->booking_no.'") title="payment">
+                <i class=" fa-2x fas fa-money-bill"></i>
+            </a>
+        </div>
+    </div>';
+
+        
+
+        return response()->json(['booking_detail' => $booking_detail,'booking_no'=>$booking_data->booking_no]);
+	}
 }
