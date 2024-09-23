@@ -189,9 +189,13 @@ return [
 'total_penalty_lang' => 'Total Penalty',
 'grand_total_lang' => 'Grand Total',
 'remaining_lang' => 'Remaining',
+'no_booking_lang'=>'No Current Booking',
 
+'na_lang'=>'N/A',
+'color_lang'=>'Color',
+'size_lang'=>'Size',
 
-
+'maintenance_lang'=>'Maintenance',
 ];
 
 

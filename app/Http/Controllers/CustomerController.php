@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Booking;
-use App\Models\BookingBill;
-use App\Models\BookingPayment;
 use App\Models\Customer;
+use App\Models\BookingBill;
 use Illuminate\Http\Request;
+use App\Models\BookingPayment;
 
 class CustomerController extends Controller
 {
@@ -190,15 +191,11 @@ class CustomerController extends Controller
 
     public function customer_profile_data(Request $request)
     {
-        // Fetch the customer
-
 
         $customer = Customer::find($request->customer_id);
-
         if (!$customer) {
             return response()->json(['message' => 'Customer not found'], 404);
         }
-
         $bookings = Booking::with([
             'bills',
             'payments',
@@ -207,6 +204,7 @@ class CustomerController extends Controller
             'dress.color',
             'dress.size'
         ])->where('customer_id', $customer->id)->get();
+
         $upcoming_bookings = Booking::with([
             'bills',
             'payments',
@@ -216,14 +214,49 @@ class CustomerController extends Controller
             'dress.size'
         ])
         ->where('customer_id', $customer->id)
-        ->where('return_date', '>', today()) // Check if return_date is in the future
+        ->where('rent_date', '>', Carbon::now())
         ->get();
 
+        $upcoming_bookings_count= $upcoming_bookings->count();
+        $total_bookings= $bookings->count();
+        $total_amount = 0;
+        $total_panelty=0;
+        foreach ($bookings as $booking) {
 
+            foreach ($booking->payments as $payment) {
+                $total_amount += $payment->paid_amount;
+            }
+        }
+        foreach ($bookings as $booking) {
+
+            foreach ($booking->bills as $payment) {
+                $total_panelty += $payment->total_panelty;
+            }
+        }
+
+        $currentBookings = Booking::with([
+            'bills',
+            'payments',
+            'dress.brand',
+            'dress.category',
+            'dress.color',
+            'dress.size'
+        ])
+        ->where('customer_id', $customer->id)
+        ->whereDate('rent_date', '<=', Carbon::now())
+        ->whereDate('return_date', '>=', Carbon::now())
+        ->get();
 
         return response()->json([
             'bookings' => $bookings,
-            'up_bookings'=> $upcoming_bookings
+            'up_bookings'=> $upcoming_bookings,
+            'total_amount'=>$total_amount,
+            'total_bookings'=>$total_bookings,
+            'upcoming_bookings_count'=>$upcoming_bookings_count,
+            'total_panelty'=>$total_panelty,
+            'current_bookings'=>$currentBookings
+
+
         ]);
     }
 

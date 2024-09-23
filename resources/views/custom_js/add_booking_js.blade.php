@@ -56,13 +56,24 @@
   var err=0;
   function get_dress_detail(){
       var dress_id = $('#dress_name').val();
+      var rent_date = $('#rent_date').val();
+      var return_date = $('#return_date').val();
       if(dress_id=="")
       {
         show_notification('error','<?php echo trans('messages.select_dress_lang',[],session('locale')); ?>');
         return false;
       }
-      var rent_date = $('#rent_date').val();
-      var return_date = $('#return_date').val();
+      if(rent_date=="")
+      {
+        show_notification('error','<?php echo trans('messages.select_rent_date_lang',[],session('locale')); ?>');
+        return false;
+      }
+      if(return_date=="")
+      {
+        show_notification('error','<?php echo trans('messages.select_return_date_lang',[],session('locale')); ?>');
+        return false;
+      }
+      
       var csrfToken = $('meta[name="csrf-token"]').attr('content');
       $('#global-loader').show();
       $.ajax ({
@@ -80,6 +91,14 @@
                 err=1;
                 add_waitlist(dress_id);
                 return false;
+              }
+              else if(response.status==3)
+              {
+                show_notification('error','<?php echo trans('messages.validation_dress_under_maintenance_lang',[],session('locale')); ?>');
+                $('#dress_detail').html("");
+                $('#price').val(0.000);
+                err=1;
+                return false;   
               }
               err=0;
               $('#dress_detail').html(response.dress_detail);

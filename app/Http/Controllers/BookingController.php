@@ -130,6 +130,21 @@ class BookingController extends Controller
             return response()->json(['status'=>2]);
             exit;
         }
+        // validataion for maintanance 
+         
+        // Validation for maintenance check
+        $conflictingDresses = Dress::where('status', 2)
+            ->where(function ($query) use ($rent_date, $return_date) {  
+                // Use the correct Carbon format and pass as values in whereBetween
+                $query->whereBetween('start_date', [Carbon::parse($rent_date), Carbon::parse($return_date)])
+                    ->orWhereBetween('end_date', [Carbon::parse($rent_date), Carbon::parse($return_date)]);
+            })->exists();
+
+        if ($conflictingDresses) {
+            // Handle case where a booking exists
+            return response()->json(['status'=>3]);
+            exit;
+        }
         // dress data
         $dress_data = Dress::where('id', $dress_id)->first();
 		// dress attributes

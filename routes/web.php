@@ -62,6 +62,10 @@ Route::post('delete_dress', [DressController::class, 'delete_dress'])->name('del
 Route::post('remove_attachments', [DressController::class, 'remove_attachments'])->name('remove_attachments');
 Route::post('e_remove_attachments', [DressController::class, 'e_remove_attachments'])->name('e_remove_attachments');
 Route::post('upload_attachments', [DressController::class, 'upload_attachments'])->name('upload_attachments');
+Route::post('maint_dress', [DressController::class, 'maint_dress'])->name('maint_dress');
+Route::get('maint_dress_all', [DressController::class, 'maint_dress_all'])->name('maint_dress_all');
+Route::get('show_maint_dress', [DressController::class, 'show_maint_dress'])->name('show_maint_dress');
+Route::post('maint_dress_comp', [DressController::class, 'maint_dress_comp'])->name('maint_dress_comp');
 
 // booking
 Route::get('booking', [BookingController::class, 'index'])->name('booking');
@@ -134,3 +138,4 @@ Route::get('sms', [SmsController::class, 'index'])->name('sms');
 Route::post('get_sms_status', [SmsController::class, 'get_sms_status'])->name('get_sms_status');
 Route::match(['get', 'post'], 'add_status_sms', [SmsController::class, 'add_status_sms'])->name('add_status_sms');
 
+ 

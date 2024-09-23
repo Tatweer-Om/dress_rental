@@ -140,34 +140,41 @@
                             <div class="card-body">
 
                                 <div class="mt-5">
-                                    <h5 class="mb-3">تفاصيل الشركة</h5>
+                                    <h5 class="mb-3">Customer's Other Details</h5>
                                     <ul class="list-unstyled fw-medium px-2">
                                         <li>
                                             <a href="javascript: void(0);" class="text-body pb-3 d-block border-bottom">
-                                                موظفو الشركة
-                                                <span id="employees-count" class="badge bg-primary-subtle text-primary rounded-pill ms-1 float-end font-size-12"></span>
+                                                Total Bookings
+                                                <span id="booking_count" class="badge bg-primary-subtle text-primary rounded-pill ms-1 float-end font-size-12"></span>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="javascript: void(0);" class="text-body py-3 d-block border-bottom">
-                                                مستندات الشركة
-                                                <span id="customer-docs-count" class="badge bg-primary-subtle text-primary rounded-pill float-end ms-1 font-size-12"></span>
+                                                 Upcoming Bookings
+                                                <span id="up_booking" class="badge bg-primary-subtle text-primary rounded-pill ms-1 float-end font-size-12"></span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript: void(0);" class="text-body py-3 d-block border-bottom">
+                                                 Total Pyments
+                                                <span id="total_payment" class="badge bg-primary-subtle text-primary rounded-pill float-end ms-1 font-size-12"></span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="javascript: void(0);" class="text-body py-3 d-block border-bottom">
+                                                 Total Panelty
+                                                <span id="total_panelty" class="badge bg-primary-subtle text-primary rounded-pill float-end ms-1 font-size-12"></span>
                                             </a>
                                         </li>
 
-                                        <li>
-                                            <a href="javascript: void(0);" class="text-body py-3 d-block border-bottom">
-                                                مستندات الموظفين
-                                                <span id="employee-docs-count" class="badge bg-primary-subtle text-primary rounded-pill ms-1 float-end font-size-12"></span>
-                                            </a>
-                                        </li>
+
                                     </ul>
                                 </div>
 
                                 <div class="mt-5">
-                                    <h5 class="mb-3">مستندات الموظفين التي تحتاج إلى تجديد</h5>
-                                    <div id="renewal-docs-list" class="list-group list-group-flush">
-                                        <!-- سيتم إضافة العناصر هنا ديناميكيًا -->
+                                    <h5 class="mb-3">Current Bookings</h5>
+                                    <div id="current_bookings" class="list-group list-group-flush">
+                                        <!-- Bookings will be appended here via JavaScript -->
                                     </div>
                                 </div>
 

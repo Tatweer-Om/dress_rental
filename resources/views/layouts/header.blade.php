@@ -461,6 +461,19 @@
                                 </li>
                             </ul>
                         </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i data-feather="grid"></i>
+                                <span data-key="t-apps">{{ trans('messages.maintenance_lang',[],session('locale')) }}</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li>
+                                    <a href="{{ url('maint_dress_all') }}">
+                                        <span data-key="t-calendar">{{ trans('messages.all_maintenance',[],session('locale')) }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
 
 
 
