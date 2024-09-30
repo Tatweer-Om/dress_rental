@@ -83,6 +83,10 @@ Route::post('delete_payment', [BookingController::class, 'delete_payment'])->nam
 Route::post('delete_booking', [BookingController::class, 'delete_booking'])->name('delete_booking');
 Route::get('edit_booking/{id}', [BookingController::class, 'edit_booking'])->name('edit_booking');
 Route::post('update_booking', [BookingController::class, 'update_booking'])->name('update_booking');
+Route::post('cancel_booking', [BookingController::class, 'cancel_booking'])->name('cancel_booking');
+Route::post('get_booking_data', [BookingController::class, 'get_booking_data'])->name('get_booking_data');
+Route::post('get_extend_dress_detail', [BookingController::class, 'get_extend_dress_detail'])->name('get_extend_dress_detail');
+Route::post('add_extend_booking', [BookingController::class, 'add_extend_booking'])->name('add_extend_booking');
 
 
 

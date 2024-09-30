@@ -161,6 +161,85 @@
             </div>
         </div>
     </div>
+
+    {{-- payment modal --}} 
+    <div class="modal fade" id="extend_booking_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">{{ trans('messages.add_data_lang',[],session('locale')) }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url('add_extend_booking') }}" class="add_extend_booking" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" class="extend_booking_id" name="booking_id">
+                        <input type="hidden" class="extend_dress_id" name="dress_id">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="old_rent_date" class="form-label">{{ trans('messages.old_rent_date_lang',[],session('locale')) }}</label>
+                                    <input class="form-control old_rent_date" readonly name="old_rent_date" type="text" id="old_rent_date">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="return_date" class="form-label">{{ trans('messages.return_date_lang ',[],session('locale')) }} -> {{ trans('messages.new_rent_date_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control return_date" readonly name="return_date" type="text" id="return_date">
+                                </div>
+                            </div> 
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="new_return_date" class="form-label">{{ trans('messages.new_return_date_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control new_return_date" readonly name="new_return_date" type="text" id="new_return_date">
+                                </div>
+                            </div> 
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="duration" class="form-label">{{ trans('messages.duration_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control duration" readonly  name="duration" type="text" id="duration">
+                                </div>
+                            </div> 
+                        </div>  
+                        <div class="row">
+                           
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="price" class="form-label">{{ trans('messages.price_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control price isnumber" readonly  name="price" type="text" id="price">
+                                </div>
+                            </div> 
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="discount" class="form-label">{{ trans('messages.discount_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control discount isnumber" readonly  name="discount" type="text" id="discount">
+                                </div>
+                            </div> 
+                            <div class="col-md-3">
+                                <div class="mb-3">
+                                    <label for="total_price" class="form-label">{{ trans('messages.total_price_lang ',[],session('locale')) }}</label>
+                                    <input class="form-control total_price isnumber" readonly  name="total_price" type="text" id="total_price">
+                                </div>
+                            </div> 
+                        </div>  
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="extend_notes" class="form-label">{{ trans('messages.notes_lang',[],session('locale')) }}</label>
+                                    <textarea class="form-control extend_notes" name="extend_notes" id="extend_notes" rows="3"></textarea>
+                                </div>
+                            </div>
+                            
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ trans('messages.close_lang',[],session('locale')) }}</button>
+                    <button type="submit" class="btn btn-primary submit_form">{{ trans('messages.submit_lang',[],session('locale')) }}</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     
 

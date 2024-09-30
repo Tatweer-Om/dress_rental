@@ -18,6 +18,7 @@ use App\Models\Category;
 use App\Models\Size;
 use App\Models\Color; 
 use App\Models\Setting; 
+use App\Models\BookingExtendHistory; 
 use Carbon\Carbon;
 
 
@@ -61,6 +62,9 @@ class BookingController extends Controller
                 } elseif ($status == 3) {
                     // Status is "Finished"
                     $status_badge = '<span class="badge bg-success">'.trans('messages.finish_lang',[],session('locale')).'</span>';
+                } elseif ($status == 4) {
+                    // Status is "Finished"
+                    $status_badge = '<span class="badge bg-danger">'.trans('messages.cancel_lang',[],session('locale')).'</span>';
                 }
 
                 $sno++;
@@ -271,6 +275,8 @@ class BookingController extends Controller
         $dress_history->booking_id = $booking_id;
         $dress_history->customer_id = $request['customer_id'];
         $dress_history->dress_id = $request['dress_name'];
+        $dress_history->rent_date = $request['rent_date'];
+        $dress_history->return_date = $request['return_date'];
         $dress_history->type = 1;
         $dress_history->source = "booking";
         $dress_history->history_date = $request['booking_date'];
@@ -689,42 +695,80 @@ class BookingController extends Controller
                                 </div>
                             </div>
                         </div>';
-                            
-        $booking_detail.= '<div class="col-md-2">
-        <div class="row">
-            <a href="' . url('edit_booking/' . $booking_data->id) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
-                <i class=" fa-2x fas fa-edit"></i>
-            </a>
-        </div>
-        <br>  
-        <div class="row">
-            <a href="' . url('a4_bill/' . $booking_data->booking_no) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
-                <i class=" fa-2x fas fa-file-invoice-dollar"></i>
-            </a>
-        </div>
-        <br>
-        <div class="row">
-            <a href="' . url('receipt_bill/' . $booking_data->booking_no) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
-                <i class=" fa-2x fas fa-receipt"></i>
-            </a>
-        </div>
-        <br>
-        <div class="row">
-            <a  class="btn btn-primary btn-sm edit" onclick=cancel_booking("'.$booking_data->booking_no.'") title="cancel bill">
-                <i class=" fa-2x fas fa-window-close"></i>
-            </a>
-        </div>
-        <br>
-        <div class="row">
-            <a class="btn btn-primary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_payment_modal" onclick=get_payment("'.$bill_data->id.'","'.$booking_data->booking_no.'") title="payment">
-                <i class=" fa-2x fas fa-money-bill"></i>
-            </a>
-        </div>
-    </div>';
+        $edit_btn="";
+        $cancel_btn="";
+        $extend_btn="";
+        if($booking_data->status==1)
+        {
+            $edit_btn='<div class="row">
+                            <a href="' . url('edit_booking/' . $booking_data->id) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
+                                <i class=" fa-2x fas fa-edit"></i>
+                            </a>
+                        </div>
+                        <br>';
+            
+        }
+        if($booking_data->status==1 || $booking_data->status==2)
+        {
+            $cancel_btn='<div class="row">
+                                <a  class="btn btn-primary btn-sm edit" onclick=cancel_booking("'.$booking_data->booking_no.'") title="cancel bill">
+                                    <i class=" fa-2x fas fa-window-close"></i>
+                                </a>
+                            </div>
+                            <br>';
+        }
+        if($booking_data->status==2)
+        {
+            $extend_btn='<div class="row">
+                            <a class="btn btn-primary btn-sm edit" data-bs-toggle="modal" data-bs-target="#extend_booking_modal" onclick=extend_booking("'.$booking_data->id.'") title="payment">
+                                <i class="fa-2x fas fa-chart-line"></i>
+                            </a>
+                        </div>
+                        <br>';
+            
+        }
 
+        $booking_detail.= '<div class="col-md-2">
+            '.$edit_btn.'
+            <div class="row">
+                <a href="' . url('a4_bill/' . $booking_data->booking_no) . '" target="_blank" class="btn btn-primary btn-sm edit" title="a4 bill">
+                    <i class=" fa-2x fas fa-file-invoice-dollar"></i>
+                </a>
+            </div>
+            <br>
+            <div class="row">
+                <a href="' . url('receipt_bill/' . $booking_data->booking_no) . '" target="_blank" class="btn btn-primary btn-sm edit" title="a4 bill">
+                    <i class=" fa-2x fas fa-receipt"></i>
+                </a>
+            </div>
+            <br>
+            '.$cancel_btn.'
+            '.$extend_btn.'
+            <div class="row">
+                <a class="btn btn-primary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_payment_modal" onclick=get_payment("'.$bill_data->id.'","'.$booking_data->booking_no.'") title="payment">
+                    <i class=" fa-2x fas fa-money-bill"></i>
+                </a>
+            </div>
+        </div>';
+        $status = $booking_data->status; // Assuming `status` is the field name for the status in the database
+        $status_badge = '';
+
+        if ($status == 1) {
+            // Status is "New"
+            $status_badge = '<span class="badge bg-warning">'.trans('messages.new_lang',[],session('locale')).'</span>';
+        } elseif ($status == 2) {
+            // Status is "Rented"
+            $status_badge = '<span class="badge bg-primary">'.trans('messages.rent_lang',[],session('locale')).'</span>';
+        } elseif ($status == 3) {
+            // Status is "Finished"
+            $status_badge = '<span class="badge bg-success">'.trans('messages.finish_lang',[],session('locale')).'</span>';
+        } elseif ($status == 4) {
+            // Status is "Finished"
+            $status_badge = '<span class="badge bg-danger">'.trans('messages.cancel_lang',[],session('locale')).'</span>';
+        }
         
 
-        return response()->json(['booking_detail' => $booking_detail,'booking_no'=>$booking_data->booking_no]);
+        return response()->json(['booking_detail' => $booking_detail,'booking_no'=>$booking_data->booking_no,'status'=>$status_badge]);
 	}
     // delete paymen
     public function delete_payment(Request $request){
@@ -926,6 +970,8 @@ class BookingController extends Controller
         $dress_history->booking_id = $booking_id;
         $dress_history->customer_id = $request['customer_id'];
         $dress_history->dress_id = $request['dress_name'];
+        $dress_history->rent_date = $request['rent_date'];
+        $dress_history->return_date = $request['return_date'];
         $dress_history->type = 1;
         $dress_history->source = "booking";
         $dress_history->history_date = $request['booking_date'];
@@ -934,6 +980,7 @@ class BookingController extends Controller
         $dress_history->user_id = $user_id;
         $dress_history->save();
 
+        
 
         // add attribute
         BookingDressAttribute::where('booking_id', $booking_id)->delete();
@@ -1001,5 +1048,197 @@ class BookingController extends Controller
         
         return response()->json(['booking_id' => $booking_id,'bill_id' => $bill_id]);
 
+    }
+
+    // cancel booking
+    public function cancel_booking(Request $request){
+        $booking_id = $request->input('id');
+        // $user_id = Auth::id();
+        // $data= User::find( $user_id)->first();
+        // $user= $data->username;
+        $user_id="1";
+        $user="admin";
+        // bill update
+        // amount addition
+        $bill_id="";
+        $paid_amount=0;
+        $booking_data = Booking::where('id', $booking_id)->first();
+         
+        $booking_data->status = 4;
+        $booking_data->cancel_by = $user_id;
+        $booking_data->cancel_date = date('Y-m-d');
+        $booking_data->status = 4;
+        $booking_data->save();
+    }
+
+    // extend booking
+    public function get_booking_data(Request $request){
+        $booking_id = $request->input('booking_id');
+        // $user_id = Auth::id();
+        // $data= User::find( $user_id)->first();
+        // $user= $data->username;
+        $user_id="1";
+        $user="admin";
+        // bill update
+        $booking_data = Booking::where('id', $booking_id)->first();
+        return response()->json(['old_rent_date' => $booking_data->rent_date,'return_date' => $booking_data->return_date,'price' => $booking_data->price,'discount' => $booking_data->discount,'dress_id' => $booking_data->dress_id]); 
+         
+    }
+
+    public function get_extend_dress_detail(Request $request)
+	{
+        $dress_id = $request['dress_id'];
+        $rent_date = $request['rent_date'];  // Correct Carbon usage
+        $return_date = $request['return_date']; // Correct Carbon usage
+        // setting data
+        $setting_data = Setting::first();
+        // Query to check if any booking exists with matching dress_id and date ranges overlap
+        if($setting_data->dress_available <= 0 || empty($setting_data->dress_available)) 
+        {
+            $days = 1;
+        }
+        else
+        {
+            $days = intval($setting_data->dress_available);
+        }
+        $rent_date_adjusted = Carbon::parse($rent_date)->addDays(1); // 2 days before rent date
+        // $return_date_adjusted = Carbon::parse($return_date)->addDays($days); // 2 days after return date
+        // $rent_date_adjusted = Carbon::parse($rent_date); // 2 days before rent date
+        $return_date_adjusted = Carbon::parse($return_date); // 2 days after re
+        $existingBooking = Booking::where(function ($query) use ($rent_date_adjusted, $return_date_adjusted, $dress_id) {
+            $query->whereDate('rent_date', '>=', $rent_date_adjusted)
+                ->whereDate('rent_date', '<=', $return_date_adjusted)
+                ->where('dress_id', $dress_id);
+        })
+        ->orWhere(function ($query) use ($rent_date_adjusted, $return_date_adjusted, $dress_id) {
+            $query->whereDate('return_date', '>=', $rent_date_adjusted)
+                ->whereDate('return_date', '<=', $return_date_adjusted)
+                ->where('dress_id', $dress_id);
+        })
+        ->first();
+
+        if (!empty($existingBooking)) {
+            // Handle case where a booking exists
+            return response()->json(['status'=>2]);
+            exit;
+        }
+        // validataion for maintanance 
+         
+        // Validation for maintenance check
+        $conflictingDresses = Dress::where('status', 2)
+            ->where(function ($query) use ($rent_date, $return_date) {  
+                // Use the correct Carbon format and pass as values in whereBetween
+                $query->whereBetween('start_date', [Carbon::parse($rent_date), Carbon::parse($return_date)])
+                    ->orWhereBetween('end_date', [Carbon::parse($rent_date), Carbon::parse($return_date)]);
+            })->exists();
+
+        if ($conflictingDresses) {
+            // Handle case where a booking exists
+            return response()->json(['status'=>3]);
+            exit;
+        }
+        // dress data
+        $dress_data = Dress::where('id', $dress_id)->first();
+
+        return response()->json(['status'=>1,'price'=>$dress_data->price]);
+	}
+
+    // add extend booking
+    public function add_extend_booking(Request $request){
+        
+        // $user_id = Auth::id();
+        // $data= User::find( $user_id)->first();
+        // $user= $data->username;
+        $user_id="1";
+        $user="admin";
+
+        $booking_id = $request->input('booking_id');
+        $dress_id = $request->input('dress_id');
+        $old_rent_date = $request->input('old_rent_date');
+        $return_date = $request->input('return_date');
+        $new_return_date = $request->input('new_return_date');
+        $duration = $request->input('duration');
+        $price = $request->input('price');
+        $discount = $request->input('discount');
+        $total_price = $request->input('total_price');
+        $extend_notes = $request->input('extend_notes');
+        
+        $booking_data = Booking::where('id', $booking_id)->first();
+        //add history extend  
+        $extend_history = new BookingExtendHistory(); 
+        $extend_history->booking_no = $booking_data->booking_no;
+        $extend_history->booking_id = $booking_id;
+        $extend_history->customer_id = $booking_data->customer_id;
+        $extend_history->dress_id = $dress_id;
+        $extend_history->rent_date = $old_rent_date;
+        $extend_history->return_date = $return_date;
+        $extend_history->duration = $booking_data->duration;
+        $extend_history->price = $booking_data->price;
+        $extend_history->discount = $booking_data->discount;
+        $extend_history->total_price = $booking_data->total_price;
+        $extend_history->type = 1;
+        $extend_history->notes = $extend_notes;
+        $extend_history->added_by = $user;
+        $extend_history->user_id = $user_id;
+        $extend_history->save();
+
+        $new_duration = calculateDays($return_date, $new_return_date);
+        $new_discount = ($new_duration*$price) /100 * $discount;
+        $new_total_price = ($new_duration*$price) - $new_discount;
+
+        $extend_history = new BookingExtendHistory(); 
+        $extend_history->booking_no = $booking_data->booking_no;
+        $extend_history->booking_id = $booking_id;
+        $extend_history->customer_id = $booking_data->customer_id;
+        $extend_history->dress_id = $dress_id;
+        $extend_history->rent_date = $return_date;
+        $extend_history->return_date = $new_return_date;
+        $extend_history->duration = $new_duration;
+        $extend_history->price = $price;
+        $extend_history->discount = $discount;
+        $extend_history->total_price = $new_total_price;
+        $extend_history->type = 2;
+        $extend_history->notes = $extend_notes;
+        $extend_history->added_by = $user;
+        $extend_history->user_id = $user_id;
+        $extend_history->save();
+
+
+        // add dress booking history
+        $dress_history = new DressHistory(); 
+        $dress_history->booking_no = $booking_data->booking_no;
+        $dress_history->booking_id = $booking_id;
+        $dress_history->customer_id = $booking_data->customer_id;
+        $dress_history->dress_id = $dress_id;
+        $dress_history->rent_date = $return_date;
+        $dress_history->return_date = $new_return_date;
+        $dress_history->type = 1;
+        $dress_history->source = "extend_booking";
+        $dress_history->history_date = date('Y-m-d');
+        $dress_history->notes =  $extend_notes;
+        $dress_history->added_by = $user;
+        $dress_history->user_id = $user_id;
+        $dress_history->save();
+
+        // update booking
+        $booking_data = Booking::where('id', $booking_id)->first();
+         
+        $booking_data->return_date = $new_return_date;
+        $booking_data->total_price = $total_price;
+        $booking_data->save();
+
+        // update bill
+        $bill_data = BookingBill::where('booking_id', $booking_id)->first();
+        // sum paid amoun t
+        $totalPaid = BookingPayment::where('booking_id', $booking_id)->sum('paid_amount');
+        $remaining_total = $total_price - $totalPaid;
+        $before_discount_price = $duration * $price;
+        $final_discount = ($before_discount_price) /100 * $discount;
+
+        $bill_data->total_remaining = $remaining_total;
+        $bill_data->grand_total = $total_price;
+        $bill_data->total_price = $before_discount_price;
+        $bill_data->total_discount = $final_discount;
+        $bill_data->save();
     }
 }
