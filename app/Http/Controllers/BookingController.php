@@ -698,6 +698,7 @@ class BookingController extends Controller
         $edit_btn="";
         $cancel_btn="";
         $extend_btn="";
+        $finish_btn="";
         if($booking_data->status==1)
         {
             $edit_btn='<div class="row">
@@ -725,6 +726,12 @@ class BookingController extends Controller
                             </a>
                         </div>
                         <br>';
+            $finish_btn='<div class="row">
+                        <a class="btn btn-primary btn-sm edit" data-bs-toggle="modal" data-bs-target="#finish_booking_modal" onclick=finish_booking("'.$booking_data->id.'") title="finish booking">
+                            <i class="fa-2x fas fa-check-circle"></i>
+                        </a>
+                    </div>
+                    <br>';
             
         }
 
@@ -744,6 +751,7 @@ class BookingController extends Controller
             <br>
             '.$cancel_btn.'
             '.$extend_btn.'
+            '.$finish_btn.'
             <div class="row">
                 <a class="btn btn-primary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_payment_modal" onclick=get_payment("'.$bill_data->id.'","'.$booking_data->booking_no.'") title="payment">
                     <i class=" fa-2x fas fa-money-bill"></i>
@@ -1239,6 +1247,129 @@ class BookingController extends Controller
         $bill_data->grand_total = $total_price;
         $bill_data->total_price = $before_discount_price;
         $bill_data->total_discount = $final_discount;
+        $bill_data->save();
+    }
+
+    public function get_finish_booking_detail(Request $request)
+	{
+        $booking_id = $request['booking_id'];
+        
+        // dress data
+        $booking_data = Booking::where('id', $booking_id)->first(); 
+		// dress attributes
+        $dress_att_div='';
+        $dress_attribute = DressAttribute::where('dress_id', $booking_data->dress_id)->get();
+        $all_attributes_id=[];
+        if(!empty($dress_attribute))
+        {
+            
+            foreach ($dress_attribute as $key => $value) {
+                $dress_att_div.='<div class="col-md-6">
+                                    <div class="form-check mb-3">
+                                        <input type="hidden" value="'.$value->id.'" name="attribute_hidden_id[]">
+                                        <input class="form-check-input attributes_id" type="checkbox" name="attributes_id[]" value="'.$value->id.'" id="formCheck'.$value->id.'">
+                                        <label class="form-check-label" for="formCheck'.$value->id.'">
+                                            '.$value->attribute.' 
+                                        </label>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                    <input type="text" class="form-control panelty_price isnumber" name="panelty_price[]" value="0">
+                                 </div><br>';
+                $all_attributes_id[]=$value->id;
+            }
+        }
+        else
+        {
+            $dress_att_div.='<div class="col-md-12">
+                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                            </div>';
+        }
+        $all_attributes_ids = implode(',',$all_attributes_id);
+        $dress_att_div.='<input type="hidden" name="all_attributes" value="'.$all_attributes_ids.'">';
+
+        return response()->json(['status'=>1,'detail' => $dress_att_div,'booking_no' => $booking_data->booking_no]);
+	}
+
+
+    // add finish booking
+    public function add_finish_booking(Request $request){
+        
+        // $user_id = Auth::id();
+        // $data= User::find( $user_id)->first();
+        // $user= $data->username;
+        $user_id="1";
+        $user="admin";
+
+        $booking_id = $request->input('booking_id');
+        $all_attributes  = explode(',',$request->input('all_attributes'));
+        $panelty_price = $request->input('panelty_price');
+        $checked_attributes = $request->input('attributes_id');  
+        $total_penalty =0;
+        foreach ($all_attributes as $index => $attribute_id) {
+            $is_checked = in_array($attribute_id, $checked_attributes);
+            
+             
+        
+            // Set the penalty price based on whether the checkbox is checked or not
+            $penalty_price = isset($panelty_price[$index]) ? $panelty_price[$index] : 0;
+    
+            // Add to total penalty if the penalty price is greater than 0
+            if ($penalty_price > 0) {
+                $total_penalty += $penalty_price;
+            }        
+            // 
+        
+            // Fetch the booking attributes record
+            $booking_attributes = BookingDressAttribute::where('booking_id', $booking_id)
+                                ->where('attribute_id', $attribute_id)
+                                ->first();
+        
+            // Update the status based on whether the checkbox is checked or not
+            $booking_attributes->status = $is_checked ? 2 : 3;
+            
+            // Update the penalty price (it's already a scalar value, not an array)
+            $booking_attributes->penalty_price = $penalty_price;
+            
+            // Save the updated attributes
+            $booking_attributes->save();
+        }
+        
+        
+        $booking_data = Booking::where('id', $booking_id)->first();
+        // update booking 
+        $booking_data->status = $user;
+        $booking_data->finish_by = $user_id;
+        $booking_data->finish_date = date('Y-m-d H:i:s');
+        $booking_data->save();
+
+        // add dress booking history
+        $dress_history = new DressHistory(); 
+        $dress_history->booking_no = $booking_data->booking_no;
+        $dress_history->booking_id = $booking_id;
+        $dress_history->customer_id = $booking_data->customer_id;
+        $dress_history->dress_id = $booking_data->dress_id;
+        $dress_history->rent_date = $booking_data->rent_date;
+        $dress_history->return_date =$booking_data->return_date;
+        $dress_history->type = 2;
+        $dress_history->source = "finish_booking";
+        $dress_history->history_date = date('Y-m-d');
+        $dress_history->added_by = $user;
+        $dress_history->user_id = $user_id;
+        $dress_history->save();
+
+         
+        // update bill
+        $bill_data = BookingBill::where('booking_id', $booking_id)->first();
+        // sum paid amoun t
+        $totalPaid = BookingPayment::where('booking_id', $booking_id)->sum('paid_amount');
+        $remaining_total = $booking_data->total_price + $total_penalty - $totalPaid;
+        $before_discount_price = $booking_data->duration * $booking_data->price;
+        $grand_total = $before_discount_price + $total_penalty;
+
+        $bill_data->total_remaining = $remaining_total;
+        $bill_data->grand_total = $grand_total;
+        $bill_data->total_penalty = $total_penalty; 
         $bill_data->save();
     }
 }
