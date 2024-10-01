@@ -434,4 +434,62 @@
         });
 
     });
+
+    // get finish booking
+    function finish_booking(booking_id) {
+        $('.finish_booking_id').val(booking_id); 
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        $('#global-loader').show();
+        $.ajax ({
+            url : "{{ url('get_finish_booking_detail') }}",
+            method : "POST",
+            data :   {booking_id:booking_id,_token: csrfToken},
+            success: function(response) {
+                $('#global-loader').hide();
+                $('#get_finish_detail_detail').html(response.detail); 
+                $('#finish_booking_no').text(response.booking_no);
+            },
+            error: function(response)
+            {
+                show_notification('error','<?php echo trans('messages.data_get_failed_lang',[],session('locale')); ?>');
+                console.log(response);
+                return false;
+            }
+        });
+    }
+
+    // add finish booking
+    $('.add_finish_booking').off().on('submit', function(e){
+        e.preventDefault();
+        var formdatas = new FormData($('.add_finish_booking')[0]);
+         
+        $('#global-loader').show();
+        before_submit();
+        var str = $(".add_finish_booking").serialize();
+        $.ajax({
+            type: "POST",
+            url: "{{ url('add_finish_booking') }}",
+            data: formdatas,
+            contentType: false,
+            processData: false,
+            success: function(data) {
+                $('#global-loader').hide();
+                after_submit();
+                show_notification('success','<?php echo trans('messages.finish_booking_add_successfully_lang',[],session('locale')); ?>');
+                $('#finish_booking_modal').modal('hide');
+                $('#all_booking').DataTable().ajax.reload();
+                return false;
+            },
+            error: function(data)
+            {
+                $('#global-loader').hide();
+                after_submit();
+                show_notification('error','<?php echo trans('messages.finish_booking_add_failed_lang',[],session('locale')); ?>');
+                console.log(data);
+                $('#all_booking').DataTable().ajax.reload();
+                return false;
+            }
+        });
+
+    });
 </script>

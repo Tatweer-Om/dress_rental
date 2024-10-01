@@ -240,6 +240,31 @@
             </div>
         </div>
     </div>
+
+    <!-- finish Modal -->
+    <div class="modal fade" id="finish_booking_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">{{ trans('messages.booking_detail_lang',[],session('locale')) }} : <span id="finish_booking_no"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url('add_finish_booking') }}" class="add_finish_booking" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <input type="hidden" class="finish_booking_id" name="booking_id">
+                        <div class="row" id="get_finish_detail_detail" style="padding:30px">
+                            
+                        </div> 
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">{{ trans('messages.close_lang',[],session('locale')) }}</button>
+                    <button type="submit" class="btn btn-primary submit_form">{{ trans('messages.submit_lang',[],session('locale')) }}</button>
+                </div> 
+                </form>
+            </div>
+        </div>
+    </div>
     
     
 

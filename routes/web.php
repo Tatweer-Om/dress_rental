@@ -87,6 +87,8 @@ Route::post('cancel_booking', [BookingController::class, 'cancel_booking'])->nam
 Route::post('get_booking_data', [BookingController::class, 'get_booking_data'])->name('get_booking_data');
 Route::post('get_extend_dress_detail', [BookingController::class, 'get_extend_dress_detail'])->name('get_extend_dress_detail');
 Route::post('add_extend_booking', [BookingController::class, 'add_extend_booking'])->name('add_extend_booking');
+Route::post('get_finish_booking_detail', [BookingController::class, 'get_finish_booking_detail'])->name('get_finish_booking_detail');
+Route::post('add_finish_booking', [BookingController::class, 'add_finish_booking'])->name('add_finish_booking');
 
 
 
