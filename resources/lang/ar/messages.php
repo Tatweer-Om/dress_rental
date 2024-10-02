@@ -178,6 +178,8 @@ return [
 'data_not_saved' => 'لم يتم حفظ البيانات',
 'some_error_occured' => 'حدث خطأ ما',
 'dress_avail_lang' => 'توافر الفستان',
+'about_company'=>'عن الشركة',
+'setting'=>'الإعدادات',
 
 
 

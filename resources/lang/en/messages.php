@@ -202,10 +202,13 @@ return [
 'company_cr_lang' => 'Company CR',
 'company_address_lang' => 'Company Address',
 
+
 'data_saved_success' => 'Data saved successfully',
 'data_not_saved' => 'Data not saved',
 'some_error_occured' => 'Some error occurred',
 'dress_avail_lang' => 'Dress Availability',
+'about_company'=>'About Company',
+'setting'=>'Settings',
 
 ];
 
