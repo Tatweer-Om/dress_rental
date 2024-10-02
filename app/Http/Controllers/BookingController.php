@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Dress;
-use App\Models\DressAttribute;
-use App\Models\DressImage;
-use App\Models\Customer;
-use App\Models\Booking;
-use App\Models\BookingBill;
-use App\Models\BookingDressAttribute;
-use App\Models\Account;
-use App\Models\BookingPayment;
-use App\Models\DressHistory;
-use App\Models\Category;
-use App\Models\Size;
-use App\Models\Color; 
 use Carbon\Carbon;
+use App\Models\Size;
+use App\Models\Dress;
+use App\Models\Color;
+use App\Models\Account;
+use App\Models\Booking;
+use App\Models\Category;
+use App\Models\Customer;
+use App\Models\DressImage;
+use App\Models\BookingBill;
+use App\Models\DressHistory;
+use Illuminate\Http\Request;
+use App\Models\BookingPayment;
+use App\Models\DressAttribute;
+use App\Models\DressAvailability;
+use App\Http\Controllers\Controller;
+use App\Models\BookingDressAttribute;
 
 
 class BookingController extends Controller
@@ -39,7 +40,7 @@ class BookingController extends Controller
         {
             foreach($view_booking as $value)
             {
-                
+
                 $modal='<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_booking_info_modal" onclick=get_booking_detail("'.$value->id.'") title="info">
                             <i class="fas fa-info" title="info"></i>
                         </a>';
@@ -140,7 +141,7 @@ class BookingController extends Controller
         else
         {
             $dress_att_div.='<div class="col-md-12">
-                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>
                             </div>';
         }
         $dress_att_div.='</div>
@@ -156,7 +157,7 @@ class BookingController extends Controller
         {
             foreach($images as $rows)
             {
-                
+
                 // Generate the URL for the file
                 $url = asset('custom_images/dress_image/' . basename($rows->dress_image));
                 $dress_image_div .= '<div class="col-lg-3 col-sm-6">
@@ -171,7 +172,7 @@ class BookingController extends Controller
         else
         {
             $dress_image_div.='<div class="col-md-12">
-                    <h2>'.trans('messages.no_image_lang',[],session('locale')).'</h2>         
+                    <h2>'.trans('messages.no_image_lang',[],session('locale')).'</h2>
                 </div>';
         }
         $dress_image_div.='</div>
@@ -189,7 +190,7 @@ class BookingController extends Controller
         $user_id="1";
         $user="admin";
         $dress_avail = new DressAvailability();
-        
+
         $dress_avail->contact = $request['number'];
         $dress_avail->dress_id = $request['dress_id'];
         $dress_avail->added_by = $user;
@@ -207,9 +208,9 @@ class BookingController extends Controller
         $user="admin";
 
         $dress_id  = $request['dress_name'];
-        
+
         $booking = new Booking();
-        $booking_no  = get_booking_number(); 
+        $booking_no  = get_booking_number();
         $booking->booking_no = $booking_no;
         $booking->customer_id = $request['customer_id'];
         $booking->booking_date = $request['booking_date'];
@@ -227,7 +228,7 @@ class BookingController extends Controller
         $booking_id = $booking->id;
 
         // add dress booking history
-        $dress_history = new DressHistory(); 
+        $dress_history = new DressHistory();
         $dress_history->booking_no = $booking_no;
         $dress_history->booking_id = $booking_id;
         $dress_history->customer_id = $request['customer_id'];
@@ -243,7 +244,7 @@ class BookingController extends Controller
 
         // add attribute
         $booking_attribute = DressAttribute::where('dress_id', $dress_id)->get();
-         
+
         if(!empty($booking_attribute))
         {
             foreach ($booking_attribute as $key => $value) {
@@ -262,7 +263,7 @@ class BookingController extends Controller
 
         // add booking bill
         $total_price = $request['price'] * $request['duration'];
-            
+
         $booking_bill = new BookingBill();
         $booking_bill->booking_id = $booking_id;
         $booking_bill->booking_no = $booking_no;
@@ -273,8 +274,8 @@ class BookingController extends Controller
         $booking_bill->added_by = $user;
         $booking_bill->user_id = $user_id;
         $booking_bill->save();
-        $bill_id = $booking_bill->id;    
-        
+        $bill_id = $booking_bill->id;
+
         return response()->json(['booking_id' => $booking_id,'bill_id' => $bill_id]);
 
     }
@@ -295,19 +296,19 @@ class BookingController extends Controller
         if(!empty($customers))
         {
             foreach ($customers as $customer) {
-                 
+
                 $customer_name = $customer['customer_name'];
-                
+
                 $response[] = [
                     'label' => $customer['id'].'-'.$customer_name.'+'.$customer['customer_number'],
                     'value' => $customer['id'].'-'.$customer_name.'+'.$customer['customer_number'],
                     'customer_id' => $customer['id'],
                     'discount' => $customer['discount'],
                 ];
- 
+
             }
         }
-        
+
 
         return response()->json($response);
     }
@@ -336,7 +337,7 @@ class BookingController extends Controller
         $customer->added_by = $user;
         $customer->user_id = $user_id;
         $customer->save();
-        $customer_id = $customer->id;    
+        $customer_id = $customer->id;
         $customer_full_name = $customer_id.'-'.$request['customer_names'].'+'.$request['customer_number'];
         return response()->json(['status' => 1,'discount' => $request['customer_discount'],'customer_id' => $customer_id,'full_name' => $customer_full_name]);
 
@@ -408,22 +409,22 @@ class BookingController extends Controller
             $account_data->save();
         }
     }
-    // get boooking detail 
+    // get boooking detail
     public function get_booking_detail(Request $request)
 	{
         $booking_id = $request['booking_id'];
-         
+
 
         // Query to check if any booking exists with matching dress_id and date ranges overlap
         $booking_data = Booking::where('id', $booking_id)->first();
         $customer_data = Customer::where('id', $booking_data->customer_id)->first();
         $dress_data = Dress::where('id', $booking_data->dress_id)->first();
-        $category_data = Category::where('id', $dress_data->category_name)->first(); 
-        $size_data = Size::where('id', $dress_data->size_name)->first(); 
-        $color_data = Color::where('id', $dress_data->color_name)->first(); 
-        $bill_data = BookingBill::where('booking_id', $booking_id)->first(); 
-        $payment_data = BookingPayment::where('booking_id', $booking_id)->get(); 
-  
+        $category_data = Category::where('id', $dress_data->category_name)->first();
+        $size_data = Size::where('id', $dress_data->size_name)->first();
+        $color_data = Color::where('id', $dress_data->color_name)->first();
+        $bill_data = BookingBill::where('booking_id', $booking_id)->first();
+        $payment_data = BookingPayment::where('booking_id', $booking_id)->get();
+
 		// dress attributes
         $payment_detail="";
         if(!empty($payment_data))
@@ -442,12 +443,12 @@ class BookingController extends Controller
                     </tr>
                 </thead>
                 <tbody>';
-                $sno=1;                       
+                $sno=1;
                 foreach ($payment_data as $key => $value) {
                     if($sno==1)
                     {
                         $total_amount = $value->total_amount;
-                    } 
+                    }
                     $payment_detail.='<tr>
                         <th>'.$sno.'</th>
                         <th>'.$total_amount.'</th>
@@ -460,37 +461,37 @@ class BookingController extends Controller
                             </a>
                         </th>
                     </tr>';
-                    $total_amount = $value->remaining_amount; 
-                    $sno++;         
+                    $total_amount = $value->remaining_amount;
+                    $sno++;
                 }
                 $payment_detail.=' </tbody>
                 </table>';
         }
-        
+
         $booking_detail='<div class="col-md-10">
                             <ul class="nav nav-pills nav-justified" role="tablist">
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#booking_tab" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">'.trans('messages.booking_detail_lang',[],session('locale')).'</span> 
+                                        <span class="d-none d-sm-block">'.trans('messages.booking_detail_lang',[],session('locale')).'</span>
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link" data-bs-toggle="tab" href="#customer_tab" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">'.trans('messages.customer_detail_lang',[],session('locale')).'</span> 
+                                        <span class="d-none d-sm-block">'.trans('messages.customer_detail_lang',[],session('locale')).'</span>
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link" data-bs-toggle="tab" href="#dress_tab" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">'.trans('messages.dress_detail_lang',[],session('locale')).'</span> 
+                                        <span class="d-none d-sm-block">'.trans('messages.dress_detail_lang',[],session('locale')).'</span>
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link" data-bs-toggle="tab" href="#payment_tab" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">'.trans('messages.payment_detail_lang',[],session('locale')).'</span> 
+                                        <span class="d-none d-sm-block">'.trans('messages.payment_detail_lang',[],session('locale')).'</span>
                                     </a>
                                 </li>
                             </ul>
@@ -501,49 +502,49 @@ class BookingController extends Controller
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.booking_no_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.booking_no_lang', [], session('locale')).':</strong>
                                                         '.$booking_data->booking_no.'
                                                     </td>
                                                     <td>
-                                                        <strong>'.trans('messages.booking_date_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.booking_date_lang', [], session('locale')).':</strong>
                                                         '.$booking_data->booking_date.'
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.rent_date_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.rent_date_lang', [], session('locale')).':</strong>
                                                         '.$booking_data->rent_date.'
                                                     </td>
                                                     <td>
-                                                        <strong>'.trans('messages.return_date_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.return_date_lang', [], session('locale')).':</strong>
                                                         '.$booking_data->return_date.'
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.total_amount', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.total_amount', [], session('locale')).':</strong>
                                                         '.$bill_data->total_price.'
                                                     </td>
                                                     <td>
-                                                        <strong>'.trans('messages.total_panelty_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.total_panelty_lang', [], session('locale')).':</strong>
                                                         '.$bill_data->total_penalty.'
                                                     </td>
-                                                   
+
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.discount_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.discount_lang', [], session('locale')).':</strong>
                                                         '.$bill_data->total_discount.'
                                                     </td>
                                                     <td>
-                                                        <strong>'.trans('messages.grand_total_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.grand_total_lang', [], session('locale')).':</strong>
                                                         '.$bill_data->grand_total.'
                                                     </td>
-                                                    
+
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.remaining_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.remaining_lang', [], session('locale')).':</strong>
                                                         '.$bill_data->total_remaining.'
                                                     </td>
                                                 </tr>
@@ -609,7 +610,7 @@ class BookingController extends Controller
                                 </div>
                             </div>
                         </div>';
-                            
+
         $booking_detail.= '<div class="col-md-2">
         <div class="row">
             <a href="' . url('a4_bill/' . $value->booking_no) . '" class="btn btn-primary btn-sm edit" title="a4 bill">
@@ -636,7 +637,7 @@ class BookingController extends Controller
         </div>
     </div>';
 
-        
+
 
         return response()->json(['booking_detail' => $booking_detail,'booking_no'=>$booking_data->booking_no]);
 	}
