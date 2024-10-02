@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Color;
 use App\Models\Size;
-use App\Models\Dress;
-use App\Models\DressImage;
-use App\Models\Category;
+use App\Models\User;
 use App\Models\Brand;
+use App\Models\Color;
+use App\Models\Dress;
+use App\Models\Maintgo;
+use App\Models\Category;
+use App\Models\DressImage;
+use Illuminate\Http\Request;
 use App\Models\DressAttribute;
 use App\Http\Controllers\Controller;
-use App\Models\Maintgo;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class DressController extends Controller
 {
@@ -91,11 +93,10 @@ class DressController extends Controller
 
     public function add_dress(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
 
         $dress = new dress();
         $dress_img="";
@@ -278,11 +279,10 @@ class DressController extends Controller
 
     public function update_dress(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
         $dress_id = $request->input('dress_id');
         $dress = dress::where('id', $dress_id)->first();
         $dress_img="";
@@ -390,11 +390,10 @@ class DressController extends Controller
 
     public function upload_attachments(Request $request)
     {
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
         $dress_id      = $request->input('dress_id');
 		$msg=null;
 
@@ -535,6 +534,11 @@ class DressController extends Controller
         $dress_id= $request->input('maint_id');
         $dress= Dress::where('id', $dress_id)->first();
 
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
+
         if (!$dress) {
             return response()->json(['error' => 'Dress not found'], 404);
         }
@@ -546,11 +550,11 @@ class DressController extends Controller
         $maint->start_date = $request->input('start_date');
         $maint->end_date = $request->input('end_date');
         $maint->status = 1;
-        $maint->added_by = 'admin';
-        $maint->user_id = 1;
+        $maint->added_by = $user;
+        $maint->user_id =  $user_id;
         $maint->save();
 
-         
+
         $dress_status= Dress::where('id',   $dress_id)->first();
         $dress_status->status= 2;
         $dress_status->start_date = $request->input('start_date');

@@ -152,20 +152,32 @@ return [
 'edit_failed_lang' => 'فشل تعديل البيانات',
 
 
-'booking_no_lang' => 'Booking No',
-'booking_date_lang' => 'Booking Date',
-'return_date_lang' => 'Return Date',
-'rent_date_lang' => 'Rent Date',
-'duration_lang' => 'Duration',
-'rent_price_lang' => 'Rent Price',
-'discount_lang' => 'Discount',
-'total_penalty_lang' => 'Total Penalty',
-'grand_total_lang' => 'Grand Total',
-'remaining_lang' => 'Remaining',
-'no_booking_lang'=>'NO Current Booking',
-'na_lang'=>'N/A',
-'color_lang'=>'Color',
-'size_lang'=>'Size',
+'booking_no_lang' => 'رقم الحجز',
+'booking_date_lang' => 'تاريخ الحجز',
+'return_date_lang' => 'تاريخ الإرجاع',
+'rent_date_lang' => 'تاريخ الإيجار',
+'duration_lang' => 'المدة',
+'rent_price_lang' => 'سعر الإيجار',
+'discount_lang' => 'الخصم',
+'total_penalty_lang' => 'إجمالي الغرامة',
+'grand_total_lang' => 'الإجمالي الكلي',
+'remaining_lang' => 'المتبقي',
+'no_booking_lang' => 'لا يوجد حجز حالي',
+'na_lang' => 'غير متوفر',
+'color_lang' => 'اللون',
+'size_lang' => 'الحجم',
+
+
+'company_name_lang' => 'اسم الشركة',
+'company_email_lang' => 'البريد الإلكتروني للشركة',
+'company_phone_lang' => 'هاتف الشركة',
+'company_cr_lang' => 'السجل التجاري',
+'company_address_lang' => 'عنوان الشركة',
+
+'data_saved_success' => 'تم حفظ البيانات بنجاح',
+'data_not_saved' => 'لم يتم حفظ البيانات',
+'some_error_occured' => 'حدث خطأ ما',
+'dress_avail_lang' => 'توافر الفستان',
 
 
 

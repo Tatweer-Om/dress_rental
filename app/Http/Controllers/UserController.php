@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function login(){
-        return view ('login_page.login');
-    }
+
     public function index(){
         return view ('user.user');
     }
@@ -67,9 +65,9 @@ class UserController extends Controller
 
     public function add_user(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
 
         $user = new User();
 
@@ -79,8 +77,8 @@ class UserController extends Controller
         $user->permit_type = implode(',',$request['permit_array']);
         $user->password = Hash::make($request['password']);
         $user->user_detail = $request['notes'];
-        $user->added_by = 'user';
-        $user->user_id = 1;
+        $user->added_by = $user;
+        $user->user_id = $user_id;
         $user->save();
         return response()->json(['user_id' => $user->id]);
 
@@ -153,9 +151,9 @@ class UserController extends Controller
         }
 
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
 
 
         $user->user_name = $request->input('user_name');
@@ -168,7 +166,7 @@ class UserController extends Controller
             $user->permit_type = $request->input('permit_array'); // or handle it as needed if it's a string
         }
         $user->user_detail = $request['notes'];
-        $user->updated_by = 'user';
+        $user->updated_by = $user;
         $user->save();
         return response()->json([trans('messages.success_lang', [], session('locale')) => trans('messages.user_update_lang', [], session('locale'))]);
     }
@@ -185,4 +183,54 @@ class UserController extends Controller
         ]);
 
     }
+
+
+
+    //login logout
+
+    public function login_page(){
+        return view ('login_page.login');
+    }
+
+
+    public function login(Request $request)
+    {
+
+
+        $baseInput = $request->input('username');
+        $password = $request->input('password');
+
+
+
+        // Find the user by email or nickname
+        $user = User::where(function ($query) use ($baseInput) {
+            $query->where('user_email', $baseInput)
+                  ->orWhere('user_name', $baseInput);
+        })
+        ->first();
+
+
+        // If user exists and password matches, attempt login
+        if ($user && Hash::check($password, $user->password)) {
+            // Manually log in the user since Auth::attempt() isn't being used
+            Auth::login($user);
+            return response()->json(['status' => 1, 'message' => 'Login successful']);
+
+        } else {
+            return response()->json(['status' => 2, 'message' => 'Invalid credentials']);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        $status = 2; // Default status, indicating logout failure
+
+        if (Auth::check()) {
+            Auth::logout();
+            $status = 1; // Logout success status
+        }
+
+        return response()->json(['status' => $status]);
+    }
+
 }

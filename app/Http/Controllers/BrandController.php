@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class BrandController extends Controller
         {
             foreach($view_brand as $value)
             {
-                
+
                 $modal='<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_brand_modal" onclick=edit("'.$value->id.'") title="Edit">
                             <i class="fas fa-pencil-alt" title="Edit"></i>
                         </a>
@@ -57,15 +58,12 @@ class BrandController extends Controller
 
     public function add_brand(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
 
         $brand = new brand();
-         
-        
         $brand->brand_name = $request['brand_name'];
         $brand->added_by = $user;
         $brand->user_id = $user_id;
@@ -92,17 +90,15 @@ class BrandController extends Controller
 
     public function update_brand(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
         $brand_id = $request->input('brand_id');
         $brand = brand::where('id', $brand_id)->first();
         $brand->brand_name = $request->input('brand_name');
         $brand->updated_by = $user;
         $brand->save();
-         
+
     }
 
     public function delete_brand(Request $request){

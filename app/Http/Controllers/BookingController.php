@@ -2,24 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Dress;
-use App\Models\DressAttribute;
-use App\Models\DressImage;
-use App\Models\Customer;
-use App\Models\Booking;
-use App\Models\BookingBill;
-use App\Models\BookingDressAttribute;
-use App\Models\Account;
-use App\Models\BookingPayment;
-use App\Models\DressHistory;
-use App\Models\Category;
-use App\Models\Size;
-use App\Models\Color; 
-use App\Models\Setting; 
-use App\Models\BookingExtendHistory; 
 use Carbon\Carbon;
+use App\Models\Size;
+use App\Models\User;
+use App\Models\Color;
+use App\Models\Dress;
+use App\Models\Account;
+use App\Models\Booking;
+use App\Models\Setting;
+use App\Models\Category;
+use App\Models\Customer;
+use App\Models\DressImage;
+use App\Models\BookingBill;
+use App\Models\DressHistory;
+use Illuminate\Http\Request;
+use App\Models\BookingPayment;
+use App\Models\DressAttribute;
+use App\Models\DressAvailability;
+use App\Http\Controllers\Controller;
+use App\Models\BookingExtendHistory;
+use Illuminate\Support\Facades\Auth;
+use App\Models\BookingDressAttribute;
 
 
 class BookingController extends Controller
@@ -42,7 +45,7 @@ class BookingController extends Controller
         {
             foreach($view_booking as $value)
             {
-                
+
                 $modal='<a class="btn btn-warning btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_booking_info_modal" onclick=get_booking_detail("'.$value->id.'") title="info">
                             <i class="fas fa-info" title="info"></i>
                         </a>
@@ -106,7 +109,7 @@ class BookingController extends Controller
         // setting data
         $setting_data = Setting::first();
         // Query to check if any booking exists with matching dress_id and date ranges overlap
-        if($setting_data->dress_available <= 0 || empty($setting_data->dress_available)) 
+        if($setting_data->dress_available <= 0 || empty($setting_data->dress_available))
         {
             $days = 1;
         }
@@ -134,11 +137,11 @@ class BookingController extends Controller
             return response()->json(['status'=>2]);
             exit;
         }
-        // validataion for maintanance 
-         
+        // validataion for maintanance
+
         // Validation for maintenance check
         $conflictingDresses = Dress::where('status', 2)
-            ->where(function ($query) use ($rent_date, $return_date) {  
+            ->where(function ($query) use ($rent_date, $return_date) {
                 // Use the correct Carbon format and pass as values in whereBetween
                 $query->whereBetween('start_date', [Carbon::parse($rent_date), Carbon::parse($return_date)])
                     ->orWhereBetween('end_date', [Carbon::parse($rent_date), Carbon::parse($return_date)]);
@@ -183,7 +186,7 @@ class BookingController extends Controller
         else
         {
             $dress_att_div.='<div class="col-md-12">
-                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>
                             </div>';
         }
         $dress_att_div.='</div>
@@ -199,7 +202,7 @@ class BookingController extends Controller
         {
             foreach($images as $rows)
             {
-                
+
                 // Generate the URL for the file
                 $url = asset('custom_images/dress_image/' . basename($rows->dress_image));
                 $dress_image_div .= '<div class="col-lg-3 col-sm-6">
@@ -214,7 +217,7 @@ class BookingController extends Controller
         else
         {
             $dress_image_div.='<div class="col-md-12">
-                    <h2>'.trans('messages.no_image_lang',[],session('locale')).'</h2>         
+                    <h2>'.trans('messages.no_image_lang',[],session('locale')).'</h2>
                 </div>';
         }
         $dress_image_div.='</div>
@@ -226,13 +229,12 @@ class BookingController extends Controller
     // add dress availability
     public function add_dress_availability(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
         $dress_avail = new DressAvailability();
-        
+
         $dress_avail->contact = $request['number'];
         $dress_avail->dress_id = $request['dress_id'];
         $dress_avail->added_by = $user;
@@ -243,16 +245,15 @@ class BookingController extends Controller
 
     public function add_booking(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
 
         $dress_id  = $request['dress_name'];
-        
+
         $booking = new Booking();
-        $booking_no  = get_booking_number(); 
+        $booking_no  = get_booking_number();
         $booking->booking_no = $booking_no;
         $booking->customer_id = $request['customer_id'];
         $booking->booking_date = $request['booking_date'];
@@ -270,7 +271,7 @@ class BookingController extends Controller
         $booking_id = $booking->id;
 
         // add dress booking history
-        $dress_history = new DressHistory(); 
+        $dress_history = new DressHistory();
         $dress_history->booking_no = $booking_no;
         $dress_history->booking_id = $booking_id;
         $dress_history->customer_id = $request['customer_id'];
@@ -288,7 +289,7 @@ class BookingController extends Controller
 
         // add attribute
         $booking_attribute = DressAttribute::where('dress_id', $dress_id)->get();
-         
+
         if(!empty($booking_attribute))
         {
             foreach ($booking_attribute as $key => $value) {
@@ -307,7 +308,7 @@ class BookingController extends Controller
 
         // add booking bill
         $total_price = $request['price'] * $request['duration'];
-            
+
         $booking_bill = new BookingBill();
         $booking_bill->booking_id = $booking_id;
         $booking_bill->booking_no = $booking_no;
@@ -318,8 +319,8 @@ class BookingController extends Controller
         $booking_bill->added_by = $user;
         $booking_bill->user_id = $user_id;
         $booking_bill->save();
-        $bill_id = $booking_bill->id;    
-        
+        $bill_id = $booking_bill->id;
+
         return response()->json(['booking_id' => $booking_id,'bill_id' => $bill_id]);
 
     }
@@ -340,30 +341,29 @@ class BookingController extends Controller
         if(!empty($customers))
         {
             foreach ($customers as $customer) {
-                 
+
                 $customer_name = $customer['customer_name'];
-                
+
                 $response[] = [
                     'label' => $customer['id'].'-'.$customer_name.'+'.$customer['customer_number'],
                     'value' => $customer['id'].'-'.$customer_name.'+'.$customer['customer_number'],
                     'customer_id' => $customer['id'],
                     'discount' => $customer['discount'],
                 ];
- 
+
             }
         }
-        
+
 
         return response()->json($response);
     }
 
     public function add_booking_customer(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
         $customer = new Customer();
         $customer_data = Customer::where('customer_number', $request['customer_contact'])->first();
         if(!empty($customer_data))
@@ -381,7 +381,7 @@ class BookingController extends Controller
         $customer->added_by = $user;
         $customer->user_id = $user_id;
         $customer->save();
-        $customer_id = $customer->id;    
+        $customer_id = $customer->id;
         $customer_full_name = $customer_id.'-'.$request['customer_names'].'+'.$request['customer_number'];
         return response()->json(['status' => 1,'discount' => $request['customer_discount'],'customer_id' => $customer_id,'full_name' => $customer_full_name]);
 
@@ -390,11 +390,10 @@ class BookingController extends Controller
 
     public function get_payment(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
         $bill_id = $request['bill_id'];
         $booking_id = $request['booking_id'];
         $total_amount = 0;
@@ -411,11 +410,10 @@ class BookingController extends Controller
 
     public function add_payment(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
         $booking_payment = new BookingPayment();
         $booking_data = Booking::where('id', $request['booking_id'])->first();
 
@@ -453,22 +451,22 @@ class BookingController extends Controller
             $account_data->save();
         }
     }
-    // get boooking detail 
+    // get boooking detail
     public function get_booking_detail(Request $request)
 	{
         $booking_id = $request['booking_id'];
-         
+
 
         // Query to check if any booking exists with matching dress_id and date ranges overlap
         $booking_data = Booking::where('id', $booking_id)->first();
         $customer_data = Customer::where('id', $booking_data->customer_id)->first();
         $dress_data = Dress::where('id', $booking_data->dress_id)->first();
-        $category_data = Category::where('id', $dress_data->category_name)->first(); 
-        $size_data = Size::where('id', $dress_data->size_name)->first(); 
-        $color_data = Color::where('id', $dress_data->color_name)->first(); 
-        $bill_data = BookingBill::where('booking_id', $booking_id)->first(); 
-        $payment_data = BookingPayment::where('booking_id', $booking_id)->get(); 
-  
+        $category_data = Category::where('id', $dress_data->category_name)->first();
+        $size_data = Size::where('id', $dress_data->size_name)->first();
+        $color_data = Color::where('id', $dress_data->color_name)->first();
+        $bill_data = BookingBill::where('booking_id', $booking_id)->first();
+        $payment_data = BookingPayment::where('booking_id', $booking_id)->get();
+
 		// dress attributes
         $payment_detail="";
         if(!empty($payment_data))
@@ -487,12 +485,12 @@ class BookingController extends Controller
                     </tr>
                 </thead>
                 <tbody>';
-                $sno=1;                       
+                $sno=1;
                 foreach ($payment_data as $key => $value) {
                     if($sno==1)
                     {
                         $total_amount = $value->total_amount;
-                    } 
+                    }
                     $payment_detail.='<tr id="ptr'.$value->id.'">
                         <th>'.$sno.'</th>
                         <th>'.$total_amount.'</th>
@@ -505,8 +503,8 @@ class BookingController extends Controller
                             </a>
                         </th>
                     </tr>';
-                    $total_amount = $value->remaining_amount; 
-                    $sno++;         
+                    $total_amount = $value->remaining_amount;
+                    $sno++;
                 }
                 $payment_detail.=' </tbody>
                 </table>';
@@ -543,7 +541,7 @@ class BookingController extends Controller
         else
         {
             $dress_att_div.='<div class="col-md-12">
-                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>
                             </div>';
         }
         $dress_att_div.='</div>
@@ -553,25 +551,25 @@ class BookingController extends Controller
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link active" data-bs-toggle="tab" href="#booking_tab" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">'.trans('messages.booking_detail_lang',[],session('locale')).'</span> 
+                                        <span class="d-none d-sm-block">'.trans('messages.booking_detail_lang',[],session('locale')).'</span>
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link" data-bs-toggle="tab" href="#customer_tab" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">'.trans('messages.customer_detail_lang',[],session('locale')).'</span> 
+                                        <span class="d-none d-sm-block">'.trans('messages.customer_detail_lang',[],session('locale')).'</span>
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link" data-bs-toggle="tab" href="#dress_tab" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">'.trans('messages.dress_detail_lang',[],session('locale')).'</span> 
+                                        <span class="d-none d-sm-block">'.trans('messages.dress_detail_lang',[],session('locale')).'</span>
                                     </a>
                                 </li>
                                 <li class="nav-item waves-effect waves-light">
                                     <a class="nav-link" data-bs-toggle="tab" href="#payment_tab" role="tab">
                                         <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                        <span class="d-none d-sm-block">'.trans('messages.payment_detail_lang',[],session('locale')).'</span> 
+                                        <span class="d-none d-sm-block">'.trans('messages.payment_detail_lang',[],session('locale')).'</span>
                                     </a>
                                 </li>
                             </ul>
@@ -582,49 +580,49 @@ class BookingController extends Controller
                                             <tbody>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.booking_no_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.booking_no_lang', [], session('locale')).':</strong>
                                                         '.$booking_data->booking_no.'
                                                     </td>
                                                     <td>
-                                                        <strong>'.trans('messages.booking_date_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.booking_date_lang', [], session('locale')).':</strong>
                                                         '.$booking_data->booking_date.'
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.rent_date_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.rent_date_lang', [], session('locale')).':</strong>
                                                         '.$booking_data->rent_date.'
                                                     </td>
                                                     <td>
-                                                        <strong>'.trans('messages.return_date_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.return_date_lang', [], session('locale')).':</strong>
                                                         '.$booking_data->return_date.'
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.total_amount', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.total_amount', [], session('locale')).':</strong>
                                                         '.$bill_data->total_price.'
                                                     </td>
                                                     <td>
-                                                        <strong>'.trans('messages.total_panelty_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.total_panelty_lang', [], session('locale')).':</strong>
                                                         '.$bill_data->total_penalty.'
                                                     </td>
-                                                   
+
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.discount_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.discount_lang', [], session('locale')).':</strong>
                                                         '.$bill_data->total_discount.'
                                                     </td>
                                                     <td>
-                                                        <strong>'.trans('messages.grand_total_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.grand_total_lang', [], session('locale')).':</strong>
                                                         '.$bill_data->grand_total.'
                                                     </td>
-                                                    
+
                                                 </tr>
                                                 <tr>
                                                     <td>
-                                                        <strong>'.trans('messages.remaining_lang', [], session('locale')).':</strong> 
+                                                        <strong>'.trans('messages.remaining_lang', [], session('locale')).':</strong>
                                                         '.$bill_data->total_remaining.'
                                                     </td>
                                                 </tr>
@@ -707,7 +705,7 @@ class BookingController extends Controller
                             </a>
                         </div>
                         <br>';
-            
+
         }
         if($booking_data->status==1 || $booking_data->status==2)
         {
@@ -732,7 +730,7 @@ class BookingController extends Controller
                         </a>
                     </div>
                     <br>';
-            
+
         }
 
         $booking_detail.= '<div class="col-md-2">
@@ -774,7 +772,7 @@ class BookingController extends Controller
             // Status is "Finished"
             $status_badge = '<span class="badge bg-danger">'.trans('messages.cancel_lang',[],session('locale')).'</span>';
         }
-        
+
 
         return response()->json(['booking_detail' => $booking_detail,'booking_no'=>$booking_data->booking_no,'status'=>$status_badge]);
 	}
@@ -900,7 +898,7 @@ class BookingController extends Controller
         else
         {
             $dress_att_div.='<div class="col-md-12">
-                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>
                             </div>';
         }
         $dress_att_div.='</div>
@@ -916,7 +914,7 @@ class BookingController extends Controller
         {
             foreach($images as $rows)
             {
-                
+
                 // Generate the URL for the file
                 $url = asset('custom_images/dress_image/' . basename($rows->dress_image));
                 $dress_image_div .= '<div class="col-lg-3 col-sm-6">
@@ -931,7 +929,7 @@ class BookingController extends Controller
         else
         {
             $dress_image_div.='<div class="col-md-12">
-                    <h2>'.trans('messages.no_image_lang',[],session('locale')).'</h2>         
+                    <h2>'.trans('messages.no_image_lang',[],session('locale')).'</h2>
                 </div>';
         }
         $dress_image_div.='</div>
@@ -946,17 +944,15 @@ class BookingController extends Controller
     // update_booking
     public function update_booking(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+         $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
 
         $booking_id  = $request['booking_id'];
         $dress_id  = $request['dress_name'];
         $total_paid_payment  = $request['total_paid_payment'];
-        
-        $booking= Booking::where('id', $booking_id)->first();  
+
+        $booking= Booking::where('id', $booking_id)->first();
         $booking->customer_id = $request['customer_id'];
         $booking->booking_date = $request['booking_date'];
         $booking->rent_date = $request['rent_date'];
@@ -969,11 +965,11 @@ class BookingController extends Controller
         $booking->notes = $request['notes'];
         $booking->added_by = $user;
         $booking->user_id = $user_id;
-        $booking->save(); 
+        $booking->save();
 
         DressHistory::where('booking_id', $booking_id)->delete();
         // add dress booking history
-        $dress_history = new DressHistory(); 
+        $dress_history = new DressHistory();
         $dress_history->booking_no = $booking->booking_no;
         $dress_history->booking_id = $booking_id;
         $dress_history->customer_id = $request['customer_id'];
@@ -988,12 +984,12 @@ class BookingController extends Controller
         $dress_history->user_id = $user_id;
         $dress_history->save();
 
-        
+
 
         // add attribute
         BookingDressAttribute::where('booking_id', $booking_id)->delete();
         $booking_attribute = DressAttribute::where('dress_id', $dress_id)->get();
-         
+
         if(!empty($booking_attribute))
         {
             foreach ($booking_attribute as $key => $value) {
@@ -1013,7 +1009,7 @@ class BookingController extends Controller
         // add booking bill
         $total_price = $request['price'] * $request['duration'];
         $remaining_total = $request['total_price'] - $total_paid_payment;
-        $booking_bill= BookingBill::where('booking_id', $booking_id)->first();  
+        $booking_bill= BookingBill::where('booking_id', $booking_id)->first();
         $booking_bill->booking_id = $booking_id;
         $booking_bill->booking_no = $booking->booking_no;
         $booking_bill->total_price = $total_price;
@@ -1023,7 +1019,7 @@ class BookingController extends Controller
         $booking_bill->added_by = $user;
         $booking_bill->user_id = $user_id;
         $booking_bill->save();
-        $bill_id = $booking_bill->id;    
+        $bill_id = $booking_bill->id;
 
         // add previous payments
         $payment_data = BookingPayment::where('booking_id', $booking_id)->get();
@@ -1048,12 +1044,12 @@ class BookingController extends Controller
             $booking_payment->added_by = $user;
             $booking_payment->user_id = $user_id;
             $booking_payment->save();
-            $total_amount = $total_amount-$value->paid_amount; 
+            $total_amount = $total_amount-$value->paid_amount;
             $sno++;
             BookingPayment::where('id', $value->id)->delete();
         }
-       
-        
+
+
         return response()->json(['booking_id' => $booking_id,'bill_id' => $bill_id]);
 
     }
@@ -1061,17 +1057,15 @@ class BookingController extends Controller
     // cancel booking
     public function cancel_booking(Request $request){
         $booking_id = $request->input('id');
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
         // bill update
         // amount addition
         $bill_id="";
         $paid_amount=0;
         $booking_data = Booking::where('id', $booking_id)->first();
-         
+
         $booking_data->status = 4;
         $booking_data->cancel_by = $user_id;
         $booking_data->cancel_date = date('Y-m-d');
@@ -1082,15 +1076,13 @@ class BookingController extends Controller
     // extend booking
     public function get_booking_data(Request $request){
         $booking_id = $request->input('booking_id');
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
         // bill update
         $booking_data = Booking::where('id', $booking_id)->first();
-        return response()->json(['old_rent_date' => $booking_data->rent_date,'return_date' => $booking_data->return_date,'price' => $booking_data->price,'discount' => $booking_data->discount,'dress_id' => $booking_data->dress_id]); 
-         
+        return response()->json(['old_rent_date' => $booking_data->rent_date,'return_date' => $booking_data->return_date,'price' => $booking_data->price,'discount' => $booking_data->discount,'dress_id' => $booking_data->dress_id]);
+
     }
 
     public function get_extend_dress_detail(Request $request)
@@ -1101,7 +1093,7 @@ class BookingController extends Controller
         // setting data
         $setting_data = Setting::first();
         // Query to check if any booking exists with matching dress_id and date ranges overlap
-        if($setting_data->dress_available <= 0 || empty($setting_data->dress_available)) 
+        if($setting_data->dress_available <= 0 || empty($setting_data->dress_available))
         {
             $days = 1;
         }
@@ -1130,11 +1122,11 @@ class BookingController extends Controller
             return response()->json(['status'=>2]);
             exit;
         }
-        // validataion for maintanance 
-         
+        // validataion for maintanance
+
         // Validation for maintenance check
         $conflictingDresses = Dress::where('status', 2)
-            ->where(function ($query) use ($rent_date, $return_date) {  
+            ->where(function ($query) use ($rent_date, $return_date) {
                 // Use the correct Carbon format and pass as values in whereBetween
                 $query->whereBetween('start_date', [Carbon::parse($rent_date), Carbon::parse($return_date)])
                     ->orWhereBetween('end_date', [Carbon::parse($rent_date), Carbon::parse($return_date)]);
@@ -1153,12 +1145,10 @@ class BookingController extends Controller
 
     // add extend booking
     public function add_extend_booking(Request $request){
-        
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
 
         $booking_id = $request->input('booking_id');
         $dress_id = $request->input('dress_id');
@@ -1170,10 +1160,10 @@ class BookingController extends Controller
         $discount = $request->input('discount');
         $total_price = $request->input('total_price');
         $extend_notes = $request->input('extend_notes');
-        
+
         $booking_data = Booking::where('id', $booking_id)->first();
-        //add history extend  
-        $extend_history = new BookingExtendHistory(); 
+        //add history extend
+        $extend_history = new BookingExtendHistory();
         $extend_history->booking_no = $booking_data->booking_no;
         $extend_history->booking_id = $booking_id;
         $extend_history->customer_id = $booking_data->customer_id;
@@ -1194,7 +1184,7 @@ class BookingController extends Controller
         $new_discount = ($new_duration*$price) /100 * $discount;
         $new_total_price = ($new_duration*$price) - $new_discount;
 
-        $extend_history = new BookingExtendHistory(); 
+        $extend_history = new BookingExtendHistory();
         $extend_history->booking_no = $booking_data->booking_no;
         $extend_history->booking_id = $booking_id;
         $extend_history->customer_id = $booking_data->customer_id;
@@ -1213,7 +1203,7 @@ class BookingController extends Controller
 
 
         // add dress booking history
-        $dress_history = new DressHistory(); 
+        $dress_history = new DressHistory();
         $dress_history->booking_no = $booking_data->booking_no;
         $dress_history->booking_id = $booking_id;
         $dress_history->customer_id = $booking_data->customer_id;
@@ -1230,7 +1220,7 @@ class BookingController extends Controller
 
         // update booking
         $booking_data = Booking::where('id', $booking_id)->first();
-         
+
         $booking_data->return_date = $new_return_date;
         $booking_data->total_price = $total_price;
         $booking_data->save();
@@ -1253,23 +1243,23 @@ class BookingController extends Controller
     public function get_finish_booking_detail(Request $request)
 	{
         $booking_id = $request['booking_id'];
-        
+
         // dress data
-        $booking_data = Booking::where('id', $booking_id)->first(); 
+        $booking_data = Booking::where('id', $booking_id)->first();
 		// dress attributes
         $dress_att_div='';
         $dress_attribute = DressAttribute::where('dress_id', $booking_data->dress_id)->get();
         $all_attributes_id=[];
         if(!empty($dress_attribute))
         {
-            
+
             foreach ($dress_attribute as $key => $value) {
                 $dress_att_div.='<div class="col-md-6">
                                     <div class="form-check mb-3">
                                         <input type="hidden" value="'.$value->id.'" name="attribute_hidden_id[]">
                                         <input class="form-check-input attributes_id" type="checkbox" name="attributes_id[]" value="'.$value->id.'" id="formCheck'.$value->id.'">
                                         <label class="form-check-label" for="formCheck'.$value->id.'">
-                                            '.$value->attribute.' 
+                                            '.$value->attribute.'
                                         </label>
                                     </div>
                                  </div>
@@ -1282,7 +1272,7 @@ class BookingController extends Controller
         else
         {
             $dress_att_div.='<div class="col-md-12">
-                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>
                             </div>';
         }
         $all_attributes_ids = implode(',',$all_attributes_id);
@@ -1294,57 +1284,55 @@ class BookingController extends Controller
 
     // add finish booking
     public function add_finish_booking(Request $request){
-        
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="1";
-        $user="admin";
+
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
 
         $booking_id = $request->input('booking_id');
         $all_attributes  = explode(',',$request->input('all_attributes'));
         $panelty_price = $request->input('panelty_price');
-        $checked_attributes = $request->input('attributes_id');  
+        $checked_attributes = $request->input('attributes_id');
         $total_penalty =0;
         foreach ($all_attributes as $index => $attribute_id) {
             $is_checked = in_array($attribute_id, $checked_attributes);
-            
-             
-        
+
+
+
             // Set the penalty price based on whether the checkbox is checked or not
             $penalty_price = isset($panelty_price[$index]) ? $panelty_price[$index] : 0;
-    
+
             // Add to total penalty if the penalty price is greater than 0
             if ($penalty_price > 0) {
                 $total_penalty += $penalty_price;
-            }        
-            // 
-        
+            }
+            //
+
             // Fetch the booking attributes record
             $booking_attributes = BookingDressAttribute::where('booking_id', $booking_id)
                                 ->where('attribute_id', $attribute_id)
                                 ->first();
-        
+
             // Update the status based on whether the checkbox is checked or not
             $booking_attributes->status = $is_checked ? 2 : 3;
-            
+
             // Update the penalty price (it's already a scalar value, not an array)
             $booking_attributes->penalty_price = $penalty_price;
-            
+
             // Save the updated attributes
             $booking_attributes->save();
         }
-        
-        
+
+
         $booking_data = Booking::where('id', $booking_id)->first();
-        // update booking 
+        // update booking
         $booking_data->status = $user;
         $booking_data->finish_by = $user_id;
         $booking_data->finish_date = date('Y-m-d H:i:s');
         $booking_data->save();
 
         // add dress booking history
-        $dress_history = new DressHistory(); 
+        $dress_history = new DressHistory();
         $dress_history->booking_no = $booking_data->booking_no;
         $dress_history->booking_id = $booking_id;
         $dress_history->customer_id = $booking_data->customer_id;
@@ -1358,7 +1346,7 @@ class BookingController extends Controller
         $dress_history->user_id = $user_id;
         $dress_history->save();
 
-         
+
         // update bill
         $bill_data = BookingBill::where('booking_id', $booking_id)->first();
         // sum paid amoun t
@@ -1369,7 +1357,7 @@ class BookingController extends Controller
 
         $bill_data->total_remaining = $remaining_total;
         $bill_data->grand_total = $grand_total;
-        $bill_data->total_penalty = $total_penalty; 
+        $bill_data->total_penalty = $total_penalty;
         $bill_data->save();
     }
 }
