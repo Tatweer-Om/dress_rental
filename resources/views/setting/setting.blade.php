@@ -2,7 +2,7 @@
 
 @section('main')
 @push('title')
-<title> Settings</title>
+<title> {{ trans('messages.setting',[],session('locale')) }}</title>
 @endpush
 
 
@@ -15,12 +15,12 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 class="mb-sm-0 font-size-18">Settings  </h4>
+                            <h4 class="mb-sm-0 font-size-18">{{ trans('messages.setting',[],session('locale')) }}  </h4>
 
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="#">Settings  </a></li>
-                                    <li class="breadcrumb-item active"><a href="{{ url('customer') }}">Customers</a></li>
+                                    <li class="breadcrumb-item"><a href="#"> {{ trans('messages.setting',[],session('locale')) }} </a></li>
+                                    <li class="breadcrumb-item active"><a >{{ trans('messages.setting',[],session('locale')) }}</a></li>
                                 </ol>
                             </div>
 
@@ -42,16 +42,16 @@
                                                 <li class="nav-item">
                                                     <a class="nav-link active" data-bs-toggle="tab" href="#setting1" role="tab">
                                                         <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                                        <span class="d-none d-sm-block"> About Company</span>
+                                                        <span class="d-none d-sm-block"> {{ trans('messages.about_company',[],session('locale')) }}</span>
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-bs-toggle="tab" href="#setting2" role="tab">
                                                         <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                                        <span class="d-none d-sm-block"> Dress Availabilty</span>
+                                                        <span class="d-none d-sm-block">  {{ trans('messages.dress_avail_lang',[],session('locale')) }}</span>
                                                     </a>
                                                 </li>
-                                                <li class="nav-item">
+                                                {{-- <li class="nav-item">
                                                     <a class="nav-link" data-bs-toggle="tab" href="#setting3" role="tab">
                                                         <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                                                         <span class="d-none d-sm-block"> Booking upcoming</span>
@@ -62,7 +62,7 @@
                                                         <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
                                                         <span class="d-none d-sm-block"> Booking upcoming</span>
                                                     </a>
-                                                </li>
+                                                </li> --}}
                                             </ul>
                                         </div>
                                     </div><!-- end card header -->
