@@ -58,8 +58,8 @@
                                         <form id="loginForm" class="mt-4 pt-2 login_user" method="POST" >
                                             @csrf
                                             <div class="mb-3">
-                                                <label for="username" class="form-label">اسم المستخدم</label>
-                                                <input type="text" class="form-control" id="username" name="username" placeholder="أدخل اسم المستخدم" autocomplete="username" required>
+                                                <label for="username" class="form-label">User Name or Email </label>
+                                                <input type="text" class="form-control" id="username" name="email" placeholder="أدخل اسم المستخدم" autocomplete="username" >
                                             </div>
                                             <div class="mb-3">
                                                 <div class="d-flex align-items-start">
@@ -68,7 +68,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="input-group">
-                                                    <input type="password" class="form-control" id="password" name="password" placeholder="أدخل كلمة المرور" autocomplete="current-password" required>
+                                                    <input type="password" class="form-control" id="password" name="password" placeholder="أدخل كلمة المرور" autocomplete="current-password" >
                                                     <button class="btn btn-light shadow-none ms-0" type="button" id="password-addon">
                                                         <i class="mdi mdi-eye-outline"></i>
                                                     </button>
@@ -187,9 +187,9 @@
         @endphp
 
 
-        {{-- @if ($route == 'login')
+        @if ($route == 'login_page')
         @include('custom_js.login_js')
-        @endif --}}
+        @endif
 
 
 

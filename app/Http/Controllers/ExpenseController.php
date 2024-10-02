@@ -98,9 +98,14 @@ class ExpenseController extends Controller
             'expense_image' => 'nullable|file|mimes:pdf,xlsx,xls,jpeg,jpg,png,docx|max:2048', 
         ]);
 
+ 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
+ 
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name; 
 
         $expense = new Expense();
         $expense_image = "";
@@ -127,8 +132,8 @@ class ExpenseController extends Controller
         $expense->expense_date = $request['expense_date'];
         $expense->notes = $request['notes'];
         $expense->expense_image = $expense_image;
-        $expense->added_by = 'admin';
-        $expense->user_id = 1;
+        $expense->added_by = $user;
+        $expense->user_id = $user_id;
         $expense->save();
 
         // Update the account balance
@@ -170,9 +175,9 @@ class ExpenseController extends Controller
     public function update_expense(Request $request){
 
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
         $expense_id = $request->input('expense_id');
         $expense = Expense::where('id', $expense_id)->first();
         if (!$expense) {
@@ -183,7 +188,7 @@ class ExpenseController extends Controller
         $account_data = Account::where('id', $expense->payment_method)->first();
         $new_amount = $account_data->opening_balance + $expense->amount;
         $account_data->opening_balance = $new_amount;
-        $account_data->updated_by = 'admin';
+        $account_data->updated_by = $user;
         $account_data->save();
 
         // Validate the request
@@ -217,14 +222,14 @@ class ExpenseController extends Controller
         $expense->amount = $request['amount'];
         $expense->expense_date = $request['expense_date'];
         $expense->notes = $request['notes'];
-        $expense->updated_by = 'admin';
+        $expense->updated_by = $user;
         $expense->save();
 
         // plus from account
         $account_data = Account::where('id', $request['payment_method'])->first();
         $new_amount = $account_data->opening_balance - $request['amount'];
         $account_data->opening_balance = $new_amount;
-        $account_data->updated_by = 'admin';
+        $account_data->updated_by = $user;
         $account_data->save();
 
 

@@ -11,7 +11,7 @@
         <div class="page-content">
             <div class="container-fluid">
 
-                <!-- start page title -->
+
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -27,7 +27,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- end page title -->
+
 
                 <div class="row">
                     <div class="col-lg-8">
@@ -83,11 +83,11 @@
                                     </div><!-- end card header -->
 
                                     <div class="card-body">
-                                        <!-- Tab panes -->
+
                                         <div class="tab-content">
-                                            <!-- First Tab Pane -->
+
                                             <div class="tab-pane fade show active" id="profile3" role="tabpanel">
-                                                {{-- <a href="#" class="btn btn-success">إضافة مستندات</a> --}}
+
                                                 <div class="table-responsive">
                                                     <table class="table align-middle dt-responsive table-check nowrap" style="border-collapse: collapse; border-spacing: 0 8px; width: 100%;" id="all_profile_docs_1">
                                                         <thead>
@@ -190,49 +190,6 @@
         </div> <!-- container-fluid -->
     </div>
 
-    {{-- <div>
-        <div class="modal fade employee_modal3" id="employee_modal3" tabindex="-1" role="dialog"
-            aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalScrollableTitle">نافذة الموظف</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form class="add_employee3" id="add_employee3" method="POST" action="#">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="employee_name" class="col-form-label">اسم الموظف</label>
-                                <input type="text" class="employee_name form-control" name="employee_name" id="employee_name">
-                            </div>
-
-
-                            <input type="text" class="employee_id" name="employee_id" id="employee_id" hidden>
-                            <input type="text" class="employee_customer2" name="employee_customer2" id="employee_customer2" hidden>
-                            <div class="mb-3">
-                                <label for="employee_email" class="col-form-label employee_email">بريد الموظف الإلكتروني</label>
-                                <input type="text" class="employee_email form-control" name="employee_email" id="employee_email">
-                            </div>
-                            <div class="mb-3">
-                                <label for="employee_phone" class="col-form-label employee_phone">هاتف الموظف</label>
-                                <input type="text" class="employee_phone form-control" name="employee_phone" id="employee_phone">
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="message-text" class="col-form-label">تفاصيل الموظف</label>
-                                <textarea class="employee_detail form-control" name="employee_detail" id="employee_detail"></textarea>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">إغلاق</button>
-                                <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> --}}
 
 
     @include('layouts.footer')

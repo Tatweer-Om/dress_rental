@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Booking;
 use App\Models\Customer;
 use App\Models\BookingBill;
 use Illuminate\Http\Request;
 use App\Models\BookingPayment;
+use Illuminate\Support\Facades\Auth;
 
 class CustomerController extends Controller
 {
@@ -72,10 +74,9 @@ class CustomerController extends Controller
     public function add_customer(Request $request){
 
 
-        // $user_id = Auth::id();
-        // $data= User::where('id', $user_id)->first();
-
-        // $user= $data->username;
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
 
         $customer = new Customer();
 
@@ -95,8 +96,8 @@ class CustomerController extends Controller
         $customer->gender = $request['gender'];
         $customer->discount = $request['customer_discount'];
         $customer->address = $request['address'];
-        $customer->added_by = 'admin';
-        $customer->user_id = 1;
+        $customer->added_by = $user;
+        $customer->user_id =  $user_id;
         $customer->save();
         // customer add sms
         // $params = [
@@ -142,9 +143,9 @@ class CustomerController extends Controller
     public function update_customer(Request $request){
 
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
 
         $customer_id = $request->input('customer_id');
         $customer = Customer::where('id', $customer_id)->first();
@@ -161,7 +162,7 @@ class CustomerController extends Controller
         $customer->gender = $request['gender'];
         $customer->discount = $request['customer_discount'];
         $customer->address = $request['address'];
-        $customer->updated_by = 'admin';
+        $customer->updated_by = $user;
         $customer->save();
         return response()->json(['customer_id' => '', 'status' => 1]);
     }

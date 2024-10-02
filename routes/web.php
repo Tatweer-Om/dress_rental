@@ -12,6 +12,7 @@ use App\Http\Controllers\DressController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseCategoryController;
@@ -105,7 +106,9 @@ Route::post('delete_customer', [CustomerController::class, 'delete_customer'])->
 Route::get('customer_profile/{id}', [CustomerController::class, 'customer_profile'])->name('customer_profile');
 Route::post('customer_profile_data', [CustomerController::class, 'customer_profile_data'])->name('customer_profile_data');
 //user
-Route::get('login', [UserController::class, 'login'])->name('login');
+Route::match(['get', 'post'], 'login_page', [UserController::class, 'login_page'])->name('login_page');
+Route::match(['get', 'post'], 'login', [UserController::class, 'login'])->name('login');
+Route::match(['get', 'post'], 'logout', [UserController::class, 'logout'])->name('logout');
 Route::get('user', [UserController::class, 'index'])->name('user');
 Route::post('add_user', [UserController::class, 'add_user'])->name('add_user');
 Route::get('show_user', [UserController::class, 'show_user'])->name('show_user');
@@ -147,4 +150,10 @@ Route::get('sms', [SmsController::class, 'index'])->name('sms');
 Route::post('get_sms_status', [SmsController::class, 'get_sms_status'])->name('get_sms_status');
 Route::match(['get', 'post'], 'add_status_sms', [SmsController::class, 'add_status_sms'])->name('add_status_sms');
 
- 
+
+//Settings
+Route::get('setting', [SettingController::class, 'setting'])->name('setting');
+Route::post('add_setting', [SettingController::class, 'add_setting'])->name('add_setting');
+Route::get('setting_data', [SettingController::class, 'setting_data'])->name('setting_data');
+Route::post('dress_avail', [SettingController::class, 'dress_avail'])->name('dress_avail');
+
