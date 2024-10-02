@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            //
+            $table->string('finish_by')->nullable(); // Name or role of the person adding the record
+            $table->timestamp('finish_date')->nullable(); // Date when the booking was finished
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('bookings', function (Blueprint $table) {
-            //
+            $table->dropColumn(['finish_by', 'finish_date']);
         });
     }
 };

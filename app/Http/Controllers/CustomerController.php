@@ -227,12 +227,14 @@ class CustomerController extends Controller
                 $total_amount += $payment->paid_amount;
             }
         }
-        foreach ($bookings as $booking) {
-
+        
+        foreach ($bookings as $booking) { 
             foreach ($booking->bills as $payment) {
-                $total_panelty += $payment->total_panelty;
+                echo $payment->total_panelty;
+                $total_panelty += $payment->total_penalty;
             }
         }
+         
 
         $currentBookings = Booking::with([
             'bills',

@@ -85,7 +85,7 @@
                             <div class="row">
                                 <div class="col-md-8">
                                     <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="category_name" class="form-label">{{ trans('messages.category_name_lang',[],session('locale')) }}</label>
                                                 <select class="form-control category_name" name="category_name">
@@ -97,7 +97,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="payment_method" class="form-label">{{ trans('messages.payment_method_lang',[],session('locale')) }}</label>
                                                 <select class="form-control payment_method" name="payment_method">
@@ -109,23 +109,23 @@
                                                 </select>
                                             </div>
                                         </div>
-
-
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="expense_name" class="form-label">{{ trans('messages.expense_name_lang',[],session('locale')) }}</label>
                                                 <input class="form-control expense_name" name="expense_name" type="text" id="expense_name">
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+
+                                    </div>
+                                    <div class="row">
+                                        
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="amount" class="form-label">{{ trans('messages.amount_lang',[],session('locale')) }}</label>
                                                 <input class="form-control amount isnumber" name="amount" type="text" id="amount">
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <div class="mb-3">
                                                 <label for="expense_date" class="form-label">{{ trans('messages.expense_date_lang',[],session('locale')) }}</label>
                                                 <input class="form-control expense_date datepick" name="expense_date" type="text" id="expense_date">
@@ -151,9 +151,8 @@
                                     <div class="dz-message needsclick">
                                         <div class="mb-3">
                                             <i class="display-4 text-muted bx bx-cloud-upload"></i>
-                                        </div>
-
-                                        <h5>Drop files here or click to upload.</h5>
+                                        </div> 
+                                        <div id="formErrors"></div>
                                     </div>
 
 

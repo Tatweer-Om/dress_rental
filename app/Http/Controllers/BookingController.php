@@ -311,6 +311,7 @@ class BookingController extends Controller
         $booking_bill = new BookingBill();
         $booking_bill->booking_id = $booking_id;
         $booking_bill->booking_no = $booking_no;
+        $booking_bill->customer_id = $request['customer_id'];
         $booking_bill->total_price = $total_price;
         $booking_bill->total_discount = $total_price-$request['total_price'];
         $booking_bill->grand_total = $request['total_price'];
@@ -512,42 +513,198 @@ class BookingController extends Controller
                 </table>';
         }
         // dress attributes
-        $dress_att_div='<div class="col-md-12">
+        if($booking_data->status == 3)
+        {
+            $dress_att_div='<div class="col-md-12">
                                 <div class="row">
                                     <h2>'.trans('messages.attribute_lang',[],session('locale')).'</h2>
                                 </div>
                                 <div class="row accordion" id="accordionExample">';
-        $dress_attribute = DressAttribute::where('dress_id', $dress_data->id)->get();
-        if(!empty($dress_attribute))
-        {
-            foreach ($dress_attribute as $key => $value) {
-                $dress_att_div.='<div class="col-md-6">
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="heading'.$value->id.'">
-                                            <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse'.$value->id.'" aria-expanded="false" aria-controls="collapse'.$value->id.'">
-                                                '.$value->attribute.'
-                                            </button>
-                                        </h2>
-                                        <div id="collapse'.$value->id.'" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
-                                            <div class="accordion-body">
-                                                <div class="text-muted">
-                                                    <strong class="text-dark">'.$value->notes.'
-                                                    </strong>
+            $dress_attribute = BookingDressAttribute::where('dress_id', $dress_data->id)->where('booking_id', $booking_id)->get();
+            if(!empty($dress_attribute))
+            {
+                foreach ($dress_attribute as $key => $value) {
+                    if($value->status == 2)
+                    {
+                        $dress_status = '<span class="badge bg-success">'.trans('messages.clear_lang',[],session('locale')).'</span>';
+                    }
+                    else
+                    {
+                        $dress_status ='<span class="badge bg-danger">'.trans('messages.faulty_lang',[],session('locale')).'</span>';
+                    }
+                    $dress_att_div.='<div class="col-md-6">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="heading'.$value->id.'">
+                                                <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse'.$value->id.'" aria-expanded="false" aria-controls="collapse'.$value->id.'">
+                                                    '.$value->attribute_name.' ('.$dress_status.')
+                                                </button>
+                                            </h2>
+                                            <div id="collapse'.$value->id.'" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                                                <div class="accordion-body">
+                                                    <div class="text-muted">
+                                                       <strong class="text-dark">'.trans('messages.price_lang',[],session('locale')).' '.$value->penalty_price.'
+                                                        </strong>
+                                                        <hr>
+                                                        <strong class="text-dark">'.$value->fault_notes.'
+                                                        </strong>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div><br>
+                                            </div> 
+                                        </div><br>
+                                    </div>';
+                }
+            }
+            else
+            {
+                $dress_att_div.='<div class="col-md-12">
+                                    <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
                                 </div>';
             }
+            $dress_att_div.='</div>
+                                </div>';
         }
         else
         {
-            $dress_att_div.='<div class="col-md-12">
-                                <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
-                            </div>';
+            $dress_att_div='<div class="col-md-12">
+                                <div class="row">
+                                    <h2>'.trans('messages.attribute_lang',[],session('locale')).'</h2>
+                                </div>
+                                <div class="row accordion" id="accordionExample">';
+            $dress_attribute = DressAttribute::where('dress_id', $dress_data->id)->get();
+            if(!empty($dress_attribute))
+            {
+                foreach ($dress_attribute as $key => $value) {
+                    $dress_att_div.='<div class="col-md-6">
+                                        <div class="accordion-item">
+                                            <h2 class="accordion-header" id="heading'.$value->id.'">
+                                                <button class="accordion-button fw-medium collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse'.$value->id.'" aria-expanded="false" aria-controls="collapse'.$value->id.'">
+                                                    '.$value->attribute.'
+                                                </button>
+                                            </h2>
+                                            <div id="collapse'.$value->id.'" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionExample" style="">
+                                                <div class="accordion-body">
+                                                    <div class="text-muted">
+                                                        <strong class="text-dark">'.$value->notes.'
+                                                        </strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><br>
+                                    </div>';
+                }
+            }
+            else
+            {
+                $dress_att_div.='<div class="col-md-12">
+                                    <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                                </div>';
+            }
+            $dress_att_div.='</div>
+                                </div>';
         }
-        $dress_att_div.='</div>
+        $tab_li_extend="";
+        $tab_content_extend="";
+        $extend_history = BookingExtendHistory::where('booking_id', $booking_id)->where('type', 2)->get();
+         
+        if ($extend_history->isNotEmpty())
+        {
+             
+            $tab_li_extend='<li class="nav-item waves-effect waves-light">
+                                <a class="nav-link" data-bs-toggle="tab" href="#extend_history_tab" role="tab">
+                                    <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                                    <span class="d-none d-sm-block">'.trans('messages.extend_history_lang',[],session('locale')).'</span> 
+                                </a>
+                            </li>';
+            $start_date =   Carbon::parse($booking_data->rent_date)->format('d F Y');
+            $tab_content_extend.='<div class="tab-pane" id="extend_history_tab" role="tabpanel">
+                                    <div class="row justify-content-center">
+                                        <div class="col-xl-10">
+                                            <div class="timeline">
+                                                <div class="timeline-container">
+                                                    <div class="timeline-launch">
+                                                        <div class="timeline-box">
+                                                            <div class="timeline-text">
+                                                                <h3 class="font-size-18">'.$start_date.'</h3> 
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-end">
+                                                        <p>'.trans('messages.start_lang',[],session('locale')).'</p>
+                                                         
+                                                    </div>
+                                                    <div class="timeline-continue">';
+            $i=1;
+              
+            foreach ($extend_history as $key => $history) {
+                if ($i % 2 == 1) {
+                    $show_style='timeline-right';
+                }
+                else
+                {
+                    $show_style='timeline-left';
+                }
+                $extend_date_date =   Carbon::parse($history->rent_date)->format('d');
+                $extend_date_month =   Carbon::parse($history->rent_date)->format('F');
+                $tab_content_extend.='<div class="row '.$show_style.'">
+                                        <div class="col-md-6">
+                                            <div class="timeline-icon">
+                                                <i class="bx bx-briefcase-alt-2 text-primary h2 mb-0"></i>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="timeline-box">
+                                                <div class="timeline-date bg-primary text-center rounded">
+                                                    <h3 class="text-white mb-0">'.$extend_date_date.'</h3>
+                                                    <p class="mb-0 text-white-50">'.$extend_date_month.'</p>
+                                                </div>
+                                                <div class="event-content">
+                                                    <div class="timeline-text">
+                                                        <h3 class="font-size-18">'.trans('messages.extend_no_lang',[],session('locale')).' '.$i.'</h3>
+                                                        <p class="mb-0 mt-2 pt-1 text-muted">'.$history->notes.'</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>';
+                $i++;
+            }
+            $finish_data_div="";
+            if($booking_data->status == 3)
+            {
+                $end_date =   Carbon::parse($booking_data->finish_date)->format('d F Y');
+                $finish_data_div='<div class="timeline-start">
+                                <p>'.trans('messages.end_lang',[],session('locale')).'</p> 
+                            </div>
+                            <div class="timeline-launch">
+                                <div class="timeline-box">
+                                    <div class="timeline-text">
+                                        <h3 class="font-size-18">'.$end_date.'</h3> 
+                                    </div>
+                                </div>
                             </div>';
+            }
+            else
+            {
+                $end_date =   Carbon::parse($booking_data->return_date)->format('d F Y');
+                $finish_data_div='<div class="timeline-start">
+                                <p>'.trans('messages.expected_end_lang',[],session('locale')).'</p> 
+                            </div>
+                            <div class="timeline-launch">
+                                <div class="timeline-box">
+                                    <div class="timeline-text">
+                                        <h3 class="font-size-18">'.$end_date.'</h3> 
+                                    </div>
+                                </div>
+                            </div>';
+            }
+            $tab_content_extend.='</div>'.$finish_data_div.'
+                                                     
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>';
+        }
         $booking_detail='<div class="col-md-10">
                             <ul class="nav nav-pills nav-justified" role="tablist">
                                 <li class="nav-item waves-effect waves-light">
@@ -574,6 +731,7 @@ class BookingController extends Controller
                                         <span class="d-none d-sm-block">'.trans('messages.payment_detail_lang',[],session('locale')).'</span> 
                                     </a>
                                 </li>
+                                '.$tab_li_extend.'
                             </ul>
                             <div class="tab-content p-3 text-muted">
                                 <div class="tab-pane active" id="booking_tab" role="tabpanel">
@@ -693,6 +851,7 @@ class BookingController extends Controller
                                         '.$payment_detail.'
                                     </div>
                                 </div>
+                                '.$tab_content_extend.'
                             </div>
                         </div>';
         $edit_btn="";
@@ -1264,7 +1423,7 @@ class BookingController extends Controller
         {
             
             foreach ($dress_attribute as $key => $value) {
-                $dress_att_div.='<div class="col-md-6">
+                $dress_att_div.='<div class="col-md-3">
                                     <div class="form-check mb-3">
                                         <input type="hidden" value="'.$value->id.'" name="attribute_hidden_id[]">
                                         <input class="form-check-input attributes_id" type="checkbox" name="attributes_id[]" value="'.$value->id.'" id="formCheck'.$value->id.'">
@@ -1273,8 +1432,11 @@ class BookingController extends Controller
                                         </label>
                                     </div>
                                  </div>
-                                 <div class="col-md-6">
+                                 <div class="col-md-2">
                                     <input type="text" class="form-control panelty_price isnumber" name="panelty_price[]" value="0">
+                                 </div>
+                                 <div class="col-md-7">
+                                    <textarea class="form-control fault_notes" name="fault_notes[]" rows="3" placeholder="'.trans('messages.notes_lang',[],session('locale')).'"></textarea> 
                                  </div><br>';
                 $all_attributes_id[]=$value->id;
             }
@@ -1304,6 +1466,7 @@ class BookingController extends Controller
         $booking_id = $request->input('booking_id');
         $all_attributes  = explode(',',$request->input('all_attributes'));
         $panelty_price = $request->input('panelty_price');
+        $fault_notes = $request->input('fault_notes');
         $checked_attributes = $request->input('attributes_id');  
         $total_penalty =0;
         foreach ($all_attributes as $index => $attribute_id) {
@@ -1330,6 +1493,7 @@ class BookingController extends Controller
             
             // Update the penalty price (it's already a scalar value, not an array)
             $booking_attributes->penalty_price = $penalty_price;
+            $booking_attributes->fault_notes = $fault_notes[$index];
             
             // Save the updated attributes
             $booking_attributes->save();
@@ -1338,7 +1502,7 @@ class BookingController extends Controller
         
         $booking_data = Booking::where('id', $booking_id)->first();
         // update booking 
-        $booking_data->status = $user;
+        $booking_data->status = 3;
         $booking_data->finish_by = $user_id;
         $booking_data->finish_date = date('Y-m-d H:i:s');
         $booking_data->save();

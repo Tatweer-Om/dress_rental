@@ -244,6 +244,8 @@
     @include('custom_js.customer_js') 
 @elseif ($controllerName == 'maint_dress_all')
     @include('custom_js.add_dress_js')
+@elseif ($controllerName == 'dress_profile')
+    @include('custom_js.add_dress_js')
 @endif
  
 

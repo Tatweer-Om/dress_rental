@@ -41,6 +41,20 @@
                     success: function(data) {
                         $('#global-loader').hide();
                         after_submit();
+                        // Clear previous error messages
+                        $('.alert-danger').remove();
+
+                        // If validation errors exist, display them
+                        if (data.status === 422) {
+                            var errors = data.responseJSON.errors;
+                            var errorList = '<div class="alert alert-danger"><ul>';
+                            $.each(errors, function(key, value) {
+                                errorList += '<li>' + value[0] + '</li>'; // Show the first error message for each field
+                            });
+                            errorList += '</ul></div>';
+                            $('#formErrors').html(errorList); // Assuming you have a div with id="formErrors" to display errors
+                            return false;
+                        }
                         show_notification('success','<?php echo trans('messages.data_update_success_lang',[],session('locale')); ?>');
                         $('#add_expense_modal').modal('hide');
                         $('#all_expense').DataTable().ajax.reload();
@@ -80,6 +94,20 @@
                     success: function(data) {
                         $('#global-loader').hide();
                         after_submit();
+                        // Clear previous error messages
+                        $('.alert-danger').remove();
+
+                        // If validation errors exist, display them
+                        if (data.status === 422) {
+                            var errors = data.responseJSON.errors;
+                            var errorList = '<div class="alert alert-danger"><ul>';
+                            $.each(errors, function(key, value) {
+                                errorList += '<li>' + value[0] + '</li>'; // Show the first error message for each field
+                            });
+                            errorList += '</ul></div>';
+                            $('#formErrors').html(errorList); // Assuming you have a div with id="formErrors" to display errors
+                            return false;
+                        }
                         $('#all_expense').DataTable().ajax.reload();
                         show_notification('success','<?php echo trans('messages.data_add_success_lang',[],session('locale')); ?>');
                         $('#add_expense_modal').modal('hide');
