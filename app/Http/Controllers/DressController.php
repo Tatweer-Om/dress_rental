@@ -12,9 +12,14 @@ use App\Models\Category;
 use App\Models\DressImage;
 use Illuminate\Http\Request;
 use App\Models\DressAttribute;
+use App\Models\Booking;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Carbon\Carbon; 
+use App\Models\Customer;
+use App\Models\BookingBill; 
+use App\Models\BookingPayment;
 use Illuminate\Support\Facades\Storage;
 
 class DressController extends Controller
@@ -655,6 +660,91 @@ class DressController extends Controller
         ]);
 
 
+    }
+
+    public function dress_profile($id){
+
+        $dress_data= Dress::where('id', $id)->first();
+        $category_data= Category::where('id', $dress_data->category_name)->first();
+        $color_data= Color::where('id', $dress_data->color_name)->first();
+        $size_data= Size::where('id', $dress_data->size_name)->first();
+
+        return view ('dress.dress_profile', compact('dress_data','category_data','color_data','size_data'));
+
+
+    }
+
+    public function dress_profile_data(Request $request)
+    {
+
+        $dress = dress::find($request->dress_id);
+        if (!$dress) {
+            return response()->json(['message' => 'dress not found'], 404);
+        }
+        $bookings = Booking::with([
+            'bills',
+            'payments',
+            'dress.brand',
+            'dress.category',
+            'dress.color',
+            'dress.size'
+        ])->where('dress_id', $dress->id)->get();
+
+        $upcoming_bookings = Booking::with([
+            'bills',
+            'payments',
+            'dress.brand',
+            'dress.category',
+            'dress.color',
+            'dress.size'
+        ])
+        ->where('dress_id', $dress->id)
+        ->where('rent_date', '>', Carbon::now())
+        ->get();
+
+        $upcoming_bookings_count= $upcoming_bookings->count();
+        $total_bookings= $bookings->count();
+        $total_amount = 0;
+        $total_panelty=0;
+        foreach ($bookings as $booking) {
+
+            foreach ($booking->payments as $payment) {
+                $total_amount += $payment->paid_amount;
+            }
+        }
+        
+        foreach ($bookings as $booking) { 
+            foreach ($booking->bills as $payment) {
+                echo $payment->total_panelty;
+                $total_panelty += $payment->total_penalty;
+            }
+        }
+         
+
+        $currentBookings = Booking::with([
+            'bills',
+            'payments',
+            'dress.brand',
+            'dress.category',
+            'dress.color',
+            'dress.size'
+        ])
+        ->where('dress_id', $dress->id)
+        ->whereDate('rent_date', '<=', Carbon::now())
+        ->whereDate('return_date', '>=', Carbon::now())
+        ->get();
+
+        return response()->json([
+            'bookings' => $bookings,
+            'up_bookings'=> $upcoming_bookings,
+            'total_amount'=>$total_amount,
+            'total_bookings'=>$total_bookings,
+            'upcoming_bookings_count'=>$upcoming_bookings_count,
+            'total_panelty'=>$total_panelty,
+            'current_bookings'=>$currentBookings
+
+
+        ]);
     }
 
 }

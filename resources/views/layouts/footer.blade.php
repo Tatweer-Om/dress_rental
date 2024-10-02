@@ -245,11 +245,10 @@
 
 @elseif ($controllerName == 'maint_dress_all')
     @include('custom_js.add_dress_js')
-
+@elseif ($controllerName == 'dress_profile')
+    @include('custom_js.add_dress_js')
 @elseif ($controllerName == 'setting')
-@include('custom_js.setting_js')
-
-
+    @include('custom_js.setting_js')
 @endif
 
 

@@ -2,7 +2,7 @@
 
 @section('main')
 @push('title')
-<title> {{ $customer->customer_name ?? '' }}</title>
+<title> {{ $dress_data->dress_name ?? '' }}</title>
 @endpush
 
 
@@ -11,23 +11,23 @@
         <div class="page-content">
             <div class="container-fluid">
 
-
+                <!-- start page title -->
                 <div class="row">
                     <div class="col-12">
                         <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                            <h4 class="mb-sm-0 font-size-18">{{ $customer->customer_name ?? '' }}  </h4>
+                            <h4 class="mb-sm-0 font-size-18">{{ $dress_data->dress_name ?? '' }}  </h4>
 
                             <div class="page-title-right">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="#">{{ trans('messages.customer_profile_lang',[],session('locale')) }}  </a></li>
-                                    <li class="breadcrumb-item active"><a href="{{ url('customer') }}">Customers</a></li>
+                                    <li class="breadcrumb-item"><a href="#">Dress Profile  </a></li>
+                                    <li class="breadcrumb-item active"><a href="{{ url('dress') }}">Customers</a></li>
                                 </ol>
                             </div>
 
                         </div>
                     </div>
                 </div>
-
+                <!-- end page title -->
 
                 <div class="row">
                     <div class="col-lg-8">
@@ -39,21 +39,21 @@
                                             <div class="mb-4">
                                                 <img src="{{ asset('images/logo-sm.svg') }}" alt=""
                                                     height="24"><span class="logo-txt">
-                                                        {{ $customer->customer_name ?? '' }}</span>
+                                                        {{ $dress_data->dress_name ?? '' }}</span>
                                             </div>
                                         </div>
-                                        <input type="hidden" id="customer_id" value="{{ $customer->id ?? '' }}">
+                                        <input type="hidden" id="dress_id" value="{{ $dress_data->id ?? '' }}">
                                         <div class="flex-shrink-0">
                                             <div class="mb-4">
-                                                <h4 class="float-end font-size-16">Customer ID- 00{{ $customer->id ?? '' }} </h4>
+                                                <h4 class="float-end font-size-16">Dress Code - {{ $dress_data->sku ?? '' }} </h4>
                                             </div>
                                         </div>
                                     </div>
 
-                                    <p class="mb-1">{{ $customer->address ?? '' }}</p>
-                                    <p class="mb-1"><i class="mdi mdi-email align-middle me-1"></i>
-                                        {{ $customer->customer_email ?? '' }}</p>
-                                    <p><i class="mdi mdi-phone align-middle me-1"></i> {{ $customer->customer_number ?? '' }}
+                                    <p class="mb-1">{{ $dress_data->address ?? '' }}</p>
+                                    <p class="mb-1"><i class="fas fa-copyright"></i>
+                                        {{ $category_data->category_name ?? '' }}</p>
+                                    <p><i class="fas fa-palette"></i> {{ $color_data->color_name ?? '' }}
                                     </p>
                                 </div>
                                 <hr class="my-4">
@@ -63,19 +63,19 @@
                             <div class="col-xl-12">
                                 <div class="card">
                                     <div class="card-header align-items-center d-flex">
-                                        <h4 class="card-title mb-0 flex-grow-1">{{ trans('messages.customer_booking_detail_lang',[],session('locale')) }}  </h4>
+                                        <h4 class="card-title mb-0 flex-grow-1">Dress Booking Details  </h4>
                                         <div class="flex-shrink-0">
                                             <ul class="nav justify-content-end nav-tabs-custom rounded card-header-tabs" role="tablist">
                                                 <li class="nav-item">
                                                     <a class="nav-link active" data-bs-toggle="tab" href="#profile3" role="tab">
                                                         <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                                        <span class="d-none d-sm-block"> {{ trans('messages.booking_lang',[],session('locale')) }}</span>
+                                                        <span class="d-none d-sm-block"> Bokings</span>
                                                     </a>
                                                 </li>
                                                 <li class="nav-item">
                                                     <a class="nav-link" data-bs-toggle="tab" href="#profile2" role="tab">
                                                         <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                                        <span class="d-none d-sm-block"> {{ trans('messages.upcoming_booking_lang',[],session('locale')) }}</span>
+                                                        <span class="d-none d-sm-block"> Booking upcoming</span>
                                                     </a>
                                                 </li>
                                             </ul>
@@ -83,11 +83,11 @@
                                     </div><!-- end card header -->
 
                                     <div class="card-body">
-
+                                        <!-- Tab panes -->
                                         <div class="tab-content">
-
+                                            <!-- First Tab Pane -->
                                             <div class="tab-pane fade show active" id="profile3" role="tabpanel">
-
+                                                {{-- <a href="#" class="btn btn-success">إضافة مستندات</a> --}}
                                                 <div class="table-responsive">
                                                     <table class="table align-middle dt-responsive table-check nowrap" style="border-collapse: collapse; border-spacing: 0 8px; width: 100%;" id="all_profile_docs_1">
                                                         <thead>
@@ -140,7 +140,7 @@
                             <div class="card-body">
 
                                 <div class="mt-5">
-                                    <h5 class="mb-3">Customer's Other Details</h5>
+                                    <h5 class="mb-3">Dress's Other Details</h5>
                                     <ul class="list-unstyled fw-medium px-2">
                                         <li>
                                             <a href="javascript: void(0);" class="text-body pb-3 d-block border-bottom">
@@ -190,7 +190,7 @@
         </div> <!-- container-fluid -->
     </div>
 
-
+    
 
     @include('layouts.footer')
 @endsection

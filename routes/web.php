@@ -67,6 +67,9 @@ Route::post('maint_dress', [DressController::class, 'maint_dress'])->name('maint
 Route::get('maint_dress_all', [DressController::class, 'maint_dress_all'])->name('maint_dress_all');
 Route::get('show_maint_dress', [DressController::class, 'show_maint_dress'])->name('show_maint_dress');
 Route::post('maint_dress_comp', [DressController::class, 'maint_dress_comp'])->name('maint_dress_comp');
+Route::get('dress_profile/{id}', [DressController::class, 'dress_profile'])->name('dress_profile');
+Route::post('dress_profile_data', [DressController::class, 'dress_profile_data'])->name('dress_profile_data');
+
 
 // booking
 Route::get('booking', [BookingController::class, 'index'])->name('booking');

@@ -50,13 +50,13 @@ class ExpenseController extends Controller
                 $payment_method = getColumnValue('accounts','id',$value->payment_method,'account_name');
                 $modal='<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_expense_modal" onclick=edit("'.$value->id.'") title="Edit">
                 <i class="fas fa-pencil-alt" title="Edit"></i>
-            </a>
-            <a class="btn btn-outline-secondary btn-sm edit" onclick=del("'.$value->id.'") title="Delete">
-                <i class="fas fa-trash" title="Edit"></i>
-            </a>';
+                    </a>
+                    <a class="btn btn-outline-secondary btn-sm edit" onclick=del("'.$value->id.'") title="Delete">
+                        <i class="fas fa-trash" title="Edit"></i>
+                    </a>';
                 if(!empty($value->expense_image))
                 {
-                    $modal.='<a target="_blank" class="me-3 text-primary" href="'.url('download_expense_image').'/'.$value->expense_image.'"><i class="fas fa-download"></i>
+                    $modal.=' <a target="_blank" class="btn btn-outline-secondary btn-sm edit" href="'.url('download_expense_image').'/'.$value->expense_image.'"><i class="fas fa-download"></i>
                     </a>';
                 }
                 $add_data=get_date_only($value->created_at);
@@ -90,26 +90,41 @@ class ExpenseController extends Controller
         }
     }
 
-    public function add_expense(Request $request){
+    public function add_expense(Request $request)
+    {
+         
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'expense_image' => 'nullable|file|mimes:pdf,xlsx,xls,jpeg,jpg,png,docx|max:2048', 
+        ]);
 
+ 
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+ 
         $user_id = Auth::id();
         $data= User::find( $user_id)->first();
-        $user= $data->user_name;
+        $user= $data->user_name; 
 
         $expense = new Expense();
-        $expense_image="";
+        $expense_image = "";
+
+        // Handle the file upload
         if ($request->hasFile('expense_image')) {
-            $folderPath = public_path('images/expense_images');
+            $folderPath = public_path('custom_images/expense_images');
 
             // Check if the folder doesn't exist, then create it
             if (!File::isDirectory($folderPath)) {
                 File::makeDirectory($folderPath, 0777, true, true);
             }
+            
+            // Create a unique filename
             $expense_image = time() . '.' . $request->file('expense_image')->extension();
-            $request->file('expense_image')->move(public_path('images/expense_images'), $expense_image);
+            $request->file('expense_image')->move($folderPath, $expense_image);
         }
 
-
+        // Save expense details
         $expense->category_id = $request['category_name'];
         $expense->expense_name = $request['expense_name'];
         $expense->payment_method = $request['payment_method'];
@@ -121,7 +136,7 @@ class ExpenseController extends Controller
         $expense->user_id = $user_id;
         $expense->save();
 
-        // minus from account
+        // Update the account balance
         $account_data = Account::where('id', $request['payment_method'])->first();
         $new_amount = $account_data->opening_balance - $request['amount'];
         $account_data->opening_balance = $new_amount;
@@ -129,13 +144,7 @@ class ExpenseController extends Controller
         $account_data->save();
 
         return response()->json(['expense_id' => $expense->id]);
-
     }
-
-
-
-
-
 
 
     public function edit_expense(Request $request){
@@ -182,14 +191,30 @@ class ExpenseController extends Controller
         $account_data->updated_by = $user;
         $account_data->save();
 
+        // Validate the request
+        $validator = Validator::make($request->all(), [
+            'expense_image' => 'nullable|file|mimes:pdf,xlsx,xls,jpeg,jpg,png,docx|max:2048', 
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $expense = new Expense();
+        $expense_image = "";
+
+        // Handle the file upload
         if ($request->hasFile('expense_image')) {
-            $folderPath = public_path('images/expense_images');
+            $folderPath = public_path('custom_images/expense_images');
+
+            // Check if the folder doesn't exist, then create it
             if (!File::isDirectory($folderPath)) {
                 File::makeDirectory($folderPath, 0777, true, true);
             }
+            
+            // Create a unique filename
             $expense_image = time() . '.' . $request->file('expense_image')->extension();
-            $request->file('expense_image')->move(public_path('images/expense_images'), $expense_image);
-            $expense->expense_image = $expense_image;
+            $request->file('expense_image')->move($folderPath, $expense_image);
         }
         $expense->category_id = $request['category_name'];
         $expense->expense_name = $request['expense_name'];
@@ -228,7 +253,7 @@ class ExpenseController extends Controller
     // download
     public function download_expense_image($filename)
     {
-        $filePath = public_path('images/expense_images/' . $filename);
+        $filePath = public_path('customer_images/expense_images/' . $filename);
 
         // Check if file exists
         if (file_exists($filePath)) {
