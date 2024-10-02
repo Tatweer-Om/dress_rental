@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class CategoryController extends Controller
         {
             foreach($view_category as $value)
             {
-                
+
                 $modal='<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_category_modal" onclick=edit("'.$value->id.'") title="Edit">
                             <i class="fas fa-pencil-alt" title="Edit"></i>
                         </a>
@@ -57,15 +58,12 @@ class CategoryController extends Controller
 
     public function add_category(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
-
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
         $category = new Category();
-         
-        
+
+
         $category->category_name = $request['category_name'];
         $category->added_by = $user;
         $category->user_id = $user_id;
@@ -92,17 +90,15 @@ class CategoryController extends Controller
 
     public function update_category(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
         $category_id = $request->input('category_id');
         $category = Category::where('id', $category_id)->first();
         $category->category_name = $request->input('category_name');
         $category->updated_by = $user;
         $category->save();
-         
+
     }
 
     public function delete_category(Request $request){

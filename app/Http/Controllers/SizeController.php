@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Size;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -21,7 +22,7 @@ class SizeController extends Controller
         {
             foreach($view_size as $value)
             {
-                
+
                 $modal='<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_size_modal" onclick=edit("'.$value->id.'") title="Edit">
                             <i class="fas fa-pencil-alt" title="Edit"></i>
                         </a>
@@ -57,15 +58,14 @@ class SizeController extends Controller
 
     public function add_size(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
 
         $size = new size();
-         
-        
+
+
         $size->size_name = $request['size_name'];
         $size->added_by = $user;
         $size->user_id = $user_id;
@@ -92,17 +92,16 @@ class SizeController extends Controller
 
     public function update_size(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
         $size_id = $request->input('size_id');
         $size = size::where('id', $size_id)->first();
         $size->size_name = $request->input('size_name');
         $size->updated_by = $user;
         $size->save();
-         
+
     }
 
     public function delete_size(Request $request){

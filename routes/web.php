@@ -12,6 +12,7 @@ use App\Http\Controllers\DressController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ExpenseCategoryController;
@@ -79,6 +80,16 @@ Route::post('get_payment', [BookingController::class, 'get_payment'])->name('get
 Route::post('add_payment', [BookingController::class, 'add_payment'])->name('add_payment');
 Route::post('add_dress_availability', [BookingController::class, 'add_dress_availability'])->name('add_dress_availability');
 Route::post('get_booking_detail', [BookingController::class, 'get_booking_detail'])->name('get_booking_detail');
+Route::post('delete_payment', [BookingController::class, 'delete_payment'])->name('delete_payment');
+Route::post('delete_booking', [BookingController::class, 'delete_booking'])->name('delete_booking');
+Route::get('edit_booking/{id}', [BookingController::class, 'edit_booking'])->name('edit_booking');
+Route::post('update_booking', [BookingController::class, 'update_booking'])->name('update_booking');
+Route::post('cancel_booking', [BookingController::class, 'cancel_booking'])->name('cancel_booking');
+Route::post('get_booking_data', [BookingController::class, 'get_booking_data'])->name('get_booking_data');
+Route::post('get_extend_dress_detail', [BookingController::class, 'get_extend_dress_detail'])->name('get_extend_dress_detail');
+Route::post('add_extend_booking', [BookingController::class, 'add_extend_booking'])->name('add_extend_booking');
+Route::post('get_finish_booking_detail', [BookingController::class, 'get_finish_booking_detail'])->name('get_finish_booking_detail');
+Route::post('add_finish_booking', [BookingController::class, 'add_finish_booking'])->name('add_finish_booking');
 
 
 
@@ -92,7 +103,9 @@ Route::post('delete_customer', [CustomerController::class, 'delete_customer'])->
 Route::get('customer_profile/{id}', [CustomerController::class, 'customer_profile'])->name('customer_profile');
 Route::post('customer_profile_data', [CustomerController::class, 'customer_profile_data'])->name('customer_profile_data');
 //user
-Route::get('login', [UserController::class, 'login'])->name('login');
+Route::match(['get', 'post'], 'login_page', [UserController::class, 'login_page'])->name('login_page');
+Route::match(['get', 'post'], 'login', [UserController::class, 'login'])->name('login');
+Route::match(['get', 'post'], 'logout', [UserController::class, 'logout'])->name('logout');
 Route::get('user', [UserController::class, 'index'])->name('user');
 Route::post('add_user', [UserController::class, 'add_user'])->name('add_user');
 Route::get('show_user', [UserController::class, 'show_user'])->name('show_user');
@@ -133,4 +146,11 @@ Route::post('delete_account', [AccountController::class, 'delete_account'])->nam
 Route::get('sms', [SmsController::class, 'index'])->name('sms');
 Route::post('get_sms_status', [SmsController::class, 'get_sms_status'])->name('get_sms_status');
 Route::match(['get', 'post'], 'add_status_sms', [SmsController::class, 'add_status_sms'])->name('add_status_sms');
+
+
+//Settings
+Route::get('setting', [SettingController::class, 'setting'])->name('setting');
+Route::post('add_setting', [SettingController::class, 'add_setting'])->name('add_setting');
+Route::get('setting_data', [SettingController::class, 'setting_data'])->name('setting_data');
+Route::post('dress_avail', [SettingController::class, 'dress_avail'])->name('dress_avail');
 

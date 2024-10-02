@@ -96,5 +96,22 @@ function get_booking_number()
     return $booking_no;
 }
 
+function calculateDays($rent_date, $return_date) {
+    // Convert the input strings to DateTime objects
+    $rentDate = new DateTime($rent_date);
+    $returnDate = new DateTime($return_date);
+
+    // Check if the return date is after the rent date
+    if ($returnDate > $rentDate) {
+        // Calculate the difference in days
+        $interval = $rentDate->diff($returnDate);
+        $daysDiff = $interval->days; // Get the difference in days
+
+        return $daysDiff; // Return the number of days difference
+    } else {
+        return 1; // Return 1 if return date is not greater than rent date
+    }
+}
+
 
 ?>

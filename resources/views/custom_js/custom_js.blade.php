@@ -11,6 +11,27 @@
         //     }
         // });
         flatpickr(".datepick",{defaultDate:new Date})
+
+        $('#logout').on('click', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "{{ route('logout') }}",
+                type: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function(response) {
+                   e
+                    show_notification('success', 'لقد قمت بتسجيل الخروج');
+                    window.location.href = '/login_page';
+                },
+                error: function(xhr) {
+
+                    console.error(xhr.responseText);
+                }
+            });
+        });
     });
     // img
     var imagePath = '{{ asset('images/dummy_image/no_image.png') }}';
@@ -164,5 +185,24 @@
     // Format the date as needed, for example: "YYYY-MM-DD"
     return date.toISOString().split('T')[0]; // Adjust the format as needed
 }
+
+
+    // When the image is clicked, trigger the file input click
+    document.getElementById('ad_cover_preview').addEventListener('click', function() {
+        document.getElementById('ad_cover').click();
+    });
+
+    // Preview the selected image
+    document.getElementById('ad_cover').addEventListener('change', function(event) {
+        var file = event.target.files[0]; // Get the selected file
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('ad_cover_preview').src = e.target.result; // Set the preview image source to the selected image
+            }
+            reader.readAsDataURL(file); // Read the file as a data URL
+        }
+    });
+
 
 </script>

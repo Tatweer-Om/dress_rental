@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Color;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +22,7 @@ class ColorController extends Controller
         {
             foreach($view_color as $value)
             {
-                
+
                 $modal='<a class="btn btn-outline-secondary btn-sm edit" data-bs-toggle="modal" data-bs-target="#add_color_modal" onclick=edit("'.$value->id.'") title="Edit">
                             <i class="fas fa-pencil-alt" title="Edit"></i>
                         </a>
@@ -57,15 +58,13 @@ class ColorController extends Controller
 
     public function add_color(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
 
         $color = new color();
-         
-        
+
+
         $color->color_name = $request['color_name'];
         $color->added_by = $user;
         $color->user_id = $user_id;
@@ -92,17 +91,15 @@ class ColorController extends Controller
 
     public function update_color(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
-        $user_id="";
-        $user="";
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
         $color_id = $request->input('color_id');
         $color = color::where('id', $color_id)->first();
         $color->color_name = $request->input('color_name');
         $color->updated_by = $user;
         $color->save();
-         
+
     }
 
     public function delete_color(Request $request){

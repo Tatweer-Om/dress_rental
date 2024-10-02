@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Account;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
@@ -92,9 +94,11 @@ class AccountController extends Controller
 
     public function add_account(Request $request){
 
-        // $user_id = Auth::id();
-        // $data= User::find( $user_id)->first();
-        // $user= $data->username;
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
+
+
 
         $account = new account();
 
@@ -107,8 +111,8 @@ class AccountController extends Controller
         $account->account_type = $request['account_type'];
         $account->account_status = $request['account_status'];
         $account->notes = $request['notes'];
-        $account->added_by = 'admin';
-        $account->user_id = 1;
+        $account->added_by = $user;
+        $account->user_id =  $user_id;
         $account->save();
         return response()->json(['account_id' => $account->id]);
 
@@ -147,9 +151,9 @@ class AccountController extends Controller
             return response()->json(['error' => trans('messages.account_not_found_lang', [], session('locale'))], 404);
         }
 
-        //  $user_id = Auth::id();
-        //  $data= User::find( $user_id)->first();
-        //  $user= $data->username;
+        $user_id = Auth::id();
+        $data= User::find( $user_id)->first();
+        $user= $data->user_name;
 
         $account->account_name = $request['account_name'];
         $account->account_branch = $request['account_branch'];
@@ -159,7 +163,7 @@ class AccountController extends Controller
         $account->account_type = $request['account_type'];
         $account->account_status = $request['account_status'];
         $account->notes = $request['notes'];
-        $account->updated_by = 'admin';
+        $account->updated_by = $user;
         $account->save();
         return response()->json(['success' => trans('messages.data_update_success_lang', [], session('locale'))]);
     }

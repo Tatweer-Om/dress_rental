@@ -164,7 +164,6 @@ return [
 'update_lang' => 'Update', // تحديث
 'edit_failed_lang' => 'Edit Failed', // فشل التعديل
 'sure_lang' => 'Are you sure?', // هل أنت متأكد؟
-'delete_lang' => 'You will not be able to recover this item!', // لن تتمكن من استرجاع هذا العنصر!
 'delete_it_lang' => 'Delete it!', // احذفه!
 'delete_failed_lang' => 'Delete Failed', // فشل الحذف
 'delete_success_lang' => 'Deleted successfully', // تم الحذف بنجاح
@@ -197,6 +196,17 @@ return [
 'size_lang'=>'Size',
 
 'maintenance_lang'=>'Maintenance',
+'company_name_lang' => 'Company Name',
+'company_email_lang' => 'Company Email',
+'company_phone_lang' => 'Company Phone',
+'company_cr_lang' => 'Company CR',
+'company_address_lang' => 'Company Address',
+
+'data_saved_success' => 'Data saved successfully',
+'data_not_saved' => 'Data not saved',
+'some_error_occured' => 'Some error occurred',
+'dress_avail_lang' => 'Dress Availability',
+
 ];
 
 

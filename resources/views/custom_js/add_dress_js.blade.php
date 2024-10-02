@@ -1,5 +1,19 @@
 <script type="text/javascript">
+const rentDatePicker = flatpickr("#start_date", {
+    defaultDate: new Date(),
+    onChange: function(selectedDates, dateStr, instance) {
+      // When rent_date changes, update return_date to ensure it's always greater
+      returnDatePicker.set('minDate', dateStr);
+      
+    }
+  });
 
+  const returnDatePicker = flatpickr("#end_date", {
+    defaultDate: new Date(),
+    onChange: function() {
+      
+    }
+  });
 function maint(id) {
     $('#return_maint_modal .maint_id').val(id);
 
@@ -10,7 +24,7 @@ function maint(id) {
     }
     $(document).ready(function() {
 
-        $('.add_maint').on('submit', function(event) {
+    $('.add_maint').on('submit', function(event) {
         event.preventDefault();
         $('#global-loader').show();
         var formData = new FormData(this);
@@ -19,7 +33,7 @@ function maint(id) {
         {
             show_notification('error','<?php echo trans('messages.add_maint_name_lang',[],session('locale')); ?>'); return false;
         }
-
+        before_submit();
         $.ajax({
             url: "{{ url('maint_dress') }}",
             type: 'POST',
@@ -28,11 +42,13 @@ function maint(id) {
             contentType: false,
             error: function() {
                 $('#global-loader').hide();
-                show_notification('error', 'Failed to submit maintenance data.');
+                show_notification('error', '<?php echo trans('messages.maintenance_failed_lang',[],session('locale')); ?>');
             },
             success: function(data) {
+                after_submit();
                 $('#global-loader').hide();
-                show_notification('success', 'Maintenance data submitted successfully.');
+                show_notification('success', '<?php echo trans('messages.send_to_maintenance_lang',[],session('locale')); ?>');
+                $('#all_dress').DataTable().ajax.reload();
                 $('#return_maint_modal').modal('hide'); // Close the modal
             }
         });
@@ -49,12 +65,12 @@ function maint(id) {
         event.preventDefault();
         $('#global-loader').show();
         var formData = new FormData(this);
-        var title=$('#maint_cost').val();
-        if(title=="" )
+        var cost=$('#maint_cost').val();
+        if(cost=="" )
         {
             show_notification('error','<?php echo trans('messages.add_maint_cost_lang',[],session('locale')); ?>'); return false;
         }
-
+        before_submit();
         $.ajax({
             url: "{{ url('maint_dress_comp') }}",
             type: 'POST',
@@ -63,13 +79,13 @@ function maint(id) {
             contentType: false,
             error: function() {
                 $('#global-loader').hide();
-                show_notification('error', 'Failed to submit  data.');
+                show_notification('error', '<?php echo trans('messages.maintenance_finish_failed_lang',[],session('locale')); ?>');
                 $('#all_maint').DataTable().ajax.reload();
             },
             success: function(data) {
+                after_submit();
                 $('#global-loader').hide();
-                show_notification('success', 'Maintenance completed successfully.');
-
+                show_notification('error', '<?php echo trans('messages.maintenance_finish_success_lang',[],session('locale')); ?>');
                 $('#maint_comp').modal('hide'); // Close the modal
                 $('#all_maint').DataTable().ajax.reload();
             }
