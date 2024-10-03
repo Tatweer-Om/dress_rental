@@ -11,17 +11,22 @@ class AccountController extends Controller
 {
     public function index(){
 
-        // $user = Auth::user();
+        if (!Auth::check()) {
 
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
 
-        // $permit = User::find($user->id)->permit_type;
+        $user = Auth::user();
 
-
-        // $permit_array = json_decode($permit, true);
-
-        // if ($permit_array && in_array('10', $permit_array)) {
+        if (in_array(5, explode(',', $user->permit_type))) {
 
             return view('accounts.account');
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
+
+
         // } else {
 
         //     return redirect()->route('home');

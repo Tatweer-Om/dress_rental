@@ -4,19 +4,19 @@ return [
     // Brand
     'add_brand_name_lang' => 'Please provide brand name',
     'brand_name_lang' => 'Brand Name',
-    
+
     // Category
     'add_category_name_lang' => 'Please provide category name',
     'category_name_lang' => 'Category Name',
-    
+
     // Color
     'add_color_name_lang' => 'Please provide color name',
     'color_name_lang' => 'Color Name',
-    
+
     // Size
     'add_size_name_lang' => 'Please provide size name',
     'size_name_lang' => 'Size Name',
-    
+
     // Dress
     'add_dress_name_lang' => 'Please provide dress name',
     'add_sku_lang' => 'Please provide SKU',
@@ -192,27 +192,31 @@ return [
     'total_price_lang' => 'Total Price',
     'finish_lang' => 'Finish',
     'cancel_lang' => 'Cancel',
-    'rent_lang' => 'Rented', 
-    'booking_detail_lang' => 'Booking Detail', 
-    'customer_detail_lang' => 'Customer Detail', 
-    'dress_detail_lang' => 'Dress Detail', 
-    'payment_detail_lang' => 'Payment detail', 
-    'extend_history_lang' => 'Extend History', 
-    'wanna_cancel_lang' => 'Do you want to cancel?', 
-    'start_lang' => 'Start', 
-    'extend_no_lang' => 'Extend #', 
-    'end_lang' => 'End', 
-    'remaining_lang' => 'Remaining', 
-    'paid_amount_lang' => 'Paid Amount', 
-    'payment_date_lang' => 'Payment date', 
-    'remaining_lang' => 'Remaining', 
-    'attribute_lang' => 'Attributes', 
-    'no_attribute_lang' => 'No Attribute',  
+    'rent_lang' => 'Rented',
+    'booking_detail_lang' => 'Booking Detail',
+    'customer_detail_lang' => 'Customer Detail',
+    'dress_detail_lang' => 'Dress Detail',
+    'payment_detail_lang' => 'Payment detail',
+    'extend_history_lang' => 'Extend History',
+    'wanna_cancel_lang' => 'Do you want to cancel?',
+    'start_lang' => 'Start',
+    'extend_no_lang' => 'Extend #',
+    'end_lang' => 'End',
+    'remaining_lang' => 'Remaining',
+    'paid_amount_lang' => 'Paid Amount',
+    'payment_date_lang' => 'Payment date',
+    'remaining_lang' => 'Remaining',
+    'attribute_lang' => 'Attributes',
+    'no_attribute_lang' => 'No Attribute',
     'total_panelty_lang' =>'Total penalty',
     'old_rent_date_lang' => 'Old rent date',
-    'new_rent_date_lang' => 'New rent date', 
+    'new_rent_date_lang' => 'New rent date',
     'new_return_date_lang' => 'New Return Date',
     'image_lang' =>'Images',
+    'maint_lang'=>'Maintenance',
+    'setting_lang'=>'Setting',
+    'sms_lang'=>'sms',
+    'customer_lang'=>'Customer',
 
 
     // Miscellaneous

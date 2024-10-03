@@ -11,21 +11,20 @@ class ExpenseCategoryController extends Controller
 {
     public function index(){
 
-        // $user = Auth::user();
+            if (!Auth::check()) {
 
+                return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+            }
 
-        // $permit = User::find($user->id)->permit_type;
+            $user = Auth::user();
 
+            if (in_array(5, explode(',', $user->permit_type))) {
 
-        // $permit_array = json_decode($permit, true);
+                return view ('expense.expensecat');
+            } else {
 
-        // if ($permit_array && in_array('11', $permit_array)) {
-
-            return view ('expense.expensecat');
-        // } else {
-
-        //     return redirect()->route('home');
-        // }
+                return redirect()->route('home')->with( 'error', 'You dont have Permission');
+            }
 
 
     }

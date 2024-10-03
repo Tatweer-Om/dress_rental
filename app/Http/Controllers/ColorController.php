@@ -11,8 +11,26 @@ use Illuminate\Support\Facades\File;
 class ColorController extends Controller
 {
     public function index(){
-        return view ('dress.color');
+
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(2, explode(',', $user->permit_type))) {
+
+            return view ('dress.color');
+
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
     }
+
+
     public function show_color()
     {
         $sno=0;

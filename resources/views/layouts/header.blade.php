@@ -348,6 +348,11 @@
             </div>
         </header>
 
+
+        @php
+            $user = Auth::user();
+            $permissions = explode(',', $user->permit_type);
+        @endphp
         <!-- ========== Left Sidebar Start ========== -->
         <div class="vertical-menu">
 
@@ -365,8 +370,9 @@
                                 <span data-key="t-dashboard">{{ trans('messages.menu_dashboard_lang',[],session('locale')) }}</span>
                             </a>
                         </li>
-
+                        @if(in_array(2, $permissions))
                         <li>
+
                             <a href="javascript: void(0);" class="has-arrow">
                                 <i data-feather="grid"></i>
                                 <span data-key="t-apps">{{ trans('messages.menu_dress_lang',[],session('locale')) }}</span>
@@ -400,13 +406,16 @@
 
                             </ul>
                         </li>
+                        @endif
+                        @if(in_array(3, $permissions))
                         <li>
                             <a href="{{ url('view_booking') }}">
                                 <i data-feather="home"></i>
                                 <span data-key="t-dashboard">{{ trans('messages.menu_booking_lang',[],session('locale')) }}</span>
                             </a>
                         </li>
-                         
+                        @endif
+                        @if(in_array(5, $permissions))
                         <li>
                             <a href="javascript: void(0);" class="has-arrow">
                                 <i data-feather="grid"></i>
@@ -432,6 +441,8 @@
 
                             </ul>
                         </li>
+                        @endif
+                        @if(in_array(6, $permissions))
                         <li>
                             <a href="javascript: void(0);" class="has-arrow">
                                 <i data-feather="grid"></i>
@@ -445,6 +456,8 @@
                                 </li>
                             </ul>
                         </li>
+                        @endif
+                        @if(in_array(10, $permissions))
                         <li>
                             <a href="javascript: void(0);" class="has-arrow">
                                 <i data-feather="grid"></i>
@@ -458,6 +471,8 @@
                                 </li>
                             </ul>
                         </li>
+                        @endif
+                        @if(in_array(9, $permissions))
                         <li>
                             <a href="javascript: void(0);" class="has-arrow">
                                 <i data-feather="grid"></i>
@@ -471,19 +486,23 @@
                                 </li>
                             </ul>
                         </li>
-                       
+                        @endif
+                        @if(in_array(7, $permissions))
                         <li>
                             <a href="{{ url('maint_dress_all') }}">
                                 <i data-feather="home"></i>
                                 <span data-key="t-dashboard">{{ trans('messages.maintenance_lang',[],session('locale')) }}</span>
                             </a>
                         </li>
+                        @endif
+                        @if(in_array(8, $permissions))
                         <li>
                             <a href="{{ url('setting') }}">
                                 <i data-feather="home"></i>
                                 <span data-key="t-dashboard">{{ trans('messages.menu_setting_lang',[],session('locale')) }}</span>
                             </a>
                         </li>
+                        @endif
 
 
 

@@ -126,42 +126,68 @@
                                             <div class="mb-3">
                                                 <label class="form-label">{{ trans('messages.permissions_lang', [], session('locale')) }}</label>
                                                 <div class="row" id="checked_html">
-                                                    <div class="col-md-1 checkbox-container">
+                                                    <div class="col-md-1 checkbox-container me-4">
                                                         <div class="form-check">
                                                             <label class="form-check-label" for="checkbox6">{{ trans('messages.all') }}</label>
                                                             <input class="form-check-input permit_array" type="checkbox" value="1" id="checkboxAll">
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-1 checkbox-container">
+                                                    <div class="col-md-1 checkbox-container me-4">
                                                         <div class="form-check">
                                                             <label class="form-check-label" for="checkbox1">{{ trans('messages.checkbox_dress') }}</label>
                                                             <input class="form-check-input permit_array" type="checkbox" value="2" id="checkbox_dress" name="permit_array[]">
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-1 checkbox-container">
+                                                    <div class="col-md-1 checkbox-container me-4">
                                                         <div class="form-check">
                                                             <label class="form-check-label" for="checkbox2">{{ trans('messages.checkbox_booking') }}</label>
                                                             <input class="form-check-input permit_array" type="checkbox" value="3" id="checkbox_booking" name="permit_array[]">
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-1 checkbox-container">
+                                                    <div class="col-md-1 checkbox-container me-4 ">
                                                         <div class="form-check">
                                                             <label class="form-check-label" for="checkbox3">{{ trans('messages.checkbox_reports') }}</label>
                                                             <input class="form-check-input permit_array" type="checkbox" value="4" id="checkbox_reports" name="permit_array[]">
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-1 checkbox-container">
+                                                    <div class="col-md-1 checkbox-container me-4">
                                                         <div class="form-check">
                                                             <label class="form-check-label" for="checkbox4">{{ trans('messages.checkbox_expense') }}</label>
                                                             <input class="form-check-input permit_array" type="checkbox" value="5" id="checkbox_expense" name="permit_array[]">
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-1 checkbox-container">
+                                                    <div class="col-md-1 checkbox-container me-4">
                                                         <div class="form-check">
                                                             <label class="form-check-label" for="checkbox5">{{ trans('messages.checkbox_user') }}</label>
                                                             <input class="form-check-input permit_array" type="checkbox" value="6" id="checkbox_user" name="permit_array[]">
                                                         </div>
                                                     </div>
+                                                    <div class="col-md-1 checkbox-container me-4">
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="checkbox5">{{ trans('messages.maint_lang') }}</label>
+                                                            <input class="form-check-input permit_array" type="checkbox" value="7" id="checkbox_maint" name="permit_array[]">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 checkbox-container me-4">
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="checkbox5">{{ trans('messages.setting_lang') }}</label>
+                                                            <input class="form-check-input permit_array" type="checkbox" value="8" id="checkbox_setting" name="permit_array[]">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 checkbox-container me-4">
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="checkbox5">{{ trans('messages.sms_lang') }}</label>
+                                                            <input class="form-check-input permit_array" type="checkbox" value="9" id="checkbox_sms" name="permit_array[]">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1 checkbox-container me-4">
+                                                        <div class="form-check">
+                                                            <label class="form-check-label" for="checkbox5">{{ trans('messages.customer_lang') }}</label>
+                                                            <input class="form-check-input permit_array" type="checkbox" value="10" id="checkbox_customer" name="permit_array[]">
+                                                        </div>
+                                                    </div>
+
+
 
                                                 </div>
                                             </div>

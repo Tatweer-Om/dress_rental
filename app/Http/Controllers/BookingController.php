@@ -30,11 +30,40 @@ class BookingController extends Controller
     public function index(){
         $view_dress= Dress::all();
         $view_account = Account::where('account_type', 1)->get();
-        return view ('booking.add_booking', compact('view_dress','view_account'));
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(3, explode(',', $user->permit_type))) {
+
+            return view ('booking.add_booking', compact('view_dress','view_account'));
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
     }
     public function view_booking(){
         $view_account = Account::where('account_type', 1)->get();
-        return view ('booking.view_booking', compact('view_account'));
+
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(3, explode(',', $user->permit_type))) {
+
+            return view ('booking.view_booking', compact('view_account'));
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
     }
     public function show_booking()
     {
@@ -246,7 +275,7 @@ class BookingController extends Controller
     public function add_booking(Request $request){
 
         $user_id = Auth::id();
-        $data= User::find( $user_id)->first();
+        $data= User::where('id', $user_id)->first();
         $user= $data->user_name;
 
 
@@ -490,13 +519,14 @@ class BookingController extends Controller
                 foreach ($payment_data as $key => $value) {
                     if($sno==1)
                     {
-                        $total_amount = $value->total_amount;
+                        $total_amount = $bill_data->grand_total;
                     }
+                    $remaining_total = $total_amount - $value->paid_amount;
                     $payment_detail.='<tr id="ptr'.$value->id.'">
                         <th>'.$sno.'</th>
                         <th>'.$total_amount.'</th>
                         <th>'.$value->paid_amount.'</th>
-                        <th>'.$value->remaining_amount.'</th>
+                        <th>'.$remaining_total.'</th>
                         <th>'.$value->payment_date.'</th>
                         <th>'.$value->added_by.'</th>
                         <th><a class="btn btn-outline-secondary btn-sm edit" onclick=del_payment("'.$value->id.'") title="Delete">
@@ -504,7 +534,7 @@ class BookingController extends Controller
                             </a>
                         </th>
                     </tr>';
-                    $total_amount = $value->remaining_amount;
+                    $total_amount = $bill_data->grand_total - $value->paid_amount;
                     $sno++;
                 }
                 $payment_detail.=' </tbody>
@@ -547,7 +577,7 @@ class BookingController extends Controller
                                                         </strong>
                                                     </div>
                                                 </div>
-                                            </div> 
+                                            </div>
                                         </div><br>
                                     </div>';
                 }
@@ -555,7 +585,7 @@ class BookingController extends Controller
             else
             {
                 $dress_att_div.='<div class="col-md-12">
-                                    <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                                    <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>
                                 </div>';
             }
             $dress_att_div.='</div>
@@ -563,7 +593,7 @@ class BookingController extends Controller
         }
         else
         {
- 
+
             $dress_att_div='<div class="col-md-12">
                                 <div class="row">
                                     <h2>'.trans('messages.attribute_lang',[],session('locale')).'</h2>
@@ -595,25 +625,24 @@ class BookingController extends Controller
             else
             {
                 $dress_att_div.='<div class="col-md-12">
-                                    <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>         
+                                    <h2>'.trans('messages.no_attribute_lang',[],session('locale')).'</h2>
                                 </div>';
             }
             $dress_att_div.='</div>
                                 </div>';
- 
-             
+
         }
         $tab_li_extend="";
         $tab_content_extend="";
         $extend_history = BookingExtendHistory::where('booking_id', $booking_id)->where('type', 2)->get();
-         
+
         if ($extend_history->isNotEmpty())
         {
-             
+
             $tab_li_extend='<li class="nav-item waves-effect waves-light">
                                 <a class="nav-link" data-bs-toggle="tab" href="#extend_history_tab" role="tab">
                                     <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
-                                    <span class="d-none d-sm-block">'.trans('messages.extend_history_lang',[],session('locale')).'</span> 
+                                    <span class="d-none d-sm-block">'.trans('messages.extend_history_lang',[],session('locale')).'</span>
                                 </a>
                             </li>';
             $start_date =   Carbon::parse($booking_data->rent_date)->format('d F Y');
@@ -625,17 +654,17 @@ class BookingController extends Controller
                                                     <div class="timeline-launch">
                                                         <div class="timeline-box">
                                                             <div class="timeline-text">
-                                                                <h3 class="font-size-18">'.$start_date.'</h3> 
+                                                                <h3 class="font-size-18">'.$start_date.'</h3>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="timeline-end">
                                                         <p>'.trans('messages.start_lang',[],session('locale')).'</p>
-                                                         
+
                                                     </div>
                                                     <div class="timeline-continue">';
             $i=1;
-              
+
             foreach ($extend_history as $key => $history) {
                 if ($i % 2 == 1) {
                     $show_style='timeline-right';
@@ -674,12 +703,12 @@ class BookingController extends Controller
             {
                 $end_date =   Carbon::parse($booking_data->finish_date)->format('d F Y');
                 $finish_data_div='<div class="timeline-start">
-                                <p>'.trans('messages.end_lang',[],session('locale')).'</p> 
+                                <p>'.trans('messages.end_lang',[],session('locale')).'</p>
                             </div>
                             <div class="timeline-launch">
                                 <div class="timeline-box">
                                     <div class="timeline-text">
-                                        <h3 class="font-size-18">'.$end_date.'</h3> 
+                                        <h3 class="font-size-18">'.$end_date.'</h3>
                                     </div>
                                 </div>
                             </div>';
@@ -688,18 +717,20 @@ class BookingController extends Controller
             {
                 $end_date =   Carbon::parse($booking_data->return_date)->format('d F Y');
                 $finish_data_div='<div class="timeline-start">
-                                <p>'.trans('messages.end_lang',[],session('locale')).'</p> 
+
+                                <p>'.trans('messages.end_lang',[],session('locale')).'</p>
+
                             </div>
                             <div class="timeline-launch">
                                 <div class="timeline-box">
                                     <div class="timeline-text">
-                                        <h3 class="font-size-18">'.$end_date.'</h3> 
+                                        <h3 class="font-size-18">'.$end_date.'</h3>
                                     </div>
                                 </div>
                             </div>';
             }
             $tab_content_extend.='</div>'.$finish_data_div.'
-                                                     
+
                                                 </div>
                                             </div>
                                         </div>
@@ -1429,7 +1460,7 @@ class BookingController extends Controller
                                     <input type="text" class="form-control panelty_price isnumber" name="panelty_price[]" value="0">
                                  </div>
                                  <div class="col-md-7">
-                                    <textarea class="form-control fault_notes" name="fault_notes[]" rows="3" placeholder="'.trans('messages.notes_lang',[],session('locale')).'"></textarea> 
+                                    <textarea class="form-control fault_notes" name="fault_notes[]" rows="3" placeholder="'.trans('messages.notes_lang',[],session('locale')).'"></textarea>
                                  </div><br>';
                 $all_attributes_id[]=$value->id;
             }
@@ -1457,12 +1488,12 @@ class BookingController extends Controller
         $booking_id = $request->input('booking_id');
         $all_attributes  = explode(',',$request->input('all_attributes'));
         $panelty_price = $request->input('panelty_price');
- 
+
         $fault_notes = $request->input('fault_notes');
-        $checked_attributes = $request->input('attributes_id');  
- 
         $checked_attributes = $request->input('attributes_id');
- 
+
+        $checked_attributes = $request->input('attributes_id');
+
         $total_penalty =0;
         foreach ($all_attributes as $index => $attribute_id) {
             $is_checked = in_array($attribute_id, $checked_attributes);
@@ -1488,25 +1519,25 @@ class BookingController extends Controller
 
             // Update the penalty price (it's already a scalar value, not an array)
             $booking_attributes->penalty_price = $penalty_price;
- 
-            $booking_attributes->fault_notes = $fault_notes[$index];
-            
- 
 
- 
+            $booking_attributes->fault_notes = $fault_notes[$index];
+
+
+
+
             // Save the updated attributes
             $booking_attributes->save();
         }
 
 
         $booking_data = Booking::where('id', $booking_id)->first();
- 
-        // update booking 
+
+        // update booking
         $booking_data->status = 3;
- 
+
         // update booking
         $booking_data->status = $user;
- 
+
         $booking_data->finish_by = $user_id;
         $booking_data->finish_date = date('Y-m-d H:i:s');
         $booking_data->save();
@@ -1540,6 +1571,47 @@ class BookingController extends Controller
         $bill_data->total_penalty = $total_penalty;
         $bill_data->save();
     }
+
+
+
+
+
+    public function a4_bill($id){
+
+
+        $booking = Booking::with([
+            'bill',
+            'payments',
+            'extention',
+            'dress.brand',
+            'dress.category',
+            'dress.color',
+            'dress.size'
+        ])->where('booking_no', $id)->first();
+
+        $setting= Setting::first();
+
+        $account = $booking && $booking->payments->isNotEmpty()
+        ? Account::where('id', $booking->payments->first()->payment_method)->first()
+        : null;
+
+
+
+        $extention = BookingExtendHistory::where('booking_no', $id)->get();
+        $sumPaidAmount = BookingPayment::where('booking_no', $id)->sum('paid_amount');
+            $total = $booking->bill->grand_total;
+            $remain = $total - $sumPaidAmount;
+
+
+
+
+        $customer= Customer::where('id', $booking->customer_id)->first();
+
+        return view('bills.bill_detail', compact('booking', 'customer', 'setting', 'account', 'remain', 'sumPaidAmount', 'extention'));
+    }
+
+
+
     // receipt bill
     public function receipt_bill($booking_no)
     {
@@ -1548,11 +1620,11 @@ class BookingController extends Controller
         $dress_data = Dress::where('id', $booking_data->dress_id)->first();
         $payment_data = BookingPayment::where('booking_no', $booking_no)->get();
         $bill_data = BookingBill::where('booking_no', $booking_no)->first();
-        
- 
-         
-        $setting_data = Setting::first(); 
- 
+
+
+
+        $setting_data = Setting::first();
+
         $account_names = [];
         foreach ($payment_data as $key => $pay) {
             $acc = Account::where('id', $pay->payment_method)->first();

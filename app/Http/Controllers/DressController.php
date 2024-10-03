@@ -16,9 +16,9 @@ use App\Models\Booking;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-use Carbon\Carbon; 
+use Carbon\Carbon;
 use App\Models\Customer;
-use App\Models\BookingBill; 
+use App\Models\BookingBill;
 use App\Models\BookingPayment;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,7 +29,22 @@ class DressController extends Controller
         $view_size= Size::all();
         $view_category= Category::all();
         $view_brand= Brand::all();
-        return view ('dress.dress', compact('view_color','view_size','view_category','view_brand'));
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(2, explode(',', $user->permit_type))) {
+
+            return view ('dress.dress', compact('view_color','view_size','view_category','view_brand'));
+
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
     }
     public function show_dress()
     {
@@ -529,7 +544,21 @@ class DressController extends Controller
 
 
     public function maint_dress_all(){
-        return view('maintenance.all_dress_under_maint');
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(7, explode(',', $user->permit_type))) {
+
+            return view('maintenance.all_dress_under_maint');
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
     }
 
 
@@ -712,14 +741,14 @@ class DressController extends Controller
                 $total_amount += $payment->paid_amount;
             }
         }
-        
-        foreach ($bookings as $booking) { 
+
+        foreach ($bookings as $booking) {
             foreach ($booking->bills as $payment) {
                 echo $payment->total_panelty;
                 $total_panelty += $payment->total_penalty;
             }
         }
-         
+
 
         $currentBookings = Booking::with([
             'bills',

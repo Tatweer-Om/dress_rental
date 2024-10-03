@@ -11,7 +11,23 @@ use Illuminate\Support\Facades\Session;
 class SmsController extends Controller
 {
     public function index(){
-        return view('sms.sms');
+
+
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(9, explode(',', $user->permit_type))) {
+
+            return view('sms.sms');
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
     }
 
     public function get_sms_status(Request $request)

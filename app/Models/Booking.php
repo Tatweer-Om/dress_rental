@@ -14,11 +14,21 @@ class Booking extends Model
         return $this->hasMany(BookingBill::class, 'booking_id');
     }
 
+    public function bill()
+    {
+        return $this->hasOne(BookingBill::class, 'booking_id');
+    }
     // Relationship with BookingPayment
     public function payments()
     {
         return $this->hasMany(BookingPayment::class, 'booking_id');
     }
+
+    public function extention()
+    {
+        return $this->hasMany(BookingExtendHistory::class, 'booking_id');
+    }
+
 
     public function dress()
 {

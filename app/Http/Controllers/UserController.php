@@ -12,7 +12,22 @@ class UserController extends Controller
 {
 
     public function index(){
-        return view ('user.user');
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(6, explode(',', $user->permit_type))) {
+
+            return view ('user.user');
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
+
     }
 
     public function show_user()
@@ -68,7 +83,7 @@ class UserController extends Controller
         $user_id = Auth::id();
         $data= User::find( $user_id)->first();
         $username= $data->user_name;
-        
+
 
         $user = new User();
 
@@ -101,9 +116,14 @@ class UserController extends Controller
             ['id' => 'reports', 'value' => 4, 'name'=>'messages.checkbox_reports'],
             ['id' => 'expense', 'value' => 5, 'name'=>'messages.checkbox_expense'],
             ['id' => 'user', 'value' => 6, 'name'=>'messages.checkbox_user'],
+            ['id' => 'maintenance', 'value' => 7, 'name'=>'messages.maint_lang'],
+            ['id' => 'setting', 'value' => 8, 'name'=>'messages.setting_lang'],
+            ['id' => 'sms', 'value' => 9, 'name'=>'messages.sms_lang'],
+            ['id' => 'customer', 'value' => 10, 'name'=>'messages.customer_lang'],
+
 
         ];
-        $checked_html='<div class="col-md-1 checkbox-container">
+        $checked_html='<div class="col-md-1 checkbox-container me-4">
                             <div class="form-check">
                                 <label class="form-check-label" for="checkbox6">'.trans('messages.all').'</label>
                                 <input class="form-check-input permit_array" type="checkbox" value="1" id="checkboxAll">
@@ -116,7 +136,7 @@ class UserController extends Controller
             {
                 $checked = "checked='true'";
             }
-            $checked_html.='<div class="col-md-1 checkbox-container">
+            $checked_html.='<div class="col-md-1 checkbox-container me-4">
                                 <div class="form-check">
                                     <label class="form-check-label" for="'.$value['name'].'">'.trans($value['name'], [], session('locale')).'</label>
                                     <input  class="form-check-input permit_array" type="checkbox" value="'.$value['value'].'" '.$checked.' name="permit_array[]" id="'.$value['name'].'">

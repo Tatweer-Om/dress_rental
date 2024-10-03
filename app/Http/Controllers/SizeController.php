@@ -11,7 +11,21 @@ use Illuminate\Support\Facades\File;
 class SizeController extends Controller
 {
     public function index(){
-        return view ('dress.size');
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(2, explode(',', $user->permit_type))) {
+
+            return view ('dress.size');
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
     }
     public function show_size()
     {

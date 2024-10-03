@@ -1,15 +1,7 @@
 <script>
     // datepicket
     $(document).ready(function(){
-        // $('.datepick').datetimepicker({
-        //     format: 'YYYY-MM-DD',
-        //     icons: {
-        //         up: "fas fa-angle-up",
-        //         down: "fas fa-angle-down",
-        //         next: 'fas fa-angle-right',
-        //         previous: 'fas fa-angle-left'
-        //     }
-        // });
+
         flatpickr(".datepick",{defaultDate:new Date})
 
         $('#logout').on('click', function(e) {
@@ -32,6 +24,9 @@
                 }
             });
         });
+
+
+
     });
     // img
     var imagePath = '{{ asset('images/dummy_image/no_image.png') }}';
@@ -203,6 +198,8 @@
             reader.readAsDataURL(file); // Read the file as a data URL
         }
     });
+
+
 
 
 </script>
