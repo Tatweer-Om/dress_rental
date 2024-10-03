@@ -115,19 +115,19 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="bill_remaining_amount" class="form-label">{{ trans('messages.remaining_lang ',[],session('locale')) }}</label>
+                                    <label for="bill_remaining_amount" class="form-label">{{ trans('messages.remaining_lang',[],session('locale')) }}</label>
                                     <input class="form-control bill_remaining_amount" name="bill_remaining_amount" type="text" id="bill_remaining_amount">
                                 </div>
                             </div> 
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="bill_paid_amount" class="form-label">{{ trans('messages.paid_amount_lang ',[],session('locale')) }}</label>
+                                    <label for="bill_paid_amount" class="form-label">{{ trans('messages.paid_amount_lang',[],session('locale')) }}</label>
                                     <input class="form-control bill_paid_amount" name="bill_paid_amount" type="text" id="bill_paid_amount">
                                 </div>
                             </div> 
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="bill_payment_date" class="form-label">{{ trans('messages.paid_amount_lang ',[],session('locale')) }}</label>
+                                    <label for="bill_payment_date" class="form-label">{{ trans('messages.payment_date_lang',[],session('locale')) }}</label>
                                     <input class="form-control bill_payment_date datepick" readonly value="<?php echo date('Y-m-d'); ?>" name="bill_payment_date" type="text" id="bill_payment_date">
                                 </div>
                             </div> 
@@ -164,7 +164,7 @@
 
     {{-- payment modal --}} 
     <div class="modal fade" id="extend_booking_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="staticBackdropLabel">{{ trans('messages.add_data_lang',[],session('locale')) }}</h5>
@@ -184,19 +184,19 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="return_date" class="form-label">{{ trans('messages.return_date_lang ',[],session('locale')) }} -> {{ trans('messages.new_rent_date_lang ',[],session('locale')) }}</label>
+                                    <label for="return_date" class="form-label">{{ trans('messages.return_date_lang',[],session('locale')) }} -> {{ trans('messages.new_rent_date_lang',[],session('locale')) }}</label>
                                     <input class="form-control return_date" readonly name="return_date" type="text" id="return_date">
                                 </div>
                             </div> 
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="new_return_date" class="form-label">{{ trans('messages.new_return_date_lang ',[],session('locale')) }}</label>
+                                    <label for="new_return_date" class="form-label">{{ trans('messages.new_return_date_lang',[],session('locale')) }}</label>
                                     <input class="form-control new_return_date" readonly name="new_return_date" type="text" id="new_return_date">
                                 </div>
                             </div> 
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="duration" class="form-label">{{ trans('messages.duration_lang ',[],session('locale')) }}</label>
+                                    <label for="duration" class="form-label">{{ trans('messages.duration_lang',[],session('locale')) }} </label>
                                     <input class="form-control duration" readonly  name="duration" type="text" id="duration">
                                 </div>
                             </div> 
@@ -205,19 +205,19 @@
                            
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="price" class="form-label">{{ trans('messages.price_lang ',[],session('locale')) }}</label>
+                                    <label for="price" class="form-label">{{ trans('messages.price_lang',[],session('locale')) }}</label>
                                     <input class="form-control price isnumber" readonly  name="price" type="text" id="price">
                                 </div>
                             </div> 
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="discount" class="form-label">{{ trans('messages.discount_lang ',[],session('locale')) }}</label>
+                                    <label for="discount" class="form-label">{{ trans('messages.discount_lang',[],session('locale')) }}</label>
                                     <input class="form-control discount isnumber" readonly  name="discount" type="text" id="discount">
                                 </div>
                             </div> 
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <label for="total_price" class="form-label">{{ trans('messages.total_price_lang ',[],session('locale')) }}</label>
+                                    <label for="total_price" class="form-label">{{ trans('messages.total_price_lang',[],session('locale')) }}</label>
                                     <input class="form-control total_price isnumber" readonly  name="total_price" type="text" id="total_price">
                                 </div>
                             </div> 
