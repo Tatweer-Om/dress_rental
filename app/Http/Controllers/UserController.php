@@ -67,7 +67,8 @@ class UserController extends Controller
 
         $user_id = Auth::id();
         $data= User::find( $user_id)->first();
-        $user= $data->user_name;
+        $username= $data->user_name;
+        
 
         $user = new User();
 
@@ -77,7 +78,7 @@ class UserController extends Controller
         $user->permit_type = implode(',',$request['permit_array']);
         $user->password = Hash::make($request['password']);
         $user->user_detail = $request['notes'];
-        $user->added_by = $user;
+        $user->added_by = $username;
         $user->user_id = $user_id;
         $user->save();
         return response()->json(['user_id' => $user->id]);
@@ -153,7 +154,7 @@ class UserController extends Controller
 
         $user_id = Auth::id();
         $data= User::find( $user_id)->first();
-        $user= $data->user_name;
+        $username= $data->user_name;
 
 
         $user->user_name = $request->input('user_name');
@@ -166,7 +167,7 @@ class UserController extends Controller
             $user->permit_type = $request->input('permit_array'); // or handle it as needed if it's a string
         }
         $user->user_detail = $request['notes'];
-        $user->updated_by = $user;
+        $user->updated_by = $username;
         $user->save();
         return response()->json([trans('messages.success_lang', [], session('locale')) => trans('messages.user_update_lang', [], session('locale'))]);
     }

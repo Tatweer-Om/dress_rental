@@ -77,37 +77,6 @@
                                     
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <h2>{{ trans('messages.booking_detail_lang',[],session('locale')) }}</h2>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label for="booking_date" class="form-label">{{ trans('messages.booking_date_lang',[],session('locale')) }}</label>
-                                            <input class="form-control booking_date datepick" readonly name="booking_date" value="{{ $booking_data->booking_date }}" type="text" id="booking_date">
-                                        </div>
-                                    </div> 
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label for="rent_date" class="form-label">{{ trans('messages.rent_date_lang',[],session('locale')) }}</label>
-                                            <input class="form-control rent_date" name="rent_date" value="{{ $booking_data->rent_date }}" readonly type="text" id="rent_date">
-                                        </div>
-                                    </div> 
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label for="return_date" class="form-label">{{ trans('messages.return_date_lang',[],session('locale')) }}</label>
-                                            <input class="form-control return_date" name="return_date" value="{{ $booking_data->return_date }}" readonly type="text" id="return_date">
-                                        </div>
-                                    </div> 
-                                    <div class="col-md-3">
-                                        <div class="mb-3">
-                                            <label for="duration" class="form-label">{{ trans('messages.duration_lang',[],session('locale')) }}</label>
-                                            <input class="form-control duration isnumber" name="duration" readonly value="{{ $booking_data->duration }}" type="text" id="duration">
-                                        </div>
-                                    </div> 
-                                </div>
-                                <div class="row">
                                     <div class="col-md-6">
                                         <h2>{{ trans('messages.dress_detail_lang',[],session('locale')) }}</h2>
                                     </div>
@@ -150,6 +119,38 @@
                                 <div class="row" id="dress_detail">
                                     @php echo $dress_attr @endphp
                                 </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <h2>{{ trans('messages.booking_detail_lang',[],session('locale')) }}</h2>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="booking_date" class="form-label">{{ trans('messages.booking_date_lang',[],session('locale')) }}</label>
+                                            <input class="form-control booking_date datepick" readonly name="booking_date" value="{{ $booking_data->booking_date }}" type="text" id="booking_date">
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="rent_date" class="form-label">{{ trans('messages.rent_date_lang',[],session('locale')) }}</label>
+                                            <input class="form-control rent_date" name="rent_date" value="{{ $booking_data->rent_date }}" readonly type="text" id="rent_date">
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="return_date" class="form-label">{{ trans('messages.return_date_lang',[],session('locale')) }}</label>
+                                            <input class="form-control return_date" name="return_date" value="{{ $booking_data->return_date }}" readonly type="text" id="return_date">
+                                        </div>
+                                    </div> 
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="duration" class="form-label">{{ trans('messages.duration_lang',[],session('locale')) }}</label>
+                                            <input class="form-control duration isnumber" name="duration" readonly value="{{ $booking_data->duration }}" type="text" id="duration">
+                                        </div>
+                                    </div> 
+                                </div>
+                                
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="mb-3">
