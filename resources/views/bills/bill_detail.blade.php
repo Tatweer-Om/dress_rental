@@ -184,7 +184,17 @@
                                         </thead>
                                         <tbody>
                                             @if($booking->payments->isNotEmpty())
+                                            @php $sno=1;
+                                                $total_amount=0;
+                                            @endphp
                                             @foreach($booking->payments as $payment)
+                                                @php
+                                                    if($sno==1)
+                                                    {
+                                                        $total_amount = $booking->bill->grand_total;
+                                                    }
+                                                    $remaining_total = $total_amount - $payment->paid_amount;
+                                                @endphp
                                                     <tr> <!-- Each row should start with <tr> -->
                                                         <td>
                                                             <h5 class="font-size-14"> {{ $payment->payment_date ?? '' }}</h5>
@@ -192,13 +202,17 @@
                                                         </td>
                                                         <td>
 
-                                                            <h5 class="font-size-14">{{ $payment->total_amount ?? '' }}</h5>
+                                                            <h5 class="font-size-14">{{ $total_amount ?? '' }}</h5>
                                                         </td>
                                                        <!-- Adjust based on your extension model -->
                                                         <td class="text-end">{{ $payment->paid_amount ?? 'No Payment' }}</td>
-                                                        <td class="text-end">{{ $payment->remaining_amount ?? '' }}</td>
+                                                        <td class="text-end">{{ $remaining_total ?? '' }}</td>
                                                         <td class="text-end">{{ $account->account_name ?? 'N/A' }}</td> <!-- Adjust based on your extension model -->
                                                     </tr>
+                                                    @php
+                                                        $total_amount = $booking->bill->grand_total - $payment->paid_amount;
+                                                        $sno++;
+                                                    @endphp
                                                 @endforeach
                                             @else
                                                 <>

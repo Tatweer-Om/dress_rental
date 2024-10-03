@@ -15,7 +15,23 @@ class CustomerController extends Controller
 {
     public function index(){
 
-        return view ('customer.customer');
+
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(10, explode(',', $user->permit_type))) {
+
+            return view ('customer.customer');
+
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
 
     }
 
@@ -228,14 +244,14 @@ class CustomerController extends Controller
                 $total_amount += $payment->paid_amount;
             }
         }
-        
-        foreach ($bookings as $booking) { 
+
+        foreach ($bookings as $booking) {
             foreach ($booking->bills as $payment) {
                 echo $payment->total_panelty;
                 $total_panelty += $payment->total_penalty;
             }
         }
-         
+
 
         $currentBookings = Booking::with([
             'bills',

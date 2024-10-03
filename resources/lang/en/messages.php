@@ -1,45 +1,49 @@
 <?php
 return [
 
-    //Brand
+    // Brand
     'add_brand_name_lang' => 'Please provide brand name',
     'brand_name_lang' => 'Brand Name',
-    //category
+
+    // Category
     'add_category_name_lang' => 'Please provide category name',
-    'category_name_lang' => 'category Name',
-    //color
+    'category_name_lang' => 'Category Name',
+
+    // Color
     'add_color_name_lang' => 'Please provide color name',
-    'color_name_lang' => 'color Name',
-    //size
+    'color_name_lang' => 'Color Name',
+
+    // Size
     'add_size_name_lang' => 'Please provide size name',
-    'size_name_lang' => 'size Name',
-    //dress
+    'size_name_lang' => 'Size Name',
+
+    // Dress
     'add_dress_name_lang' => 'Please provide dress name',
-    'add_sku_lang' => 'Please provide Sku',
+    'add_sku_lang' => 'Please provide SKU',
     'add_price_lang' => 'Please provide Price',
-    'dress_name_lang' => 'dress Name',
-    'sku_lang' => 'Sku',
+    'dress_name_lang' => 'Dress Name',
+    'sku_lang' => 'SKU',
     'price_lang' => 'Price',
     'condition_lang' => 'Condition',
     'more_images_lang' => 'Add More Images',
     'new_lang' => 'New',
     'used_lang' => 'Used',
-    'atrributes_lang' => 'Attributes',
+    'attributes_lang' => 'Attributes', // Fixed typo from 'atrributes_lang'
     'attribute_name_lang' => 'Attribute Name',
     'add_attribute_lang' => 'Add Attributes',
 
-    // general
-    'data_safe_lang' => 'Data is safe' ,
-    'data_deleted_successful_lang' => 'Data deleted successfully' ,
-    'data_delete_failed_lang' => 'Data delete failed' ,
-    'delete_lang' => 'Delete' ,
-    'wanna_delete_lang' => 'You want to delete' ,
-    'sure_lang' => 'Are you sure?' ,
-    'data_edit_failed_lang' => 'Data edit failed' ,
-    'data_added_failed_lang' => 'Data added failed' ,
-    'data_added_successful_lang' => 'Data added successfully' ,
-    'data_updated_failed_lang' => 'data updated failed' ,
-    'data_updated_successful_lang' => 'data updated successfully' ,
+    // General
+    'data_safe_lang' => 'Data is safe',
+    'data_deleted_successful_lang' => 'Data deleted successfully',
+    'data_delete_failed_lang' => 'Data delete failed',
+    'delete_lang' => 'Delete',
+    'wanna_delete_lang' => 'You want to delete',
+    'sure_lang' => 'Are you sure?',
+    'data_edit_failed_lang' => 'Data edit failed',
+    'data_added_failed_lang' => 'Data added failed',
+    'data_added_successful_lang' => 'Data added successfully',
+    'data_updated_failed_lang' => 'Data updated failed',
+    'data_updated_successful_lang' => 'Data updated successfully',
     'update_data_lang' => 'Update data',
     'add_data_lang' => 'Add data',
     'add_date_lang' => 'Add date',
@@ -49,10 +53,10 @@ return [
     'close_lang' => 'Close',
     'submit_lang' => 'Submit',
     'notes_lang' => 'Notes',
-    'choose_lang' => 'choose',
-    'extension_validation_lang' => 'Please provide image with jpg, jpeg , png ',
+    'choose_lang' => 'Choose',
+    'extension_validation_lang' => 'Please provide image with jpg, jpeg, png',
 
-    // menu
+    // Menu
     'menu_lang' => 'Menu',
     'menu_dashboard_lang' => 'Dashboard',
     'menu_dress_lang' => 'Dress',
@@ -60,157 +64,198 @@ return [
     'menu_brand_lang' => 'Brand',
     'menu_size_lang' => 'Size',
     'menu_color_lang' => 'Color',
-    'menu_dress_lang' => 'Dress',
+    'menu_booking_lang' => 'Booking',
+    'menu_setting_lang' => 'Setting',
 
+    // Accounts
+    'add_account_name_lang' => 'Add Account Name',
+    'data_is_safe_lang' => 'Data is Safe',
+    'account_name_lang' => 'Account Name',
+    'account_branch_lang' => 'Account Branch',
+    'account_detail_lang' => 'Account Detail',
+    'opening_balance_lang' => 'Opening Balance',
+    'commission_lang' => 'Commission',
+    'account_type_lang' => 'Account Type',
+    'account_no_lang' => 'Account Number',
+    'cash_lang' => 'Cash',
+    'accounts_lang' => 'Accounts',
+    'account_list_lang' => 'Account List',
+    'search_account_lang' => 'Search Account',
+    'account_lang' => 'Account',
+    'normal_account_lang' => 'Normal Account',
+    'saving_account_lang' => 'Saving Account',
+    'menu_account_lang' => 'Accounts',
+    'created_by_lang' => 'Created By',
+    'created_at_lang' => 'Created At',
+    'action_lang' => 'Action',
 
-    //accouts
-    'add_account_name_lang'=>'Add Account Name',
-    'data_is_safe_lang'=> 'Data is Safe',
-    'account_name_lang'=> 'Account Name',
-    'account_branch_lang'=> 'Account Branch',
-    'account_detail_lang'=>'Account Detail',
-    'opening_balance_lang'=> 'Opening Balance',
-    'commission_lang'=> 'Commission',
-    'account_type_lang'=>'Account Type',
-    'account_no_lang'=> 'Account Number',
-    'cash_lang'=>'Cash',
-    'accounts_lang'=>'Accounts',
-    'account_list_lang'=>'Account List',
-    'search_account_lang'=>'Search Account',
-    'account_lang'=> 'Account',
-    'normal_account_lang'=> 'Normal Account',
-    'saving_account_lang'=> 'Saving Account',
-    'menu_account_lang'=>'Accounts',
-    'created_by_lang'=>'Created By',
-    'created_at_lang'=>'Created At',
-    'action_lang'=>'Action',
+    // Expense Category
+    'expense_category_name_lang' => 'Expense Category',
+    'expensecat_lang' => 'Expense Category',
 
-
-    //expensecat
-    'expense_category_name_lang'=>'Expense Category',
-    'expensecat_lang'=>'Expense Category',
-
-    //expense
+    // Expense
     'expense_category_name_lang' => 'Expense Category Name',
     'expense_name_lang' => 'Expense Name',
     'amount_lang' => 'Amount',
     'payment_method_lang' => 'Payment Method',
     'expense_date_lang' => 'Expense Date',
-    'menu_expense_lang'=>'Expense',
-'add_expense_lang'=>'Expense',
+    'menu_expense_lang' => 'Expense',
+    'add_expense_lang' => 'Expense',
 
-//user
+    // User
     'user_name_lang' => 'Username',
     'password_lang' => 'Password',
     'user_phone_lang' => 'Phone Number',
     'user_email_lang' => 'Email',
-    'menu_user_lang'=>'User',
+    'menu_user_lang' => 'User',
 
+    // Checkbox labels
     'checkbox_dress' => 'Dress',
     'checkbox_booking' => 'Booking',
     'checkbox_reports' => 'Reports',
     'checkbox_expense' => 'Expense',
     'checkbox_user' => 'User',
-    'permissions_lang'=>'Permissions',
-    'all'=>'All',
-    'user_contact_lang'=>'Contact',
-    'users_lang'=>'Users',
-    'sms_panel' => 'SMS Panel', // لوحة الرسائل النصية
-    'sms_lang' => 'SMS', // رسالة نصية
-    'pages_lang' => 'Pages', // صفحات
-    'panel_available_msg_lang' => 'Available Messages', // الرسائل المتاحة
-    'panel_choose_lang' => 'Choose', // اختر
-    'panel_customer_add_lang' => 'Customer Add', // إضافة عميل
-    'panel_add_offer_lang' => 'Add Offer', // إضافة عرض
-    'panel_birthday_wish_lang' => 'Birthday Wish', // تهنئة عيد الميلاد
-    'panel_variables_lang' => 'Variables', // المتغيرات
-    'customer_name_lang' => 'Customer Name', // اسم العميل
-    'customer_number_lang' => 'Customer Number', // رقم العميل
-    'invoice_link_lang' => 'Invoice Link', // رابط الفاتورة
-    'transaction_id_lang' => 'Transaction ID', // معرف المعاملة
-    'receiving_date_lang' => 'Receiving Date', // تاريخ الاستلام
-    'deliver_date_lang' => 'Delivery Date', // تاريخ التسليم
-    'status_lang' => 'Status', // الحالة
-    'notes_lang' => 'Notes', // ملاحظات
-    'offer_name_lang' => 'Offer Name', // اسم العرض
-    'offer_start_date_lang' => 'Offer Start Date', // تاريخ بدء العرض
-    'offer_end_date_lang' => 'Offer End Date', // تاريخ نهاية العرض
-    'panel_content_lang' => 'Content', // المحتوى
-    'sms_placeholder_lang' => 'Enter SMS content here', // أدخل محتوى الرسالة هنا
+    'permissions_lang' => 'Permissions',
+    'all' => 'All',
+    'user_contact_lang' => 'Contact',
+    'users_lang' => 'Users',
+
+    // SMS Panel
+    'sms_panel' => 'SMS Panel',
+    'sms_lang' => 'SMS',
+    'panel_available_msg_lang' => 'Available Messages',
+    'panel_choose_lang' => 'Choose',
+    'panel_customer_add_lang' => 'Customer Add',
+    'panel_add_offer_lang' => 'Add Offer',
+    'panel_birthday_wish_lang' => 'Birthday Wish',
+    'panel_variables_lang' => 'Variables',
+    'customer_name_lang' => 'Customer Name',
+    'customer_number_lang' => 'Customer Number',
+    'invoice_link_lang' => 'Invoice Link',
+    'transaction_id_lang' => 'Transaction ID',
+    'receiving_date_lang' => 'Receiving Date',
+    'deliver_date_lang' => 'Delivery Date',
+    'status_lang' => 'Status',
+    'notes_lang' => 'Notes',
+    'offer_name_lang' => 'Offer Name',
+    'offer_start_date_lang' => 'Offer Start Date',
+    'offer_end_date_lang' => 'Offer End Date',
+    'panel_content_lang' => 'Content',
+    'sms_placeholder_lang' => 'Enter SMS content here',
+
+    // Success and error messages
     'submit_lang' => 'Submit',
+    'message_updated_successfully_lang' => 'Message Updated Successfully',
+    'message_added_successfully_lang' => 'Message Added Successfully',
+    'sms_panel_lang' => 'SMS Panel',
+    'add_sms_lang' => 'Add SMS',
+    'customer_lang' => 'Customer',
+    'add_data_lang' => 'Add Data',
+    'contact_lang' => 'Contact',
+    'customer_contact_lang' => 'Contact',
+    'address_lang' => 'Address',
+    'added_by_lang' => 'Added By',
+    'actions_lang' => 'Actions',
+    'customer_email_lang' => 'Customer Email',
+    'dob_lang' => 'Date of Birth',
+    'male_lang' => 'Male',
+    'female_lang' => 'Female',
+    'discount_lang' => 'Discount',
+    'close_lang' => 'Close',
+    'update_lang' => 'Update',
+    'edit_failed_lang' => 'Edit Failed',
+    'delete_it_lang' => 'Delete it!',
+    'delete_failed_lang' => 'Delete Failed',
+    'delete_success_lang' => 'Deleted successfully',
+    'safe_lang' => 'Safe',
+    'add_address_name_lang' => 'Please enter address name',
+    'data_update_success_lang' => 'Data updated successfully',
+    'data_update_failed_lang' => 'Failed to update data',
+    'data_add_success_lang' => 'Data added successfully',
+    'data_add_failed_lang' => 'Failed to add data',
+    'customer_number_or_contact_exist_lang' => 'Customer number or contact already exists',
+    'add_customer_name_lang' => 'Please enter customer name',
+    'add_customer_phone_lang' => 'Please enter customer phone number',
+    'add_customer_lang' => 'Add Customer',
 
-'message_updated_successfuly_lang'=>'Message Updated Successfully',
-'message_added_successfuly_lang'=>'Message Added Successfully',
-'sms_panel_lang'=>'SMS Panel',
-'add_sms_lang'=>'Add Sms',
-'customer_lang' => 'Customer', // عميل
-'pages_lang' => 'Pages', // صفحات
-'add_data_lang' => 'Add Data', // إضافة بيانات
-'contact_lang' => 'Contact', // اتصال
-'address_lang' => 'Address', // عنوان
-'added_by_lang' => 'Added By', // أضيف بواسطة
-'actions_lang' => 'Actions', // إجراءات
-'customer_name_lang' => 'Customer Name', // اسم العميل
-'customer_number_lang' => 'Customer Number', // رقم العميل
-'customer_email_lang' => 'Customer Email', // بريد العميل الإلكتروني
-'dob_lang' => 'Date of Birth', // تاريخ الميلاد
-'male_lang' => 'Male', // ذكر
-'female_lang' => 'Female', // أنثى
-'discount_lang' => 'Discount', // خصم
-'address_lang' => 'Address', // عنوان
-'close_lang' => 'Close', // إغلاق
-'submit_lang' => 'Submit', // إرسال
-
-'update_lang' => 'Update', // تحديث
-'edit_failed_lang' => 'Edit Failed', // فشل التعديل
-'sure_lang' => 'Are you sure?', // هل أنت متأكد؟
-'delete_it_lang' => 'Delete it!', // احذفه!
-'delete_failed_lang' => 'Delete Failed', // فشل الحذف
-'delete_success_lang' => 'Deleted successfully', // تم الحذف بنجاح
-'safe_lang' => 'Safe', // آمن
-'add_address_name_lang' => 'Please enter address name', // الرجاء إدخال اسم العنوان
-'data_update_success_lang' => 'Data updated successfully', // تم تحديث البيانات بنجاح
-'data_update_failed_lang' => 'Failed to update data', // فشل تحديث البيانات
-'data_add_success_lang' => 'Data added successfully', // تم إضافة البيانات بنجاح
-'data_add_failed_lang' => 'Failed to add data', // فشل إضافة البيانات
-'customer_number_or_contact_exist_lang' => 'Customer number or contact already exists', // رقم العميل أو الاتصال موجود بالفعل
-'add_customer_name_lang' => 'Please enter customer name', // الرجاء إدخال اسم العميل
-'add_customer_phone_lang' => 'Please enter customer phone number', // الرجاء إدخال رقم هاتف العميل
-'add_address_name_lang' => 'Please enter address name',
-'add_customer_lang'=>'Add Customer',
-
-'booking_no_lang' => 'Booking No',
-'booking_date_lang' => 'Booking Date',
-'return_date_lang' => 'Return Date',
-'rent_date_lang' => 'Rent Date',
-'duration_lang' => 'Duration',
-'rent_price_lang' => 'Rent Price',
-'discount_lang' => 'Discount',
-'total_penalty_lang' => 'Total Penalty',
-'grand_total_lang' => 'Grand Total',
-'remaining_lang' => 'Remaining',
-'no_booking_lang'=>'No Current Booking',
-
-'na_lang'=>'N/A',
-'color_lang'=>'Color',
-'size_lang'=>'Size',
-
-'maintenance_lang'=>'Maintenance',
-'company_name_lang' => 'Company Name',
-'company_email_lang' => 'Company Email',
-'company_phone_lang' => 'Company Phone',
-'company_cr_lang' => 'Company CR',
-'company_address_lang' => 'Company Address',
+    // Booking
+    'booking_no_lang' => 'Booking No',
+    'booking_date_lang' => 'Booking Date',
+    'return_date_lang' => 'Return Date',
+    'rent_date_lang' => 'Rent Date',
+    'duration_lang' => 'Duration',
+    'rent_price_lang' => 'Rent Price',
+    'total_penalty_lang' => 'Total Penalty',
+    'grand_total_lang' => 'Grand Total',
+    'remaining_lang' => 'Remaining',
+    'no_booking_lang' => 'No Current Booking',
+    'total_price_lang' => 'Total Price',
+    'finish_lang' => 'Finish',
+    'cancel_lang' => 'Cancel',
+    'rent_lang' => 'Rented',
+    'booking_detail_lang' => 'Booking Detail',
+    'customer_detail_lang' => 'Customer Detail',
+    'dress_detail_lang' => 'Dress Detail',
+    'payment_detail_lang' => 'Payment detail',
+    'extend_history_lang' => 'Extend History',
+    'wanna_cancel_lang' => 'Do you want to cancel?',
+    'start_lang' => 'Start',
+    'extend_no_lang' => 'Extend #',
+    'end_lang' => 'End',
+    'remaining_lang' => 'Remaining',
+    'paid_amount_lang' => 'Paid Amount',
+    'payment_date_lang' => 'Payment date',
+    'remaining_lang' => 'Remaining',
+    'attribute_lang' => 'Attributes',
+    'no_attribute_lang' => 'No Attribute',
+    'total_panelty_lang' =>'Total penalty',
+    'old_rent_date_lang' => 'Old rent date',
+    'new_rent_date_lang' => 'New rent date',
+    'new_return_date_lang' => 'New Return Date',
+    'image_lang' =>'Images',
+    'maint_lang'=>'Maintenance',
+    'setting_lang'=>'Setting',
+    'sms_lang'=>'sms',
+    'customer_lang'=>'Customer',
 
 
-'data_saved_success' => 'Data saved successfully',
-'data_not_saved' => 'Data not saved',
-'some_error_occured' => 'Some error occurred',
-'dress_avail_lang' => 'Dress Availability',
-'about_company'=>'About Company',
-'setting'=>'Settings',
+    // Miscellaneous
+    'na_lang' => 'N/A',
+    'color_lang' => 'Color',
+    'size_lang' => 'Size',
+    'maintenance_lang' => 'Maintenance',
+    'company_name_lang' => 'Company Name',
+    'company_email_lang' => 'Company Email',
+    'company_phone_lang' => 'Company Phone',
+    'company_cr_lang' => 'Company CR',
+    'company_address_lang' => 'Company Address',
+
+    // Data Status Messages
+    'data_saved_success' => 'Data saved successfully',
+    'data_not_saved' => 'Data not saved',
+    'some_error_occured' => 'Some error occurred',
+    'dress_avail_lang' => 'Dress Availability',
+    'about_company' => 'About Company',
+    'setting' => 'Settings',
+    'select_dress_lang' => 'Select Dress',
+    'select_rent_date_lang' => 'Select Rent Date',
+    'select_return_date_lang' => 'Select Return Date',
+    'validation_dress_already_booked_lang' => 'This dress is already booked',
+    'validation_dress_under_maintenance_lang' => 'This dress is under maintenance',
+    'data_get_failed_lang' => 'Failed to retrieve data',
+    'add_phone_for_availability_lang' => 'Add phone number for availability',
+    'add_contact_lang' => 'Add contact',
+    'add_email_lang' => 'Add email',
+    'customer_contact_exist_lang' => 'Customer contact already exists',
+    'validation_amount_cannot_greater_remaining_lang' => 'Amount cannot be greater than remaining balance',
+    'add_paid_amount_lang' => 'Add paid amount',
+    'paid_greater_delete_amount_lang' => 'Paid amount cannot be greater than the amount to be deleted',
+    'payment_add_successfully' => 'Payment added successfully',
+    'payment_add_failed' => 'Failed to add payment',
+
+    // maintenance
+    'issue_notes_lang' => 'Issue Notes',
+    'maint_issue_lang' => 'Miantenance Issue',
 
 ];
-
-
 ?>

@@ -51,18 +51,7 @@
                                                         <span class="d-none d-sm-block">  {{ trans('messages.dress_avail_lang',[],session('locale')) }}</span>
                                                     </a>
                                                 </li>
-                                                {{-- <li class="nav-item">
-                                                    <a class="nav-link" data-bs-toggle="tab" href="#setting3" role="tab">
-                                                        <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                                        <span class="d-none d-sm-block"> Booking upcoming</span>
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" data-bs-toggle="tab" href="#setting4" role="tab">
-                                                        <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
-                                                        <span class="d-none d-sm-block"> Booking upcoming</span>
-                                                    </a>
-                                                </li> --}}
+                                                 
                                             </ul>
                                         </div>
                                     </div><!-- end card header -->
@@ -150,44 +139,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="tab-pane fade " id="setting3" role="tabpanel">
-                                                {{-- <a href="#" class="btn btn-success">إضافة مستندات</a> --}}
-                                                <div class="table-responsive">
-                                                    <table class="table align-middle dt-responsive table-check nowrap" style="border-collapse: collapse; border-spacing: 0 8px; width: 100%;" id="all_profile_docs_1">
-                                                        <thead>
-                                                            <tr class="bg-transparent">
-                                                                <th style="width: 120px; text-align:center;">Sr#</th>
-                                                                <th style="text-align:center;">Dress Detail</th>
-                                                                <th style="text-align:center;">Booking Detail</th>
-                                                                <th style="text-align:center;">Rent Details</th>
-                                                                <th style="text-align:center;">Return Date</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="all_profile_docs_1">
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                            <div class="tab-pane fade " id="setting4" role="tabpanel">
-                                                {{-- <a href="#" class="btn btn-success">إضافة مستندات</a> --}}
-                                                <div class="table-responsive">
-                                                    <table class="table align-middle dt-responsive table-check nowrap" style="border-collapse: collapse; border-spacing: 0 8px; width: 100%;" id="all_profile_docs_1">
-                                                        <thead>
-                                                            <tr class="bg-transparent">
-                                                                <th style="width: 120px; text-align:center;">Sr#</th>
-                                                                <th style="text-align:center;">Dress Detail</th>
-                                                                <th style="text-align:center;">Booking Detail</th>
-                                                                <th style="text-align:center;">Rent Details</th>
-                                                                <th style="text-align:center;">Return Date</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody id="all_profile_docs_1">
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
+                                            
 
                                             <!-- Second Tab Pane -->
                                             <div class="tab-pane fade" id="setting2" role="tabpanel">

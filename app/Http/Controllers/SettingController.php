@@ -13,7 +13,21 @@ class SettingController extends Controller
     public function setting(){
 
         $setting= Setting::first();
-        return view ('setting.setting', compact('setting'));
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(8, explode(',', $user->permit_type))) {
+
+            return view ('setting.setting', compact('setting'));
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
     }
 
     public function add_setting(Request $request)

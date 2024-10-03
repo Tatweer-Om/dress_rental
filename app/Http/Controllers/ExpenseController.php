@@ -16,19 +16,25 @@ class ExpenseController extends Controller
 {
     public function index(){
 
-        // $user = Auth::user();
-        // $permit = User::find($user->id)->permit_type;
-        // $permit_array = json_decode($permit, true);
+
         $view_account= Account::all();
         $view_expense= Expensecat::all();
 
-        // if ($permit_array && in_array('11', $permit_array)) {
+
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(5, explode(',', $user->permit_type))) {
 
             return view ('expense.expense', compact('view_account', 'view_expense'));
-        // } else {
+        } else {
 
-        //     return redirect()->route('home');
-        // }
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
 
     }
 
@@ -92,20 +98,20 @@ class ExpenseController extends Controller
 
     public function add_expense(Request $request)
     {
-         
+
         // Validate the request
         $validator = Validator::make($request->all(), [
-            'expense_image' => 'nullable|file|mimes:pdf,xlsx,xls,jpeg,jpg,png,docx|max:2048', 
+            'expense_image' => 'nullable|file|mimes:pdf,xlsx,xls,jpeg,jpg,png,docx|max:2048',
         ]);
 
- 
+
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
- 
+
         $user_id = Auth::id();
         $data= User::find( $user_id)->first();
-        $user= $data->user_name; 
+        $user= $data->user_name;
 
         $expense = new Expense();
         $expense_image = "";
@@ -118,7 +124,7 @@ class ExpenseController extends Controller
             if (!File::isDirectory($folderPath)) {
                 File::makeDirectory($folderPath, 0777, true, true);
             }
-            
+
             // Create a unique filename
             $expense_image = time() . '.' . $request->file('expense_image')->extension();
             $request->file('expense_image')->move($folderPath, $expense_image);
@@ -193,7 +199,7 @@ class ExpenseController extends Controller
 
         // Validate the request
         $validator = Validator::make($request->all(), [
-            'expense_image' => 'nullable|file|mimes:pdf,xlsx,xls,jpeg,jpg,png,docx|max:2048', 
+            'expense_image' => 'nullable|file|mimes:pdf,xlsx,xls,jpeg,jpg,png,docx|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -211,7 +217,7 @@ class ExpenseController extends Controller
             if (!File::isDirectory($folderPath)) {
                 File::makeDirectory($folderPath, 0777, true, true);
             }
-            
+
             // Create a unique filename
             $expense_image = time() . '.' . $request->file('expense_image')->extension();
             $request->file('expense_image')->move($folderPath, $expense_image);

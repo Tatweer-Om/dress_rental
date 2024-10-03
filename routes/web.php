@@ -94,6 +94,8 @@ Route::post('add_extend_booking', [BookingController::class, 'add_extend_booking
 Route::post('get_finish_booking_detail', [BookingController::class, 'get_finish_booking_detail'])->name('get_finish_booking_detail');
 Route::post('add_finish_booking', [BookingController::class, 'add_finish_booking'])->name('add_finish_booking');
 Route::get('a4_bill/{id}', [BookingController::class, 'a4_bill'])->name('a4_bill');
+Route::get('receipt_bill/{booking_no}', [BookingController::class, 'receipt_bill'])->name('receipt_bill');
+
 
 
 // customer dress
