@@ -95,7 +95,9 @@ Route::post('get_finish_booking_detail', [BookingController::class, 'get_finish_
 Route::post('add_finish_booking', [BookingController::class, 'add_finish_booking'])->name('add_finish_booking');
 Route::get('a4_bill/{id}', [BookingController::class, 'a4_bill'])->name('a4_bill');
 Route::get('receipt_bill/{booking_no}', [BookingController::class, 'receipt_bill'])->name('receipt_bill');
-
+Route::match(['get', 'post'], 'view_calender', [BookingController::class, 'view_calender'])->name('view_calender');
+Route::post('get_calender_bookings', [BookingController::class, 'get_calender_bookings'])->name('get_calender_bookings');
+Route::get('new_booking/{id}/{dress}', [BookingController::class, 'new_booking'])->name('new_booking');
 
 
 // customer dress

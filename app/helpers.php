@@ -1,5 +1,10 @@
 <?php
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB; 
+use App\Models\Sms;
+use App\Models\Booking;
+use App\Models\Customer;
+use App\Models\BookingBill;
+use App\Models\Dress;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -37,6 +42,174 @@ function get_date_time($timestamp)
     return $formattedDateTime;
 }
 
+// sms
+function get_sms($params)
+{
+    // variable
+    $customer_name = "";
+    $customer_number = ""; 
+    $invoice_link = "";
+    $booking_no= "";
+    $dress_name= "";
+    $rent_date= "";
+    $return_date= "";
+    $booking_date="";
+    $notes="";
+    $amount="";
+    $remaining_payment="";
+    $paid_amount="";
+    $payment_date="";
+    $payment_method="";
+   
+    $sms_text = Sms::where('sms_status', $params['sms_status'])->first();
+    if($params['sms_status']==1)
+    {
+        $edit_customer = Customer::where('id',$params['customer_id'])->first();
+        $customer_name = $edit_customer->customer_name;
+        $customer_number = $edit_customer->customer_number;
+    }
+    else if($params['sms_status']==2)
+    {
+        $booking_data =  Booking::where('booking_no', $params['booking_no'])->first();
+        $edit_customer = Customer::where('id',$booking_data->customer_id)->first();
+        $dress_data = Dress::where('id',$booking_data->dress_id)->first();
+        $customer_name = $edit_customer->customer_name;
+        $customer_number = $edit_customer->customer_number;
+        $booking_no = $params['booking_no'];
+        $rent_date = $params['rent_date'];
+        $return_date = $params['return_date'];
+        $booking_date = $params['booking_date'];
+        $dress_name = $dress_data->dress_name;
+        $notes = $booking_data->notes;
+        $invoice_link = "https://myapp3.com/super_electron/receipt_bill/".$params['booking_no'];
+        // $invoice_link = route('bills', ['order_no' => $params['order_no']]);
+    }
+    else if($params['sms_status']==3)
+    {
+        $booking_data =  Booking::where('booking_no', $params['booking_no'])->first();
+        $edit_customer = Customer::where('id',$booking_data->customer_id)->first();
+        $dress_data = Dress::where('id',$booking_data->dress_id)->first();
+        $customer_name = $edit_customer->customer_name;
+        $customer_number = $edit_customer->customer_number;
+        $booking_no = $params['booking_no'];
+        $rent_date = $params['rent_date'];
+        $return_date = $params['return_date']; 
+        $dress_name = $dress_data->dress_name;
+        $notes = $booking_data->notes;
+        $invoice_link = "https://myapp3.com/super_electron/receipt_bill/".$params['booking_no'];
+        // $invoice_link = route('bills', ['order_no' => $params['order_no']]);
+    }
+    else if($params['sms_status']==4)
+    {
+        $booking_data =  Booking::where('booking_no', $params['booking_no'])->first();
+        $edit_customer = Customer::where('id',$booking_data->customer_id)->first();
+        $dress_data = Dress::where('id',$booking_data->dress_id)->first();
+        $customer_name = $edit_customer->customer_name;
+        $customer_number = $edit_customer->customer_number;
+        $booking_no = $params['booking_no'];
+        $rent_date = $params['rent_date'];
+        $return_date = $params['return_date']; 
+        $amount = $params['amount'];
+        $dress_name = $dress_data->dress_name;
+        $notes = $booking_data->notes;
+        $invoice_link = "https://myapp3.com/super_electron/receipt_bill/".$params['booking_no'];
+        // $invoice_link = route('bills', ['order_no' => $params['order_no']]);
+    }
+    else if($params['sms_status']==5)
+    {
+        $booking_data =  Booking::where('booking_no', $params['booking_no'])->first();
+        $edit_customer = Customer::where('id',$booking_data->customer_id)->first();
+        $dress_data = Dress::where('id',$booking_data->dress_id)->first();
+        $customer_name = $edit_customer->customer_name;
+        $customer_number = $edit_customer->customer_number;
+        $booking_no = $params['booking_no'];
+        $rent_date = $params['rent_date'];
+        $return_date = $params['return_date']; 
+        $dress_name = $dress_data->dress_name;
+        $notes = $booking_data->notes;
+        $invoice_link = "https://myapp3.com/super_electron/receipt_bill/".$params['booking_no'];
+        // $invoice_link = route('bills', ['order_no' => $params['order_no']]);
+    }
+    else if($params['sms_status']==6)
+    {
+        $booking_data =  Booking::where('booking_no', $params['booking_no'])->first();
+        $edit_customer = Customer::where('id',$booking_data->customer_id)->first();
+        $dress_data = Dress::where('id',$booking_data->dress_id)->first();
+        $bill_data = BookingBill::where('booking_no', $params['booking_no'])->first();
+        $customer_name = $edit_customer->customer_name;
+        $customer_number = $edit_customer->customer_number;
+        $booking_no = $params['booking_no'];
+        $rent_date = $params['rent_date'];
+        $return_date = $params['return_date']; 
+        $payment_date = $params['payment_date']; 
+        $remaining_payment = $bill_data->total_remaining;
+        $paid_amount = $params['paid_amount'];
+        $payment_method = $params['payment_method'];
+        $notes = $booking_data->notes;
+        $invoice_link = "https://myapp3.com/super_electron/receipt_bill/".$params['booking_no'];
+        // $invoice_link = route('bills', ['order_no' => $params['order_no']]);
+    }
+    
+
+
+    $variables = [
+        'customer_number' => $customer_number,
+        'customer_name' => $customer_name, 
+        'invoice_link' => $invoice_link,  
+        'booking_no' => $booking_no,
+        'dress_name' => $dress_name,
+        'rent_date' => $rent_date,
+        'return_date' => $return_date,
+        'booking_date' => $booking_date,
+        'amount' => $amount,
+        'remaining_payment' => $remaining_payment,
+        'paid_amount' => $paid_amount,
+        'payment_method' => $payment_method,
+        'payment_date' => $payment_date,
+        'notes' => $notes,
+    ];
+
+    $string = base64_decode($sms_text->sms);
+    foreach ($variables as $key => $value) {
+        $string = str_replace('{' . $key . '}', $value, $string);
+    }
+    return $string;
+}
+function sms_module($contact, $sms)
+{
+    if (!empty($contact)) {
+        $url = "http://myapp3.com/whatsapp_admin_latest/Api_pos/send_request";
+
+        $form_data = [
+            'status' => 1,
+            'sender_contact' => '968' . $contact,
+            'customer_id' => 'tatweeersoftweb',
+            'instance_id' => '1xwaxr8k',
+            'sms' => base64_encode($sms),
+        ];
+
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        // curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($curl, CURLOPT_POST, true);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $form_data);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $headers = array(
+            "Accept: application/json",
+        );
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        //for debug only!
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        $resp = curl_exec($curl);
+        curl_close($curl);
+        $result=json_decode($resp,true);
+        // $return_status= $result['response'];
+
+    }
+}
 
 function image_preview($path = null)
 {

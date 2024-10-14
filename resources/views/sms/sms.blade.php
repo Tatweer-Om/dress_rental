@@ -44,8 +44,11 @@
                                 <select class="form-control sms_status" name="status" id="sms_status">
                                     <option value="">{{ trans('messages.panel_choose_lang', [], session('locale')) }}</option>
                                     <option value="1">{{ trans('messages.panel_customer_add_lang', [], session('locale')) }}</option>
-                                    <option value="10">{{ trans('messages.panel_add_offer_lang', [], session('locale')) }}</option>
-                                    <option value="14">{{ trans('messages.panel_birthday_wish_lang', [], session('locale')) }}</option>
+                                    <option value="2">{{ trans('messages.panel_add_booking_lang', [], session('locale')) }}</option>
+                                    <option value="3">{{ trans('messages.panel_cancel_booking_lang', [], session('locale')) }}</option>
+                                    <option value="4">{{ trans('messages.panel_extend_booking_lang', [], session('locale')) }}</option>
+                                    <option value="5">{{ trans('messages.panel_finish_booking_lang', [], session('locale')) }}</option>
+                                    <option value="6">{{ trans('messages.panel_add_payment_lang', [], session('locale')) }}</option>
                                 </select>
                             </div>
                             <br>
@@ -60,40 +63,46 @@
                                 <div class="form-row">
                                     <p style="text-decoration: none;cursor: pointer;" class="text text-success customer_number">{{ trans('messages.customer_number_lang', [], session('locale')) }}</p>
                                 </div>
-
+                                <div class="form-row">
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success dress_name">{{ trans('messages.dress_name_lang', [], session('locale')) }}</p>
+                                </div>
                                 <div class="form-row">
                                     <p style="text-decoration: none;cursor: pointer;" class="text text-success invoice_link">{{ trans('messages.invoice_link_lang', [], session('locale')) }}</p>
                                 </div>
-
-
                                 <div class="form-row">
-                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success transaction_no">{{ trans('messages.transaction_id_lang', [], session('locale')) }}</p>
-                                </div>
-
-                                <div class="form-row">
-                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success receive_date">{{ trans('messages.receiving_date_lang', [], session('locale')) }}</p>
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success booking_no">{{ trans('messages.booking_no_lang', [], session('locale')) }}</p>
                                 </div>
                                 <div class="form-row">
-                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success delivery_date">{{ trans('messages.deliver_date_lang', [], session('locale')) }}</p>
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success booking_date">{{ trans('messages.booking_date_lang', [], session('locale')) }}</p>
+                                </div>
+                                <div class="form-row">
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success rent_date">{{ trans('messages.rent_date_lang', [], session('locale')) }}</p>
+                                </div>
+                                <div class="form-row">
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success return_date">{{ trans('messages.return_date_lang', [], session('locale')) }}</p>
                                 </div>
                                 <div class="form-row">
                                     <p style="text-decoration: none;cursor: pointer;" class="text text-success status">{{ trans('messages.status_lang', [], session('locale')) }}</p>
                                 </div>
-
-
+                                <div class="form-row">
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success paid_amount">{{ trans('messages.paid_amount_lang', [], session('locale')) }}</p>
+                                </div>
+                                <div class="form-row">
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success remaining_payment">{{ trans('messages.remaining_payment_lang', [], session('locale')) }}</p>
+                                </div>
+                                <div class="form-row">
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success payment_date">{{ trans('messages.payment_date_lang', [], session('locale')) }}</p>
+                                </div>
+                                <div class="form-row">
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success payment_method">{{ trans('messages.payment_method_lang', [], session('locale')) }}</p>
+                                </div>
+                                <div class="form-row">
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success amount">{{ trans('messages.amount_lang', [], session('locale')) }}</p>
+                                </div>
                                 <div class="form-row">
                                     <p style="text-decoration: none;cursor: pointer;" class="text text-success notes">{{ trans('messages.notes_lang', [], session('locale')) }}</p>
                                 </div>
-
-                                <div class="form-row">
-                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success offer_name">{{ trans('messages.offer_name_lang', [], session('locale')) }}</p>
-                                </div>
-                                <div class="form-row">
-                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success start_date">{{ trans('messages.offer_start_date_lang', [], session('locale')) }}</p>
-                                </div>
-                                <div class="form-row">
-                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success end_date">{{ trans('messages.offer_end_date_lang', [], session('locale')) }}</p>
-                                </div>
+ 
 
 
 

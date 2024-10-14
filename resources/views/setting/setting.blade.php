@@ -67,7 +67,7 @@
                                                         <div class="table align-middle dt-responsive table-check nowrap" style="border-collapse: collapse; border-spacing: 0 8px; width: 100%;" id="all_profile_docs_2">
                                                             <form action="#" class="add_setting" method="POST" enctype="multipart/form-data">
                                                                 @csrf
-                                                                <input type="hidden" class="setting_id" value="{{$setting->id ?? ''}}" name="setting_id">
+                                                                <input type="hidden" class="setting_id" value="{{ $setting->id ?? ''}}" name="setting_id">
                                                                 <div class="row">
                                                                     <div class="col-md-8">
 
