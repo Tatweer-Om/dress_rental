@@ -30,7 +30,25 @@ class BookingController extends Controller
     public function index(){
         $view_dress= Dress::all();
         $view_account = Account::where('account_type', 1)->get();
-
+        // Get session value for dress_id
+        $dress_id = session('dress_id');
+        // Get session value for rent_date
+        $rent_date = session('rent_date');
+        // Get session value for return_date
+        $return_date = session('return_date');
+        if(empty($rent_date))
+        {
+            $rent_date = date('Y-m-d');
+        }
+        if(empty($return_date))
+        {
+            $today_date =  date('Y-m-d');
+            $return_date = date('Y-m-d', strtotime($today_date . ' +1 day'));
+        }
+        if(empty($dress_id))
+        {
+            $dress_id = "";
+        }
         if (!Auth::check()) {
 
             return redirect()->route('login_page')->with('error', 'Please LogIn first()');
@@ -39,8 +57,8 @@ class BookingController extends Controller
         $user = Auth::user();
 
         if (in_array(3, explode(',', $user->permit_type))) {
-
-            return view ('booking.add_booking', compact('view_dress','view_account'));
+            session()->forget(['dress_id', 'rent_date', 'return_date']);
+            return view ('booking.add_booking', compact('view_dress','view_account','rent_date','return_date','dress_id'));
         } else {
 
             return redirect()->route('home')->with( 'error', 'You dont have Permission');
@@ -351,6 +369,19 @@ class BookingController extends Controller
         $booking_bill->save();
         $bill_id = $booking_bill->id;
 
+        // booking add sms
+        $customer_data = Customer::where('id', $request['customer_id'])->first();
+        $params = [
+            'customer_id' => $request['customer_id'],
+            'booking_no' => $booking_no,
+            'rent_date' => $request['rent_date'],
+            'return_date' => $request['return_date'],
+            'booking_date' => $request['booking_date'], 
+            'sms_status' => 2
+        ];
+        $sms = get_sms($params);
+        sms_module($customer_data->customer_number, $sms);
+
         return response()->json(['booking_id' => $booking_id,'bill_id' => $bill_id]);
 
     }
@@ -472,14 +503,31 @@ class BookingController extends Controller
             $bill_data->save();
         }
         // amount addition
+        $payment_method_name = "";
         $account_data = Account::where('id', $request['bill_payment_method'])->first();
         if(!empty($account_data))
         {
+            $payment_method_name = $account_data->account_name;
             $last_income = $account_data->opening_balance;
             $new_income = $last_income + $request['bill_paid_amount'];
             $account_data->opening_balance = $new_income;
             $account_data->save();
         }
+
+        // payment add sms
+        $customer_data = Customer::where('id', $booking_data->customer_id)->first();
+        $params = [
+            'customer_id' => $booking_data->customer_id,
+            'booking_no' => $booking_data->booking_no,
+            'rent_date' => $booking_data->rent_date,
+            'return_date' => $booking_data->return_date,
+            'payment_date' => $request['bill_payment_date'],
+            'paid_amount' => $request['bill_paid_amount'],
+            'payment_method' => $payment_method_name,
+            'sms_status' => 6
+        ];
+        $sms = get_sms($params);
+        sms_module($customer_data->customer_number, $sms);
     }
     // get boooking detail
     public function get_booking_detail(Request $request)
@@ -1264,6 +1312,18 @@ class BookingController extends Controller
         $booking_data->cancel_date = date('Y-m-d');
         $booking_data->status = 4;
         $booking_data->save();
+
+        // cancel booking add sms
+        $customer_data = Customer::where('id', $booking_data->customer_id)->first();
+        $params = [
+            'customer_id' => $booking_data->customer_id,
+            'booking_no' => $booking_data->booking_no,
+            'rent_date' => $booking_data->rent_date,
+            'return_date' => $booking_data->return_date,
+            'sms_status' => 3
+        ];
+        $sms = get_sms($params);
+        sms_module($customer_data->customer_number, $sms);
     }
 
     // extend booking
@@ -1431,6 +1491,19 @@ class BookingController extends Controller
         $bill_data->total_price = $before_discount_price;
         $bill_data->total_discount = $final_discount;
         $bill_data->save();
+
+        // extend booking add sms
+        $customer_data = Customer::where('id', $booking_data->customer_id)->first();
+        $params = [
+            'customer_id' => $booking_data->customer_id,
+            'booking_no' => $booking_data->booking_no,
+            'rent_date' => $return_date,
+            'return_date' => $new_return_date, 
+            'amount' => $new_total_price, 
+            'sms_status' => 4
+        ];
+        $sms = get_sms($params);
+        sms_module($customer_data->customer_number, $sms);
     }
 
     public function get_finish_booking_detail(Request $request)
@@ -1533,11 +1606,7 @@ class BookingController extends Controller
         $booking_data = Booking::where('id', $booking_id)->first();
 
         // update booking
-        $booking_data->status = 3;
-
-        // update booking
-        $booking_data->status = $user;
-
+        $booking_data->status = 3; 
         $booking_data->finish_by = $user_id;
         $booking_data->finish_date = date('Y-m-d H:i:s');
         $booking_data->save();
@@ -1570,6 +1639,18 @@ class BookingController extends Controller
         $bill_data->grand_total = $grand_total - $bill_data->total_discount;
         $bill_data->total_penalty = $total_penalty;
         $bill_data->save();
+
+        // finish booking add sms
+        $customer_data = Customer::where('id', $booking_data->customer_id)->first();
+        $params = [
+            'customer_id' => $booking_data->customer_id,
+            'booking_no' => $booking_data->booking_no,
+            'rent_date' => $booking_data->rent_date,
+            'return_date' => $booking_data->return_date,
+            'sms_status' => 5
+        ];
+        $sms = get_sms($params);
+        sms_module($customer_data->customer_number, $sms);
     }
 
 
@@ -1641,4 +1722,58 @@ class BookingController extends Controller
 
         return view('booking.receipt_bill', compact('total_paid','bill_data','dress_data' , 'booking_data','setting_data', 'payment_data','user', 'account_name' ));
     }
+
+    public function view_calender(){
+        $view_dress= Dress::all(); 
+        $view_account = Account::where('account_type', 1)->get();
+        $setting= Setting::first();
+        $day_before = $setting->dress_available;
+        if (!Auth::check()) {
+
+            return redirect()->route('login_page')->with('error', 'Please LogIn first()');
+        }
+
+        $user = Auth::user();
+
+        if (in_array(3, explode(',', $user->permit_type))) {
+
+            return view ('booking.view_calender', compact('view_dress','view_account','day_before'));
+        } else {
+
+            return redirect()->route('home')->with( 'error', 'You dont have Permission');
+        }
+    }
+
+    // receipt bill
+    public function get_calender_bookings(Request $request) 
+    {
+        $dress_id = $request->input('dress_id');
+
+        // Fetch bookings and join with Dress model to get dress_name
+        $booking_data = Booking::where('dress_id', $dress_id)
+            ->with('dress') // Assuming you have a relationship in the Booking model
+            ->get()
+            ->map(function($booking) {
+                return [
+                    'booking_id' => $booking->id,
+                    'booking_no' => $booking->booking_no,
+                    'dress_name' => $booking->dress->dress_name, // Assuming the dress name is in the 'dress_name' field
+                    'rent_date' => $booking->rent_date,
+                    'return_date' => $booking->return_date,
+                ];
+            });
+
+        // Return the data as JSON
+        return response()->json($booking_data);
+    }
+
+    public function new_booking($rent_data, $dress_id)
+    {
+        session(['dress_id' => $dress_id]);
+        session(['rent_date' => $rent_data]);
+        $return_date = date('Y-m-d', strtotime($rent_data . ' +1 day'));
+        session(['return_date' => $return_date]);
+        return redirect()->route('booking');
+    }
+
 }

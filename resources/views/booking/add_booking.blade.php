@@ -98,9 +98,11 @@
                                             <select class="form-control dress_name" data-trigger name="dress_name"
                                             id="dress_name" onchange="get_dress_detail()">
                                                 <option value="">{{ trans('messages.choose_lang',[],session('locale')) }}</option>
-                                                @foreach ($view_dress as $dress) {
-                                                    <option value="{{$dress->id}}">{{$dress->dress_name.' -'.$dress->sku}}</option>';
-                                                }
+                                                @foreach ($view_dress as $dress)
+                                                    @php
+                                                        $selected = ($dress->id == $dress_id) ? 'selected' : '';
+                                                    @endphp
+                                                    <option {{ $selected }} value="{{ $dress->id }}">{{ $dress->dress_name . ' - ' . $dress->sku }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -141,13 +143,13 @@
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="rent_date" class="form-label">{{ trans('messages.rent_date_lang',[],session('locale')) }}</label>
-                                            <input class="form-control rent_date" name="rent_date" readonly type="text" id="rent_date">
+                                            <input class="form-control rent_date" name="rent_date" readonly type="text" id="rent_date" value="{{ $rent_date }}">
                                         </div>
                                     </div> 
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="return_date" class="form-label">{{ trans('messages.return_date_lang',[],session('locale')) }}</label>
-                                            <input class="form-control return_date" name="return_date" readonly type="text" id="return_date">
+                                            <input class="form-control return_date" name="return_date" readonly type="text" id="return_date" value="{{ $return_date }}">
                                         </div>
                                     </div> 
                                     <div class="col-md-3">

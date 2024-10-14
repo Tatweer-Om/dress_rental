@@ -37,13 +37,8 @@ class SettingController extends Controller
         $user = $user_data->user_name;
 
         // Check if an existing record is being updated
-        if ($request->setting_id) {
-            // Find the existing record by id
-            $setting = Setting::find($request->setting_id);
-            if (!$setting) {
-                return response()->json(['success' => false, 'message' => 'Setting not found'], 404);
-            }
-        } else {
+        $setting= Setting::first();
+        if (empty($setting)) {
             // Create a new record
             $setting = new Setting();
         }
@@ -83,19 +78,20 @@ class SettingController extends Controller
 
 
     public function dress_avail(Request $request){
+        $user_id = Auth::id();
+        $user_data = User::find($user_id);
+        $user = $user_data->user_name;
 
-        if ($request->setting_id) {
-            // Find the existing record by id
-            $setting = Setting::find($request->setting_id);
-            if (!$setting) {
-                return response()->json(['success' => false, 'message' => 'Setting not found'], 404);
-            }
-        } else {
+        $setting= Setting::first();
+        if (empty($setting)) {
             // Create a new record
             $setting = new Setting();
         }
 
         $setting->dress_available = $request->dress_avail;
+        $setting->added_by = $user;
+        $setting->updated_by = $user;
+        $setting->user_id = $user_id;
 
         $setting->save();
         return response()->json([

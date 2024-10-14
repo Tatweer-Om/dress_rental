@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 
 class UserController extends Controller
 {
@@ -222,15 +223,14 @@ class UserController extends Controller
         $password = $request->input('password');
 
 
-
         // Find the user by email or nickname
         $user = User::where(function ($query) use ($baseInput) {
             $query->where('user_email', $baseInput)
                   ->orWhere('user_name', $baseInput);
         })
         ->first();
-
-
+        
+         
         // If user exists and password matches, attempt login
         if ($user && Hash::check($password, $user->password)) {
             // Manually log in the user since Auth::attempt() isn't being used

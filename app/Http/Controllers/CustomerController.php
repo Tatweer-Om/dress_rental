@@ -116,12 +116,12 @@ class CustomerController extends Controller
         $customer->user_id =  $user_id;
         $customer->save();
         // customer add sms
-        // $params = [
-        //     'customer_id' => $customer->id,
-        //     'sms_status' => 1
-        // ];
-        // $sms = get_sms($params);
-        // sms_module($request['customer_phone'], $sms);
+        $params = [
+            'customer_id' => $customer->id,
+            'sms_status' => 1
+        ];
+        $sms = get_sms($params);
+        sms_module($request['customer_number'], $sms);
 
         //
         return response()->json(['customer_id' => $customer->id , 'status' => 1]);

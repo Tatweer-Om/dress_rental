@@ -181,6 +181,15 @@
 <!-- glightbox js -->
 <script src="{{ asset('libs/glightbox/js/glightbox.min.js') }}"></script>
 
+{{-- calender js --}}
+<script src="{{ asset('libs/%40fullcalendar/core/main.min.js') }}"></script>
+<script src="{{ asset('libs/%40fullcalendar/bootstrap/main.min.js') }}"></script>
+<script src="{{ asset('libs/%40fullcalendar/daygrid/main.min.js') }}"></script>
+<script src="{{ asset('libs/%40fullcalendar/timegrid/main.min.js') }}"></script>
+<script src="{{ asset('libs/%40fullcalendar/interaction/main.min.js') }}"></script>
+
+<!-- Calendar init -->
+<script src="{{ asset('js/pages/calendar.init.js') }}"></script>
 <!-- lightbox init -->
 <script src="{{ asset('js/pages/lightbox.init.js') }}"></script>
 
@@ -242,13 +251,14 @@
     @include('custom_js.customer_js')
 @elseif ($controllerName == 'customer_profile')
     @include('custom_js.customer_js')
-
 @elseif ($controllerName == 'maint_dress_all')
     @include('custom_js.add_dress_js')
 @elseif ($controllerName == 'dress_profile')
     @include('custom_js.add_dress_js')
 @elseif ($controllerName == 'setting')
     @include('custom_js.setting_js')
+@elseif ($controllerName == 'view_calender')
+    @include('custom_js.add_calender_js')
 @endif
 
 

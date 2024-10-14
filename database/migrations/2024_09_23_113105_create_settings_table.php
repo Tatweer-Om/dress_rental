@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->string('dress_available')->nullable();
-            $table->string('company_name'); // Company Name
-            $table->string('company_email'); // Company Email
-            $table->string('company_phone'); // Company Phone
-            $table->string('company_cr'); // Company CR
-            $table->string('company_address'); // Company Address
+            $table->string('company_name')->nullable(); // Company Name
+            $table->string('company_email')->nullable(); // Company Email
+            $table->string('company_phone')->nullable(); // Company Phone
+            $table->string('company_cr')->nullable(); // Company CR
+            $table->string('company_address')->nullable(); // Company Address
             $table->longText('notes')->nullable(); // Notes
             $table->string('logo')->nullable();
             $table->string('added_by')->nullable();

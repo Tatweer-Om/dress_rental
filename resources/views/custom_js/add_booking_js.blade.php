@@ -1,6 +1,6 @@
 <script>
     const rentDatePicker = flatpickr("#rent_date", {
-    defaultDate: new Date(),
+    // defaultDate: new Date(),
     onChange: function(selectedDates, dateStr, instance) {
       // When rent_date changes, update return_date to ensure it's always greater
       returnDatePicker.set('minDate', dateStr);
@@ -11,7 +11,7 @@
   });
 
   const returnDatePicker = flatpickr("#return_date", {
-    defaultDate: new Date(),
+    // defaultDate: new Date(),
     onChange: function() {
       calculateDays();
       calculateTotalPrice();
@@ -54,6 +54,11 @@
   document.querySelector(".price").addEventListener("keyup", calculateTotalPrice);
   document.querySelector(".discount").addEventListener("keyup", calculateTotalPrice);
   var err=0;
+  var dress_id = $('#dress_name').val();
+  if(dress_id!="")
+  {
+    get_dress_detail();
+  }
   function get_dress_detail(){
       var dress_id = $('#dress_name').val();
       var rent_date = $('#rent_date').val();

@@ -60,8 +60,11 @@
     <?php } else {?>
         <link href="{{asset('css/bootstrap.min.css') }}"  id="bootstrap-style" rel="stylesheet" type="text/css" />
     <?php }?>
-    <!-- Bootstrap Css -->
-
+    <!-- calender Css -->
+    <link href="{{ asset('libs/%40fullcalendar/core/main.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('libs/%40fullcalendar/daygrid/main.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('libs/%40fullcalendar/bootstrap/main.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('libs/%40fullcalendar/timegrid/main.min.css') }}" rel="stylesheet" type="text/css" />
 
     <!-- glightbox css -->
     <link rel="stylesheet" href="{{ asset('libs/glightbox/css/glightbox.min.css') }}">
@@ -412,6 +415,14 @@
                             <a href="{{ url('view_booking') }}">
                                 <i data-feather="home"></i>
                                 <span data-key="t-dashboard">{{ trans('messages.menu_booking_lang',[],session('locale')) }}</span>
+                            </a>
+                        </li>
+                        @endif
+                        @if(in_array(3, $permissions))
+                        <li>
+                            <a href="{{ url('view_calender') }}">
+                                <i data-feather="home"></i>
+                                <span data-key="t-dashboard">{{ trans('messages.menu_calender_lang',[],session('locale')) }}</span>
                             </a>
                         </li>
                         @endif

@@ -66,6 +66,7 @@ return [
     'menu_color_lang' => 'Color',
     'menu_booking_lang' => 'Booking',
     'menu_setting_lang' => 'Setting',
+    'menu_calender_lang' => 'Calender',
 
     // Accounts
     'add_account_name_lang' => 'Add Account Name',
@@ -257,5 +258,7 @@ return [
     'issue_notes_lang' => 'Issue Notes',
     'maint_issue_lang' => 'Miantenance Issue',
 
+
+    // calnder
 ];
 ?>

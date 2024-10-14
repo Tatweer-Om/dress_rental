@@ -37,46 +37,49 @@
     });
 
 
-    $(".transaction_no").click(function () {
-        $(".sms_area").val((index, value) => value + '{transaction_no}');
+    $(".booking_no").click(function () {
+        $(".sms_area").val((index, value) => value + '{booking_no}');
     });
 
-    $(".product_name").click(function () {
-        $(".sms_area").val((index, value) => value + '{product_name}');
+    $(".rent_date").click(function () {
+        $(".sms_area").val((index, value) => value + '{rent_date}');
     });
 
-    $(".receive_date").click(function () {
-        $(".sms_area").val((index, value) => value + '{receive_date}');
-    });
-
-    $(".delivery_date").click(function () {
-        $(".sms_area").val((index, value) => value + '{delivery_date}');
+    $(".return_date").click(function () {
+        $(".sms_area").val((index, value) => value + '{return_date}');
     });
 
     $(".status").click(function () {
         $(".sms_area").val((index, value) => value + '{status}');
     });
 
-    $(".serial_no").click(function () {
-        $(".sms_area").val((index, value) => value + '{serial_no}');
+    $(".booking_date").click(function () {
+        $(".sms_area").val((index, value) => value + '{booking_date}');
     });
 
+    $(".dress_name").click(function () {
+        $(".sms_area").val((index, value) => value + '{dress_name}');
+    });
 
-    $(".receipt_date").click(function () {
-        $(".sms_area").val((index, value) => value + '{receipt_date}');
+    $(".paid_amount").click(function () {
+        $(".sms_area").val((index, value) => value + '{paid_amount}');
+    });
+    $(".remaining_payment").click(function () {
+        $(".sms_area").val((index, value) => value + '{remaining_payment}');
+    });
+    $(".payment_date").click(function () {
+        $(".sms_area").val((index, value) => value + '{payment_date}');
+    });
+    $(".payment_method").click(function () {
+        $(".sms_area").val((index, value) => value + '{payment_method}');
+    });
+    $(".amount").click(function () {
+        $(".sms_area").val((index, value) => value + '{amount}');
     });
     $(".notes").click(function () {
         $(".sms_area").val((index, value) => value + '{notes}');
     });
-    $(".offer_name").click(function () {
-        $(".sms_area").val((index, value) => value + '{offer_name}');
-    });
-    $(".start_date").click(function () {
-        $(".sms_area").val((index, value) => value + '{start_date}');
-    });
-    $(".end_date").click(function () {
-        $(".sms_area").val((index, value) => value + '{end_date}');
-    });
+     
 
 
 
