@@ -259,6 +259,11 @@ return [
     'maint_issue_lang' => 'Miantenance Issue',
 
 
-    // calnder
+    // sms
+    'panel_add_booking_lang' => 'Add Booking',
+    'panel_cancel_booking_lang' => 'Cancel Booking',
+    'panel_extend_booking_lang' => 'Extend Booking',
+    'panel_finish_booking_lang' => 'Finish Booking',
+    'panel_add_payment_lang' => 'Add Payment',
 ];
 ?>
