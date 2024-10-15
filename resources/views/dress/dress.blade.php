@@ -173,7 +173,7 @@
                                 <hr>
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
-                                        <h2>{{ trans('messages.atrributes_lang',[],session('locale')) }}</h2>
+                                        <h2>{{ trans('messages.attributes_lang',[],session('locale')) }}</h2>
                                     </div>
                                 </div>
                                 <div class="row">

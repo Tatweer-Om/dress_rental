@@ -88,7 +88,7 @@
                                     <p style="text-decoration: none;cursor: pointer;" class="text text-success paid_amount">{{ trans('messages.paid_amount_lang', [], session('locale')) }}</p>
                                 </div>
                                 <div class="form-row">
-                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success remaining_payment">{{ trans('messages.remaining_payment_lang', [], session('locale')) }}</p>
+                                    <p style="text-decoration: none;cursor: pointer;" class="text text-success remaining_payment">{{ trans('messages.remaining_lang', [], session('locale')) }}</p>
                                 </div>
                                 <div class="form-row">
                                     <p style="text-decoration: none;cursor: pointer;" class="text text-success payment_date">{{ trans('messages.payment_date_lang', [], session('locale')) }}</p>
